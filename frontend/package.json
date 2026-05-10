@@ -4,14 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "start": "vite",
-  "build": "vite build",
-  "preview": "vite preview",
-  "test": "vitest run --config tests/config/vitest.config.js",
-  "test:watch": "vitest --config tests/config/vitest.config.js",
-  "test:ui": "vitest --ui --config tests/config/vitest.config.js",
-  "coverage": "vitest run --coverage --config tests/config/vitest.config.js"
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run --config tests/config/vitest.config.js",
+    "test:watch": "vitest --config tests/config/vitest.config.js",
+    "test:ui": "vitest --ui --config tests/config/vitest.config.js",
+    "coverage": "vitest run --coverage --config tests/config/vitest.config.js",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,json,md}\"",
+    "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
+    "audit:ci": "audit-ci --high",
+    "prepare": "cd .. && husky frontend/.husky"
   },
+  "lint-staged": {
+  "*.{ts,tsx,js,jsx}": [
+    "eslint --fix",
+    "prettier --write"
+  ],
+  "*.{json,css,md}": [
+    "prettier --write"
+  ]},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -28,6 +42,7 @@
     "vite": "^8.0.8"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -35,8 +50,20 @@
     "@types/react-dom": "^19.2.3",
     "@vitest/coverage-v8": "^4.1.5",
     "@vitest/ui": "^4.1.5",
+    "audit-ci": "^7.1.0",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "^15.15.0",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.0",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.3.3",
     "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.2",
     "vitest": "^4.1.5"
   }
 }
