@@ -38,19 +38,13 @@ export interface Monster55 {
 const db = () => supabase.schema("references").from("monsters");
 
 export async function fetchMonster55ByName(name: string): Promise<Monster55> {
-  const { data, error } = await db()
-    .select("*")
-    .ilike("name", name.trim())
-    .single();
+  const { data, error } = await db().select("*").ilike("name", name.trim()).single();
 
   if (error) throw new Error(`Monster "${name}" not found: ${error.message}`);
   return data as Monster55;
 }
 
-export async function searchMonsters55(
-  query: string,
-  limit = 20
-): Promise<Monster55[]> {
+export async function searchMonsters55(query: string, limit = 20): Promise<Monster55[]> {
   const { data, error } = await db()
     .select("*")
     .ilike("name", `%${query.trim()}%`)
@@ -62,10 +56,7 @@ export async function searchMonsters55(
 }
 
 export async function fetchMonsters55ByCR(cr: number): Promise<Monster55[]> {
-  const { data, error } = await db()
-    .select("*")
-    .eq("cr", cr)
-    .order("name");
+  const { data, error } = await db().select("*").eq("cr", cr).order("name");
 
   if (error) throw new Error(`CR lookup failed: ${error.message}`);
   return (data ?? []) as Monster55[];
@@ -75,13 +66,9 @@ export async function fetchMonsters55ForParty(
   maxCR: number,
   type?: string,
   habitat?: string,
-  limit = 150
+  limit = 150,
 ): Promise<Monster55[]> {
-  let query = db()
-    .select("*")
-    .lte("cr", maxCR)
-    .order("name")
-    .limit(limit);
+  let query = db().select("*").lte("cr", maxCR).order("name").limit(limit);
 
   if (type) query = query.ilike("type", `%${type}%`);
   if (habitat) query = query.ilike("habitat", `%${habitat}%`);
@@ -92,10 +79,7 @@ export async function fetchMonsters55ForParty(
 }
 
 export async function fetchMonsters55ByType(type: string): Promise<Monster55[]> {
-  const { data, error } = await db()
-    .select("*")
-    .ilike("type", `%${type.trim()}%`)
-    .order("name");
+  const { data, error } = await db().select("*").ilike("type", `%${type.trim()}%`).order("name");
 
   if (error) throw new Error(`Type lookup failed: ${error.message}`);
   return (data ?? []) as Monster55[];

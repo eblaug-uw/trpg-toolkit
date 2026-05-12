@@ -46,7 +46,10 @@ export default function FeatureTemplate() {
 
       {/* TODO: If your feature uses a search input, keep this form.
                If it's a calculator or generator, replace with your own inputs/buttons. */}
-      <form onSubmit={handleSearch} style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
+      <form
+        onSubmit={handleSearch}
+        style={{ display: "flex", justifyContent: "center", gap: "8px" }}
+      >
         <input
           type="text"
           // TODO: Update placeholder text with real examples for your endpoint

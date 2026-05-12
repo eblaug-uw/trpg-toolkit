@@ -10,18 +10,17 @@ function LoginForm() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { data, error: signInError} = await supabase.auth.signInWithPassword({
-     email: email,
-     password: password, 
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
     });
 
     if (signInError) {
       setError(signInError.message);
-    }
-    else {
+    } else {
       setError("");
       navigate("/");
     }

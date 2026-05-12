@@ -2,7 +2,6 @@ import LoginForm from "../components/LoginForm";
 import "../style/Login.css";
 import TopBar from "../components/TopBar";
 
-
 function Login() {
   return (
     <div className="login-page">

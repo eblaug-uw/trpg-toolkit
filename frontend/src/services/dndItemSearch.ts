@@ -2,15 +2,41 @@
 const DND_API_BASE = "https://www.dnd5eapi.co/api/2014";
 
 // Shared sub-interfaces used across multiple equipment types.
-export interface Cost { quantity: number; unit: string; }
-export interface EquipmentCategory { name: string; }
-export interface WeaponProperty { name: string; }
-export interface ArmorClass { base: number; dex_bonus: boolean; max_bonus?: number; }
-export interface Damage { damage_dice: string; damage_type: { name: string }; }
-export interface Range { normal: number; long?: number; }
-export interface ThrowRange { normal: number; long?: number; }
-export interface Speed { quantity: number; unit: string; }
-export interface Content { item: { name: string }; quantity: number; }
+export interface Cost {
+  quantity: number;
+  unit: string;
+}
+export interface EquipmentCategory {
+  name: string;
+}
+export interface WeaponProperty {
+  name: string;
+}
+export interface ArmorClass {
+  base: number;
+  dex_bonus: boolean;
+  max_bonus?: number;
+}
+export interface Damage {
+  damage_dice: string;
+  damage_type: { name: string };
+}
+export interface Range {
+  normal: number;
+  long?: number;
+}
+export interface ThrowRange {
+  normal: number;
+  long?: number;
+}
+export interface Speed {
+  quantity: number;
+  unit: string;
+}
+export interface Content {
+  item: { name: string };
+  quantity: number;
+}
 
 // Fields that every equipment type shares — all specific types extend this.
 interface EquipmentBase {
@@ -86,7 +112,7 @@ export interface EquipmentListItem {
 export async function searchDndEquipment(query: string): Promise<EquipmentListItem[]> {
   const response = await fetch(
     `${DND_API_BASE}/equipment?name=${encodeURIComponent(query.trim())}`,
-    { headers: { Accept: "application/json" } }
+    { headers: { Accept: "application/json" } },
   );
   if (!response.ok) throw new Error(`Search failed (${response.status})`);
   const data = await response.json();
@@ -95,16 +121,16 @@ export async function searchDndEquipment(query: string): Promise<EquipmentListIt
 
 // Maps each mob type to the equipment category that best represents its loot.
 export const MOB_CATEGORY_MAP: Record<string, string> = {
-  Beast:     "adventuring-gear",
-  Undead:    "weapon",
-  Dragon:    "armor",
-  Humanoid:  "weapon",
+  Beast: "adventuring-gear",
+  Undead: "weapon",
+  Dragon: "armor",
+  Humanoid: "weapon",
 };
 
 // Fetches all items in an equipment category, then returns `count` random ones.
 export async function fetchRandomLootFromCategory(
   category: string,
-  count = 3
+  count = 3,
 ): Promise<EquipmentListItem[]> {
   const response = await fetch(`${DND_API_BASE}/equipment-categories/${category}`, {
     headers: { Accept: "application/json" },

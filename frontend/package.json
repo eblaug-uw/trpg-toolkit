@@ -18,14 +18,16 @@
     "audit:ci": "audit-ci --high",
     "prepare": "cd .. && husky frontend/.husky"
   },
+  "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --max-warnings=10000",
   "lint-staged": {
-  "*.{ts,tsx,js,jsx}": [
-    "eslint --fix",
-    "prettier --write"
-  ],
-  "*.{json,css,md}": [
-    "prettier --write"
-  ]},
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

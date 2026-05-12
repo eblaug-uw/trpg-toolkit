@@ -7,11 +7,16 @@ function sizeToCells(sizeStr) {
   switch (sizeStr) {
     case "Tiny":
     case "Small":
-    case "Medium":     return 1;
-    case "Large":      return 2;
-    case "Huge":       return 3;
-    case "Gargantuan": return 4;
-    default:           return 1;
+    case "Medium":
+      return 1;
+    case "Large":
+      return 2;
+    case "Huge":
+      return 3;
+    case "Gargantuan":
+      return 4;
+    default:
+      return 1;
   }
 }
 
@@ -47,7 +52,7 @@ export default function EnemyGenerator({ onAdd }) {
         const monsters = await fetchMonsters55ForParty(
           crValue,
           habitat !== "Any" ? habitat : undefined,
-          type !== "Any" ? type : undefined
+          type !== "Any" ? type : undefined,
         );
         if (monsters.length === 0) {
           setError("No monsters found for the selected filters.");
@@ -77,10 +82,18 @@ export default function EnemyGenerator({ onAdd }) {
     setSavedParties([...savedParties, { party, edition: ruleSet }]);
   }
 
-  function getMonsterName(m)    { return m.name; }
-  function getMonsterCR(m)      { return m.cr; }
-  function getMonsterType(m)    { return m.type; }
-  function getMonsterHabitat(m) { return m.habitat; }
+  function getMonsterName(m) {
+    return m.name;
+  }
+  function getMonsterCR(m) {
+    return m.cr;
+  }
+  function getMonsterType(m) {
+    return m.type;
+  }
+  function getMonsterHabitat(m) {
+    return m.habitat;
+  }
 
   function addToTracker(monster) {
     if (!onAdd) return;
@@ -106,7 +119,7 @@ export default function EnemyGenerator({ onAdd }) {
             hit_points: 10,
             size: 1,
             data: monster,
-          }
+          },
     );
   }
 
@@ -216,7 +229,10 @@ export default function EnemyGenerator({ onAdd }) {
                   {getMonsterName(monster)} — CR {getMonsterCR(monster)} — {getMonsterType(monster)}
                   {getMonsterHabitat(monster) ? ` — ${getMonsterHabitat(monster)}` : ""}
                 </span>
-                <button onClick={() => addToTracker(monster)} style={{ marginLeft: "auto", whiteSpace: "nowrap" }}>
+                <button
+                  onClick={() => addToTracker(monster)}
+                  style={{ marginLeft: "auto", whiteSpace: "nowrap" }}
+                >
                   Add
                 </button>
               </li>
@@ -233,7 +249,10 @@ export default function EnemyGenerator({ onAdd }) {
           <h3>Saved Parties</h3>
           {savedParties.map((saved, partyIndex) => (
             <div key={partyIndex}>
-              <h4>Party {partyIndex + 1} <span style={{ fontSize: "0.8em", color: "#888" }}>({saved.edition})</span></h4>
+              <h4>
+                Party {partyIndex + 1}{" "}
+                <span style={{ fontSize: "0.8em", color: "#888" }}>({saved.edition})</span>
+              </h4>
               <ul>
                 {saved.party.map((monster, monsterIndex) => (
                   <li key={`${getMonsterName(monster)}-${partyIndex}-${monsterIndex}`}>

@@ -13,11 +13,11 @@ function getRandomMonster(list) {
 
 // Used for 5.0: filters the mock list then picks randomly
 export function generateMobParty(_targetCR, mobCount, habitat, type, group) {
-  const filtered = mockMonsters.filter(m => {
+  const filtered = mockMonsters.filter((m) => {
     return (
       (habitat === "Any" || m.habitat === habitat) &&
-      (type   === "Any" || m.type   === type)   &&
-      (group  === "Any" || m.group  === group)
+      (type === "Any" || m.type === type) &&
+      (group === "Any" || m.group === group)
     );
   });
   if (filtered.length === 0) return [];
@@ -27,7 +27,5 @@ export function generateMobParty(_targetCR, mobCount, habitat, type, group) {
 // Used for 5.5e: picks randomly from an already-fetched array
 export function pickRandomMonsters(monsters, count) {
   if (monsters.length === 0) return [];
-  return Array.from({ length: count }, () =>
-    monsters[Math.floor(Math.random() * monsters.length)]
-  );
+  return Array.from({ length: count }, () => monsters[Math.floor(Math.random() * monsters.length)]);
 }

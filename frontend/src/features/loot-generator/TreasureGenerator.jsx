@@ -33,7 +33,7 @@ export default function TreasureGenerator() {
     try {
       const category = MOB_CATEGORY_MAP[mobType];
       const items = await fetchRandomLootFromCategory(category);
-      setTreasure(items.map(i => i.name));
+      setTreasure(items.map((i) => i.name));
     } catch {
       setGenerateError("API unavailable — using local table.");
       setTreasure(generateTreasure(mobType));
@@ -79,7 +79,7 @@ export default function TreasureGenerator() {
   // Adds the selected item to the treasure list
   function handleAddToTreasure() {
     if (!selectedItem) return;
-    setTreasure(prev => [...prev, selectedItem.name]);
+    setTreasure((prev) => [...prev, selectedItem.name]);
     setSelectedItem(null);
     setQuery("");
   }
@@ -88,11 +88,7 @@ export default function TreasureGenerator() {
     <section>
       {/* Dropdown to select MOB type */}
       <label htmlFor="mob-type">MOB Type:</label>
-      <select
-        id="mob-type"
-        value={mobType}
-        onChange={(event) => setMobType(event.target.value)}
-      >
+      <select id="mob-type" value={mobType} onChange={(event) => setMobType(event.target.value)}>
         <option value="Beast">Beast</option>
         <option value="Undead">Undead</option>
         <option value="Dragon">Dragon</option>
@@ -140,14 +136,21 @@ export default function TreasureGenerator() {
           <strong>{selectedItem.name}</strong>
           <p>Category: {selectedItem.equipment_category?.name}</p>
           {selectedItem.cost && (
-            <p>Cost: {selectedItem.cost.quantity} {selectedItem.cost.unit}</p>
+            <p>
+              Cost: {selectedItem.cost.quantity} {selectedItem.cost.unit}
+            </p>
           )}
           {selectedItem.weight && <p>Weight: {selectedItem.weight} lb</p>}
           {"damage" in selectedItem && selectedItem.damage && (
-            <p>Damage: {selectedItem.damage.damage_dice} {selectedItem.damage.damage_type.name}</p>
+            <p>
+              Damage: {selectedItem.damage.damage_dice} {selectedItem.damage.damage_type.name}
+            </p>
           )}
           {"armor_class" in selectedItem && selectedItem.armor_class && (
-            <p>AC: {selectedItem.armor_class.base}{selectedItem.armor_class.dex_bonus ? " + DEX" : ""}</p>
+            <p>
+              AC: {selectedItem.armor_class.base}
+              {selectedItem.armor_class.dex_bonus ? " + DEX" : ""}
+            </p>
           )}
           {selectedItem.desc?.length > 0 && <p>{selectedItem.desc[0]}</p>}
           <button onClick={handleAddToTreasure}>Add to Treasure</button>

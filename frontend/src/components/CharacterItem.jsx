@@ -1,8 +1,7 @@
 import "../style/CharacterItem.css";
 
 function CharacterItem({ character, isActive, onClick, currentHp, onHpClick }) {
-  const typeClass =
-    character.type === "player" ? "character-item-player" : "character-item-enemy";
+  const typeClass = character.type === "player" ? "character-item-player" : "character-item-enemy";
 
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
@@ -16,7 +15,10 @@ function CharacterItem({ character, isActive, onClick, currentHp, onHpClick }) {
 
       {currentHp !== undefined && (
         <button
-          onClick={e => { e.stopPropagation(); onHpClick?.(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onHpClick?.();
+          }}
           title="Damage / Heal"
           style={{
             position: "absolute",

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addMobToParty, filterMobs, saveMobParty } from "./createMobParty";
+import { addMobToParty, filterMobs, saveMobParty } from "./mobPartyHelpers";
 
 export default function CreateMobParty() {
   // Stores the user's MOB name search
@@ -18,13 +18,7 @@ export default function CreateMobParty() {
   const [savedParties, setSavedParties] = useState([]);
 
   // Gets the list of MOBs matching the search and filter values
-  const filteredMobs = filterMobs(
-    searchTerm,
-    habitat,
-    challengeRating,
-    type,
-    group
-  );
+  const filteredMobs = filterMobs(searchTerm, habitat, challengeRating, type, group);
 
   // Adds the selected MOB to the current party
   function handleAddMob(mob) {
@@ -57,11 +51,7 @@ export default function CreateMobParty() {
       />
 
       <label htmlFor="habitat">Habitat:</label>
-      <select
-        id="habitat"
-        value={habitat}
-        onChange={(event) => setHabitat(event.target.value)}
-      >
+      <select id="habitat" value={habitat} onChange={(event) => setHabitat(event.target.value)}>
         <option value="Any">Any</option>
         <option value="Forest">Forest</option>
         <option value="Mountain">Mountain</option>
@@ -83,22 +73,14 @@ export default function CreateMobParty() {
       </select>
 
       <label htmlFor="type">Type:</label>
-      <select
-        id="type"
-        value={type}
-        onChange={(event) => setType(event.target.value)}
-      >
+      <select id="type" value={type} onChange={(event) => setType(event.target.value)}>
         <option value="Any">Any</option>
         <option value="Humanoid">Humanoid</option>
         <option value="Undead">Undead</option>
       </select>
 
       <label htmlFor="group">Group:</label>
-      <select
-        id="group"
-        value={group}
-        onChange={(event) => setGroup(event.target.value)}
-      >
+      <select id="group" value={group} onChange={(event) => setGroup(event.target.value)}>
         <option value="Any">Any</option>
         <option value="Tribe">Tribe</option>
         <option value="Warband">Warband</option>
@@ -112,11 +94,8 @@ export default function CreateMobParty() {
         <ul>
           {filteredMobs.map((mob) => (
             <li key={mob.name}>
-              {mob.name} | CR {mob.cr} | {mob.habitat} | {mob.type} |{" "}
-              {mob.group}
-              <button onClick={() => handleAddMob(mob)}>
-                Add to Party
-              </button>
+              {mob.name} | CR {mob.cr} | {mob.habitat} | {mob.type} | {mob.group}
+              <button onClick={() => handleAddMob(mob)}>Add to Party</button>
             </li>
           ))}
         </ul>
@@ -136,9 +115,7 @@ export default function CreateMobParty() {
             ))}
           </ul>
 
-          <button onClick={handleSaveParty}>
-            Save Party
-          </button>
+          <button onClick={handleSaveParty}>Save Party</button>
         </>
       ) : (
         <p>No MOBs added yet.</p>

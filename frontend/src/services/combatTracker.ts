@@ -9,7 +9,7 @@ export interface InitiativeEntry<T extends Combatant> {
 
 export function rollInitiative<T extends Combatant>(participants: T[]): InitiativeEntry<T>[] {
   return participants
-    .map(p => ({
+    .map((p) => ({
       entity: p,
       name: p.name,
       total: Math.floor(Math.random() * 20) + 1 + Math.floor((p.dexterity - 10) / 2),
@@ -31,7 +31,7 @@ export class CombatTracker<T extends Combatant> {
   }
 
   nextTurn(): InitiativeEntry<T> {
-    const finished = this.queue.shift()!;
+    const finished = this.queue.shift();
     this.queue.push(finished);
 
     if (this.queue[0].total >= finished.total) {

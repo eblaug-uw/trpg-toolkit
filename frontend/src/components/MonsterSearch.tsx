@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { fetchDndMonster, type DndMonster } from "../services/dndMonsterSearch";
-import { searchMonsters55, fetchMonster55ByName, type Monster55 } from "../services/monsters55Search";
+import {
+  searchMonsters55,
+  fetchMonster55ByName,
+  type Monster55,
+} from "../services/monsters55Search";
 import { useRuleSet } from "../context/RuleSetContext";
 
 export default function MonsterSearch() {
@@ -66,7 +70,10 @@ export default function MonsterSearch() {
     <div style={{ textAlign: "center" }}>
       <h2>D&D Monster Search</h2>
 
-      <form onSubmit={handleSearch} style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
+      <form
+        onSubmit={handleSearch}
+        style={{ display: "flex", justifyContent: "center", gap: "8px" }}
+      >
         <input
           type="text"
           placeholder="e.g. goblin, dragon, beholder"
@@ -100,14 +107,32 @@ export default function MonsterSearch() {
             <img src={monster55.image_url} alt={monster55.name} style={{ maxHeight: "150px" }} />
           )}
           <h3>{monster55.name}</h3>
-          <p><strong>Type:</strong> {monster55.size} {monster55.type}</p>
-          <p><strong>Alignment:</strong> {monster55.alignment ?? "—"}</p>
-          <p><strong>CR:</strong> {monster55.cr} ({monster55.xp ?? "—"} XP)</p>
-          {monster55.legendary && <p><strong>Legendary Monster</strong></p>}
-          <p><strong>HP:</strong> {monster55.hp ?? "—"}</p>
-          <p><strong>AC:</strong> {monster55.ac ?? "—"}</p>
-          <p><strong>Speed:</strong> {monster55.speed ?? "—"}</p>
-          <p><strong>Initiative:</strong> {monster55.initiative ?? "—"}</p>
+          <p>
+            <strong>Type:</strong> {monster55.size} {monster55.type}
+          </p>
+          <p>
+            <strong>Alignment:</strong> {monster55.alignment ?? "—"}
+          </p>
+          <p>
+            <strong>CR:</strong> {monster55.cr} ({monster55.xp ?? "—"} XP)
+          </p>
+          {monster55.legendary && (
+            <p>
+              <strong>Legendary Monster</strong>
+            </p>
+          )}
+          <p>
+            <strong>HP:</strong> {monster55.hp ?? "—"}
+          </p>
+          <p>
+            <strong>AC:</strong> {monster55.ac ?? "—"}
+          </p>
+          <p>
+            <strong>Speed:</strong> {monster55.speed ?? "—"}
+          </p>
+          <p>
+            <strong>Initiative:</strong> {monster55.initiative ?? "—"}
+          </p>
           <p>
             <strong>STR</strong> {monster55.str} &nbsp;
             <strong>DEX</strong> {monster55.dex} &nbsp;
@@ -116,19 +141,76 @@ export default function MonsterSearch() {
             <strong>WIS</strong> {monster55.wis} &nbsp;
             <strong>CHA</strong> {monster55.cha}
           </p>
-          {monster55.skills && <p><strong>Skills:</strong> {monster55.skills}</p>}
-          {monster55.senses && <p><strong>Senses:</strong> {monster55.senses}</p>}
-          {monster55.languages && <p><strong>Languages:</strong> {monster55.languages}</p>}
-          {monster55.habitat && <p><strong>Habitat:</strong> {monster55.habitat}</p>}
-          {monster55.source && <p><strong>Source:</strong> {monster55.source}</p>}
-          {monster55.immunities && <p><strong>Immunities:</strong> {monster55.immunities}</p>}
-          {monster55.resistances && <p><strong>Resistances:</strong> {monster55.resistances}</p>}
-          {monster55.vulnerabilities && <p><strong>Vulnerabilities:</strong> {monster55.vulnerabilities}</p>}
-          {monster55.traits && <div style={{ textAlign: "left" }}><strong>Traits:</strong><p>{monster55.traits}</p></div>}
-          {monster55.actions && <div style={{ textAlign: "left" }}><strong>Actions:</strong><p>{monster55.actions}</p></div>}
-          {monster55.bonus_actions && <div style={{ textAlign: "left" }}><strong>Bonus Actions:</strong><p>{monster55.bonus_actions}</p></div>}
-          {monster55.reactions && <div style={{ textAlign: "left" }}><strong>Reactions:</strong><p>{monster55.reactions}</p></div>}
-          {monster55.legendary_actions && <div style={{ textAlign: "left" }}><strong>Legendary Actions:</strong><p>{monster55.legendary_actions}</p></div>}
+          {monster55.skills && (
+            <p>
+              <strong>Skills:</strong> {monster55.skills}
+            </p>
+          )}
+          {monster55.senses && (
+            <p>
+              <strong>Senses:</strong> {monster55.senses}
+            </p>
+          )}
+          {monster55.languages && (
+            <p>
+              <strong>Languages:</strong> {monster55.languages}
+            </p>
+          )}
+          {monster55.habitat && (
+            <p>
+              <strong>Habitat:</strong> {monster55.habitat}
+            </p>
+          )}
+          {monster55.source && (
+            <p>
+              <strong>Source:</strong> {monster55.source}
+            </p>
+          )}
+          {monster55.immunities && (
+            <p>
+              <strong>Immunities:</strong> {monster55.immunities}
+            </p>
+          )}
+          {monster55.resistances && (
+            <p>
+              <strong>Resistances:</strong> {monster55.resistances}
+            </p>
+          )}
+          {monster55.vulnerabilities && (
+            <p>
+              <strong>Vulnerabilities:</strong> {monster55.vulnerabilities}
+            </p>
+          )}
+          {monster55.traits && (
+            <div style={{ textAlign: "left" }}>
+              <strong>Traits:</strong>
+              <p>{monster55.traits}</p>
+            </div>
+          )}
+          {monster55.actions && (
+            <div style={{ textAlign: "left" }}>
+              <strong>Actions:</strong>
+              <p>{monster55.actions}</p>
+            </div>
+          )}
+          {monster55.bonus_actions && (
+            <div style={{ textAlign: "left" }}>
+              <strong>Bonus Actions:</strong>
+              <p>{monster55.bonus_actions}</p>
+            </div>
+          )}
+          {monster55.reactions && (
+            <div style={{ textAlign: "left" }}>
+              <strong>Reactions:</strong>
+              <p>{monster55.reactions}</p>
+            </div>
+          )}
+          {monster55.legendary_actions && (
+            <div style={{ textAlign: "left" }}>
+              <strong>Legendary Actions:</strong>
+              <p>{monster55.legendary_actions}</p>
+            </div>
+          )}
         </div>
       )}
 
@@ -136,12 +218,30 @@ export default function MonsterSearch() {
       {monster5e && (
         <div>
           <h3>{monster5e.name}</h3>
-          <p><strong>Type:</strong> {monster5e.size} {monster5e.type}{monster5e.subtype ? ` (${monster5e.subtype})` : ""}</p>
-          <p><strong>Alignment:</strong> {monster5e.alignment}</p>
-          <p><strong>CR:</strong> {monster5e.challenge_rating} ({monster5e.xp} XP)</p>
-          <p><strong>HP:</strong> {monster5e.hit_points} ({monster5e.hit_dice}) — roll: {monster5e.hit_points_roll}</p>
-          <p><strong>AC:</strong> {monster5e.armor_class.map((a) => `${a.value} (${a.type})`).join(", ")}</p>
-          <p><strong>Speed:</strong> {Object.entries(monster5e.speed).map(([k, v]) => `${k} ${v}`).join(", ")}</p>
+          <p>
+            <strong>Type:</strong> {monster5e.size} {monster5e.type}
+            {monster5e.subtype ? ` (${monster5e.subtype})` : ""}
+          </p>
+          <p>
+            <strong>Alignment:</strong> {monster5e.alignment}
+          </p>
+          <p>
+            <strong>CR:</strong> {monster5e.challenge_rating} ({monster5e.xp} XP)
+          </p>
+          <p>
+            <strong>HP:</strong> {monster5e.hit_points} ({monster5e.hit_dice}) — roll:{" "}
+            {monster5e.hit_points_roll}
+          </p>
+          <p>
+            <strong>AC:</strong>{" "}
+            {monster5e.armor_class.map((a) => `${a.value} (${a.type})`).join(", ")}
+          </p>
+          <p>
+            <strong>Speed:</strong>{" "}
+            {Object.entries(monster5e.speed)
+              .map(([k, v]) => `${k} ${v}`)
+              .join(", ")}
+          </p>
           <p>
             <strong>STR</strong> {monster5e.strength} &nbsp;
             <strong>DEX</strong> {monster5e.dexterity} &nbsp;
@@ -151,33 +251,54 @@ export default function MonsterSearch() {
             <strong>CHA</strong> {monster5e.charisma}
           </p>
           {monster5e.proficiencies.length > 0 && (
-            <p><strong>Proficiencies:</strong> {monster5e.proficiencies.map((p) => `${p.proficiency.name} +${p.value}`).join(", ")}</p>
+            <p>
+              <strong>Proficiencies:</strong>{" "}
+              {monster5e.proficiencies.map((p) => `${p.proficiency.name} +${p.value}`).join(", ")}
+            </p>
           )}
           {monster5e.damage_vulnerabilities.length > 0 && (
-            <p><strong>Vulnerabilities:</strong> {monster5e.damage_vulnerabilities.join(", ")}</p>
+            <p>
+              <strong>Vulnerabilities:</strong> {monster5e.damage_vulnerabilities.join(", ")}
+            </p>
           )}
           {monster5e.damage_resistances.length > 0 && (
-            <p><strong>Resistances:</strong> {monster5e.damage_resistances.join(", ")}</p>
+            <p>
+              <strong>Resistances:</strong> {monster5e.damage_resistances.join(", ")}
+            </p>
           )}
           {monster5e.damage_immunities.length > 0 && (
-            <p><strong>Immunities:</strong> {monster5e.damage_immunities.join(", ")}</p>
+            <p>
+              <strong>Immunities:</strong> {monster5e.damage_immunities.join(", ")}
+            </p>
           )}
           {monster5e.condition_immunities.length > 0 && (
-            <p><strong>Condition Immunities:</strong> {monster5e.condition_immunities.map((c) => c.name).join(", ")}</p>
+            <p>
+              <strong>Condition Immunities:</strong>{" "}
+              {monster5e.condition_immunities.map((c) => c.name).join(", ")}
+            </p>
           )}
-          <p><strong>Senses:</strong> {[
-            monster5e.senses.darkvision && `Darkvision ${monster5e.senses.darkvision}`,
-            monster5e.senses.blindsight && `Blindsight ${monster5e.senses.blindsight}`,
-            monster5e.senses.tremorsense && `Tremorsense ${monster5e.senses.tremorsense}`,
-            monster5e.senses.truesight && `Truesight ${monster5e.senses.truesight}`,
-            `Passive Perception ${monster5e.senses.passive_perception}`,
-          ].filter(Boolean).join(", ")}</p>
-          <p><strong>Languages:</strong> {monster5e.languages || "—"}</p>
+          <p>
+            <strong>Senses:</strong>{" "}
+            {[
+              monster5e.senses.darkvision && `Darkvision ${monster5e.senses.darkvision}`,
+              monster5e.senses.blindsight && `Blindsight ${monster5e.senses.blindsight}`,
+              monster5e.senses.tremorsense && `Tremorsense ${monster5e.senses.tremorsense}`,
+              monster5e.senses.truesight && `Truesight ${monster5e.senses.truesight}`,
+              `Passive Perception ${monster5e.senses.passive_perception}`,
+            ]
+              .filter(Boolean)
+              .join(", ")}
+          </p>
+          <p>
+            <strong>Languages:</strong> {monster5e.languages || "—"}
+          </p>
           {monster5e.special_abilities && monster5e.special_abilities.length > 0 && (
             <div style={{ textAlign: "left" }}>
               <strong>Special Abilities:</strong>
               {monster5e.special_abilities.map((a) => (
-                <p key={a.name}><em>{a.name}:</em> {a.desc}</p>
+                <p key={a.name}>
+                  <em>{a.name}:</em> {a.desc}
+                </p>
               ))}
             </div>
           )}
@@ -185,7 +306,9 @@ export default function MonsterSearch() {
             <div style={{ textAlign: "left" }}>
               <strong>Actions:</strong>
               {monster5e.actions.map((a) => (
-                <p key={a.name}><em>{a.name}:</em> {a.desc}</p>
+                <p key={a.name}>
+                  <em>{a.name}:</em> {a.desc}
+                </p>
               ))}
             </div>
           )}
@@ -193,7 +316,9 @@ export default function MonsterSearch() {
             <div style={{ textAlign: "left" }}>
               <strong>Reactions:</strong>
               {monster5e.reactions.map((r) => (
-                <p key={r.name}><em>{r.name}:</em> {r.desc}</p>
+                <p key={r.name}>
+                  <em>{r.name}:</em> {r.desc}
+                </p>
               ))}
             </div>
           )}
@@ -201,7 +326,9 @@ export default function MonsterSearch() {
             <div style={{ textAlign: "left" }}>
               <strong>Legendary Actions:</strong>
               {monster5e.legendary_actions.map((a) => (
-                <p key={a.name}><em>{a.name}:</em> {a.desc}</p>
+                <p key={a.name}>
+                  <em>{a.name}:</em> {a.desc}
+                </p>
               ))}
             </div>
           )}

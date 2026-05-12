@@ -20,7 +20,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .initiative-dice-btn--idle {
@@ -120,5 +123,9 @@
   font-size: 0.85em;
 }
 
-.hp-popover__btn--damage { background: #c0392b; }
-.hp-popover__btn--heal   { background: #27ae60; }
+.hp-popover__btn--damage {
+  background: #c0392b;
+}
+.hp-popover__btn--heal {
+  background: #27ae60;
+}

@@ -1,18 +1,18 @@
 import { Navigate } from "react-router-dom";
 import { useSession } from "../hooks/useSession";
 
-function ProtectedRoute ({ children }) {
-    const { session, loading } = useSession();
+function ProtectedRoute({ children }) {
+  const { session, loading } = useSession();
 
-    if (loading){
-        return null;
-    }
+  if (loading) {
+    return null;
+  }
 
-    if (!session) {
-        return <Navigate to="/login" replace />;
-    }
+  if (!session) {
+    return <Navigate to="/login" replace />;
+  }
 
-    return children;
+  return children;
 }
 
 export default ProtectedRoute;

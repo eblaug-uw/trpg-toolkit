@@ -7,10 +7,16 @@ function HpPopover({ entry, onDamage, onHeal, onClose }) {
   const [amount, setAmount] = useState(1);
 
   function handleDamage() {
-    if (amount > 0) { onDamage(entry.id, amount); onClose(); }
+    if (amount > 0) {
+      onDamage(entry.id, amount);
+      onClose();
+    }
   }
   function handleHeal() {
-    if (amount > 0) { onHeal(entry.id, amount); onClose(); }
+    if (amount > 0) {
+      onHeal(entry.id, amount);
+      onClose();
+    }
   }
 
   return (
@@ -23,7 +29,7 @@ function HpPopover({ entry, onDamage, onHeal, onClose }) {
         type="number"
         min={1}
         value={amount}
-        onChange={e => setAmount(Number(e.target.value))}
+        onChange={(e) => setAmount(Number(e.target.value))}
         autoFocus
       />
       <div className="hp-popover__actions">
@@ -38,7 +44,17 @@ function HpPopover({ entry, onDamage, onHeal, onClose }) {
   );
 }
 
-function InitiativeTracker({ participants, queue, combatActive, onRoll, onNext, onSelect, onDamage, onHeal, onAdjustInitiative }) {
+function InitiativeTracker({
+  participants,
+  queue,
+  combatActive,
+  onRoll,
+  onNext,
+  onSelect,
+  onDamage,
+  onHeal,
+  onAdjustInitiative,
+}) {
   const isEmpty = participants.length === 0;
   const displayList = combatActive ? queue : participants;
   const [hpPopoverId, setHpPopoverId] = useState(null);
@@ -54,7 +70,10 @@ function InitiativeTracker({ participants, queue, combatActive, onRoll, onNext, 
     <div className="initiative-tracker" onClick={closeAll}>
       <button
         className={`initiative-dice-btn ${combatActive ? "initiative-dice-btn--active" : "initiative-dice-btn--idle"}`}
-        onClick={e => { e.stopPropagation(); combatActive ? onNext() : onRoll(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          combatActive ? onNext() : onRoll();
+        }}
         disabled={isEmpty}
         title={combatActive ? "Next Turn" : "Roll Initiative"}
         aria-label={combatActive ? "next turn" : "roll initiative"}
@@ -63,25 +82,32 @@ function InitiativeTracker({ participants, queue, combatActive, onRoll, onNext, 
       </button>
 
       {displayList.map((entry, i) => (
-        <div key={entry.id} className="initiative-entry" onClick={e => e.stopPropagation()}>
+        <div key={entry.id} className="initiative-entry" onClick={(e) => e.stopPropagation()}>
           <CharacterItem
             character={{ name: entry.name, type: entry.type }}
             isActive={combatActive && i === 0}
-            onClick={() => { closeAll(); onSelect(entry); }}
+            onClick={() => {
+              closeAll();
+              onSelect(entry);
+            }}
             currentHp={entry.hit_points}
-            onHpClick={() => { setEditingInitId(null); setHpPopoverId(hpPopoverId === entry.id ? null : entry.id); }}
+            onHpClick={() => {
+              setEditingInitId(null);
+              setHpPopoverId(hpPopoverId === entry.id ? null : entry.id);
+            }}
           />
 
-          {combatActive && entry.initiativeTotal !== undefined && (
-            editingInitId === entry.id ? (
+          {combatActive &&
+            entry.initiativeTotal !== undefined &&
+            (editingInitId === entry.id ? (
               <input
                 className="initiative-badge-input"
                 type="number"
                 autoFocus
                 value={editInitValue}
-                onChange={e => setEditInitValue(e.target.value)}
+                onChange={(e) => setEditInitValue(e.target.value)}
                 onBlur={() => setEditingInitId(null)}
-                onKeyDown={e => {
+                onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     onAdjustInitiative(entry.name, Number(editInitValue));
                     setEditingInitId(null);
@@ -93,12 +119,15 @@ function InitiativeTracker({ participants, queue, combatActive, onRoll, onNext, 
               <button
                 className="initiative-badge"
                 title="Click to adjust initiative"
-                onClick={() => { setHpPopoverId(null); setEditingInitId(entry.id); setEditInitValue(entry.initiativeTotal); }}
+                onClick={() => {
+                  setHpPopoverId(null);
+                  setEditingInitId(entry.id);
+                  setEditInitValue(entry.initiativeTotal);
+                }}
               >
                 {entry.initiativeTotal}
               </button>
-            )
-          )}
+            ))}
 
           {hpPopoverId === entry.id && (
             <HpPopover

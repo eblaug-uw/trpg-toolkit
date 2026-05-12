@@ -18,7 +18,8 @@ function MonsterSheet5e({ data }) {
   return (
     <div style={{ maxWidth: "480px" }}>
       <p style={{ margin: "0 0 4px", color: "#666", fontStyle: "italic" }}>
-        {data.size} {data.type}{data.subtype ? ` (${data.subtype})` : ""} · {data.alignment}
+        {data.size} {data.type}
+        {data.subtype ? ` (${data.subtype})` : ""} · {data.alignment}
       </p>
       <p style={{ margin: "0 0 4px" }}>
         <strong>CR</strong> {data.challenge_rating} &nbsp;·&nbsp;
@@ -26,7 +27,9 @@ function MonsterSheet5e({ data }) {
       </p>
       <p style={{ margin: "0 0 12px" }}>
         <strong>Speed</strong>{" "}
-        {Object.entries(data.speed ?? {}).map(([k, v]) => `${k} ${v}`).join(", ")}
+        {Object.entries(data.speed ?? {})
+          .map(([k, v]) => `${k} ${v}`)
+          .join(", ")}
       </p>
 
       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" }}>
@@ -47,7 +50,9 @@ function MonsterSheet5e({ data }) {
             data.senses.tremorsense && `Tremorsense ${data.senses.tremorsense}`,
             data.senses.truesight && `Truesight ${data.senses.truesight}`,
             `Passive Perception ${data.senses.passive_perception}`,
-          ].filter(Boolean).join(", ")}
+          ]
+            .filter(Boolean)
+            .join(", ")}
         </p>
       )}
       {data.languages && (
@@ -58,7 +63,7 @@ function MonsterSheet5e({ data }) {
       {data.special_abilities?.length > 0 && (
         <div style={{ marginBottom: "8px" }}>
           <strong>Special Abilities</strong>
-          {data.special_abilities.map(a => (
+          {data.special_abilities.map((a) => (
             <p key={a.name} style={{ margin: "4px 0", fontSize: "0.9em" }}>
               <em>{a.name}.</em> {a.desc}
             </p>
@@ -68,7 +73,7 @@ function MonsterSheet5e({ data }) {
       {data.actions?.length > 0 && (
         <div style={{ marginBottom: "8px" }}>
           <strong>Actions</strong>
-          {data.actions.map(a => (
+          {data.actions.map((a) => (
             <p key={a.name} style={{ margin: "4px 0", fontSize: "0.9em" }}>
               <em>{a.name}.</em> {a.desc}
             </p>
@@ -78,7 +83,7 @@ function MonsterSheet5e({ data }) {
       {data.legendary_actions?.length > 0 && (
         <div>
           <strong>Legendary Actions</strong>
-          {data.legendary_actions.map(a => (
+          {data.legendary_actions.map((a) => (
             <p key={a.name} style={{ margin: "4px 0", fontSize: "0.9em" }}>
               <em>{a.name}.</em> {a.desc}
             </p>
@@ -113,11 +118,31 @@ function MonsterSheet55({ data }) {
         <StatBox label="CHA" value={data.cha} />
       </div>
 
-      {data.skills && <p style={{ margin: "0 0 4px", fontSize: "0.9em" }}><strong>Skills</strong> {data.skills}</p>}
-      {data.senses && <p style={{ margin: "0 0 4px", fontSize: "0.9em" }}><strong>Senses</strong> {data.senses}</p>}
-      {data.languages && <p style={{ margin: "0 0 12px", fontSize: "0.9em" }}><strong>Languages</strong> {data.languages}</p>}
-      {data.immunities && <p style={{ margin: "0 0 4px", fontSize: "0.9em" }}><strong>Immunities</strong> {data.immunities}</p>}
-      {data.resistances && <p style={{ margin: "0 0 4px", fontSize: "0.9em" }}><strong>Resistances</strong> {data.resistances}</p>}
+      {data.skills && (
+        <p style={{ margin: "0 0 4px", fontSize: "0.9em" }}>
+          <strong>Skills</strong> {data.skills}
+        </p>
+      )}
+      {data.senses && (
+        <p style={{ margin: "0 0 4px", fontSize: "0.9em" }}>
+          <strong>Senses</strong> {data.senses}
+        </p>
+      )}
+      {data.languages && (
+        <p style={{ margin: "0 0 12px", fontSize: "0.9em" }}>
+          <strong>Languages</strong> {data.languages}
+        </p>
+      )}
+      {data.immunities && (
+        <p style={{ margin: "0 0 4px", fontSize: "0.9em" }}>
+          <strong>Immunities</strong> {data.immunities}
+        </p>
+      )}
+      {data.resistances && (
+        <p style={{ margin: "0 0 4px", fontSize: "0.9em" }}>
+          <strong>Resistances</strong> {data.resistances}
+        </p>
+      )}
       {data.traits && (
         <div style={{ marginBottom: "8px" }}>
           <strong>Traits</strong>
@@ -208,36 +233,71 @@ function ParticipantSheet({ participant, onClose, onRemove, onDamage, onHeal }) 
         </div>
       </div>
 
-      {participant.type === "monster" && participant.edition === "5.5" && <MonsterSheet55 data={participant.data} />}
-      {participant.type === "monster" && participant.edition !== "5.5" && <MonsterSheet5e data={participant.data} />}
+      {participant.type === "monster" && participant.edition === "5.5" && (
+        <MonsterSheet55 data={participant.data} />
+      )}
+      {participant.type === "monster" && participant.edition !== "5.5" && (
+        <MonsterSheet5e data={participant.data} />
+      )}
       {participant.type === "player" && <PlayerSheet data={participant.data} />}
 
       {/* Damage / Heal input */}
-      <div style={{ marginTop: "16px", borderTop: "1px solid #ddd", paddingTop: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div
+        style={{
+          marginTop: "16px",
+          borderTop: "1px solid #ddd",
+          paddingTop: "12px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <input
             type="number"
             min={0}
             value={dmg}
-            onChange={e => setDmg(e.target.value)}
+            onChange={(e) => setDmg(e.target.value)}
             placeholder="Damage"
             style={{ width: "90px", padding: "4px 8px" }}
           />
           <button
             onClick={applyDamage}
-            style={{ background: "#c0392b", color: "white", border: "none", borderRadius: "4px", padding: "6px 14px", cursor: "pointer" }}
+            style={{
+              background: "#c0392b",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              padding: "6px 14px",
+              cursor: "pointer",
+            }}
           >
             Damage
           </button>
           <button
             onClick={applyHeal}
-            style={{ background: "#27ae60", color: "white", border: "none", borderRadius: "4px", padding: "6px 14px", cursor: "pointer" }}
+            style={{
+              background: "#27ae60",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              padding: "6px 14px",
+              cursor: "pointer",
+            }}
           >
             Heal
           </button>
           <button
             onClick={() => onRemove(participant.id)}
-            style={{ background: "transparent", color: "#888", border: "1px solid #ccc", borderRadius: "4px", padding: "6px 14px", cursor: "pointer", marginLeft: "auto" }}
+            style={{
+              background: "transparent",
+              color: "#888",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              padding: "6px 14px",
+              cursor: "pointer",
+              marginLeft: "auto",
+            }}
           >
             Remove
           </button>

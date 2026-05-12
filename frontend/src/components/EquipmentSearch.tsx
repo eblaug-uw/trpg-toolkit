@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { fetchDndEquipment, type DndEquipment, type DndArmor, type DndWeapon, type DndTool, type DndPack, type DndAmmunition, type DndVehicle } from "../services/dndItemSearch.ts";
+import {
+  fetchDndEquipment,
+  type DndEquipment,
+  type DndArmor,
+  type DndWeapon,
+  type DndTool,
+  type DndPack,
+  type DndAmmunition,
+  type DndVehicle,
+} from "../services/dndItemSearch.ts";
 
 type EquipmentType = "armor" | "weapon" | "tool" | "gear" | "pack" | "ammunition" | "vehicle";
 
@@ -39,8 +48,18 @@ export default function EquipmentSearch() {
   return (
     <div style={{ textAlign: "center" }}>
       <h2>D&D Equipment Search</h2>
-      <form onSubmit={handleSearch} style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
-        <select value={type} onChange={(e) => { setType(e.target.value as EquipmentType); setItem(null); setError(""); }}>
+      <form
+        onSubmit={handleSearch}
+        style={{ display: "flex", justifyContent: "center", gap: "8px" }}
+      >
+        <select
+          value={type}
+          onChange={(e) => {
+            setType(e.target.value as EquipmentType);
+            setItem(null);
+            setError("");
+          }}
+        >
           <option value="armor">Armor</option>
           <option value="weapon">Weapon</option>
           <option value="tool">Tool</option>
@@ -65,69 +84,121 @@ export default function EquipmentSearch() {
       {item && (
         <div>
           <h3>{item.name}</h3>
-          <p><strong>Category:</strong> {item.equipment_category.name}</p>
-          <p><strong>Cost:</strong> {item.cost.quantity} {item.cost.unit}</p>
-          {item.weight && <p><strong>Weight:</strong> {item.weight} lb</p>}
+          <p>
+            <strong>Category:</strong> {item.equipment_category.name}
+          </p>
+          <p>
+            <strong>Cost:</strong> {item.cost.quantity} {item.cost.unit}
+          </p>
+          {item.weight && (
+            <p>
+              <strong>Weight:</strong> {item.weight} lb
+            </p>
+          )}
           {item.properties.length > 0 && (
-            <p><strong>Properties:</strong> {item.properties.map((p) => p.name).join(", ")}</p>
+            <p>
+              <strong>Properties:</strong> {item.properties.map((p) => p.name).join(", ")}
+            </p>
           )}
 
           {/* Armor */}
           {"armor_category" in item && (
             <>
-              <p><strong>Armor Type:</strong> {(item as DndArmor).armor_category}</p>
-              <p><strong>AC:</strong> {(item as DndArmor).armor_class.base}{(item as DndArmor).armor_class.dex_bonus ? " + DEX" : ""}</p>
-              {(item as DndArmor).str_minimum ? <p><strong>STR Minimum:</strong> {(item as DndArmor).str_minimum}</p> : null}
-              <p><strong>Stealth:</strong> {(item as DndArmor).stealth_disadvantage ? "Disadvantage" : "No penalty"}</p>
+              <p>
+                <strong>Armor Type:</strong> {item.armor_category}
+              </p>
+              <p>
+                <strong>AC:</strong> {item.armor_class.base}
+                {item.armor_class.dex_bonus ? " + DEX" : ""}
+              </p>
+              {item.str_minimum ? (
+                <p>
+                  <strong>STR Minimum:</strong> {item.str_minimum}
+                </p>
+              ) : null}
+              <p>
+                <strong>Stealth:</strong>{" "}
+                {item.stealth_disadvantage ? "Disadvantage" : "No penalty"}
+              </p>
             </>
           )}
 
           {/* Weapon */}
           {"weapon_category" in item && (
             <>
-              <p><strong>Weapon Type:</strong> {(item as DndWeapon).weapon_category} — {(item as DndWeapon).category_range}</p>
-              {(item as DndWeapon).damage && (
-                <p><strong>Damage:</strong> {(item as DndWeapon).damage!.damage_dice} {(item as DndWeapon).damage!.damage_type.name}</p>
+              <p>
+                <strong>Weapon Type:</strong> {item.weapon_category} — {item.category_range}
+              </p>
+              {item.damage && (
+                <p>
+                  <strong>Damage:</strong> {item.damage.damage_dice} {item.damage.damage_type.name}
+                </p>
               )}
-              {(item as DndWeapon).two_handed_damage && (
-                <p><strong>Two-Handed:</strong> {(item as DndWeapon).two_handed_damage!.damage_dice} {(item as DndWeapon).two_handed_damage!.damage_type.name}</p>
+              {item.two_handed_damage && (
+                <p>
+                  <strong>Two-Handed:</strong> {item.two_handed_damage.damage_dice}{" "}
+                  {item.two_handed_damage.damage_type.name}
+                </p>
               )}
-              {(item as DndWeapon).range && (
-                <p><strong>Range:</strong> {(item as DndWeapon).range!.normal}{(item as DndWeapon).range!.long ? `/${(item as DndWeapon).range!.long}` : ""} ft</p>
+              {item.range && (
+                <p>
+                  <strong>Range:</strong> {item.range.normal}
+                  {item.range.long ? `/${item.range.long}` : ""} ft
+                </p>
               )}
             </>
           )}
 
           {/* Tool */}
           {"tool_category" in item && (
-            <p><strong>Tool Type:</strong> {(item as DndTool).tool_category}</p>
+            <p>
+              <strong>Tool Type:</strong> {item.tool_category}
+            </p>
           )}
 
           {/* Pack */}
-          {"contents" in item && (item as DndPack).contents?.length > 0 && (
+          {"contents" in item && item.contents?.length > 0 && (
             <div>
               <strong>Contents:</strong>
-              {(item as DndPack).contents.map((c) => (
-                <p key={c.item.name}>{c.item.name} x{c.quantity}</p>
+              {item.contents.map((c) => (
+                <p key={c.item.name}>
+                  {c.item.name} x{c.quantity}
+                </p>
               ))}
             </div>
           )}
 
           {/* Ammunition */}
           {"quantity" in item && (
-            <p><strong>Quantity:</strong> {(item as DndAmmunition).quantity}</p>
+            <p>
+              <strong>Quantity:</strong> {item.quantity}
+            </p>
           )}
 
           {/* Vehicle */}
           {"vehicle_category" in item && (
             <>
-              <p><strong>Vehicle Type:</strong> {(item as DndVehicle).vehicle_category}</p>
-              {(item as DndVehicle).speed && <p><strong>Speed:</strong> {(item as DndVehicle).speed!.quantity} {(item as DndVehicle).speed!.unit}</p>}
-              {(item as DndVehicle).capacity && <p><strong>Capacity:</strong> {(item as DndVehicle).capacity}</p>}
+              <p>
+                <strong>Vehicle Type:</strong> {item.vehicle_category}
+              </p>
+              {item.speed && (
+                <p>
+                  <strong>Speed:</strong> {item.speed.quantity} {item.speed.unit}
+                </p>
+              )}
+              {item.capacity && (
+                <p>
+                  <strong>Capacity:</strong> {item.capacity}
+                </p>
+              )}
             </>
           )}
 
-          {item.desc.length > 0 && <p><em>{item.desc.join(" ")}</em></p>}
+          {item.desc.length > 0 && (
+            <p>
+              <em>{item.desc.join(" ")}</em>
+            </p>
+          )}
         </div>
       )}
     </div>

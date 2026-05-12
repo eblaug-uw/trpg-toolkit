@@ -49,16 +49,10 @@ export default function XpCalculator() {
       />
 
       {/* Button that runs the XP calculation */}
-      <button onClick={handleCalculateXp}>
-        Calculate XP
-      </button>
+      <button onClick={handleCalculateXp}>Calculate XP</button>
 
       {/* Displays the calculated XP per player */}
-      {xpPerPlayer !== null && (
-        <p>
-          XP per player: {xpPerPlayer}
-        </p>
-      )}
+      {xpPerPlayer !== null && <p>XP per player: {xpPerPlayer}</p>}
     </section>
   );
 }

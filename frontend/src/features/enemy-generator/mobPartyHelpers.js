@@ -11,23 +11,14 @@ export const mobs = [
 // Filters MOBs by name, habitat, challenge rating, type, and group
 export function filterMobs(searchTerm, habitat, challengeRating, type, group) {
   return mobs.filter((mob) => {
-    const matchesSearch = mob.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const matchesSearch = mob.name.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesHabitat = habitat === "Any" || mob.habitat === habitat;
-    const matchesChallengeRating =
-      challengeRating === "Any" || mob.cr === Number(challengeRating);
+    const matchesChallengeRating = challengeRating === "Any" || mob.cr === Number(challengeRating);
     const matchesType = type === "Any" || mob.type === type;
     const matchesGroup = group === "Any" || mob.group === group;
 
-    return (
-      matchesSearch &&
-      matchesHabitat &&
-      matchesChallengeRating &&
-      matchesType &&
-      matchesGroup
-    );
+    return matchesSearch && matchesHabitat && matchesChallengeRating && matchesType && matchesGroup;
   });
 }
 

@@ -11,34 +11,34 @@ import { useState, useEffect } from "react";
 // TODO: Rename this hook to match what it does, e.g. useMonsters
 // Hook names must start with "use"
 export function useTemplate() {
-    // TODO: Replace with the data your hook fetches/tracks
-    const [data, setData] = useState(null);
-    // Shows a spinner or disables UI while loading
-    const [loading, setLoading] = useState(true);
-    // Holds an error message if something goes wrong
-    const [error, setError] = useState("");
+  // TODO: Replace with the data your hook fetches/tracks
+  const [data, setData] = useState(null);
+  // Shows a spinner or disables UI while loading
+  const [loading, setLoading] = useState(true);
+  // Holds an error message if something goes wrong
+  const [error, setError] = useState("");
 
-    useEffect(() => {
-        // TODO: Replace this with your actual fetch or subscription logic
-        async function load() {
-            try {
-                // const result = await yourServiceFunction();
-                // setData(result);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : "Unknown error");
-            } finally {
-                setLoading(false);
-            }
-        }
+  useEffect(() => {
+    // TODO: Replace this with your actual fetch or subscription logic
+    async function load() {
+      try {
+        // const result = await yourServiceFunction();
+        // setData(result);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    }
 
-        load();
+    load();
 
-        // TODO: If you set up a real-time subscription (e.g. supabase.channel),
-        //       return a cleanup function that unsubscribes, like:
-        // return () => subscription.unsubscribe();
-    }, []); // TODO: Add dependencies if the fetch depends on props or state
+    // TODO: If you set up a real-time subscription (e.g. supabase.channel),
+    //       return a cleanup function that unsubscribes, like:
+    // return () => subscription.unsubscribe();
+  }, []); // TODO: Add dependencies if the fetch depends on props or state
 
-    return { data, loading, error };
+  return { data, loading, error };
 }
 
 // ============================================================

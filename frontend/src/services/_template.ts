@@ -16,8 +16,8 @@ const DND_API_BASE = "https://www.dnd5eapi.co/api/2014";
 //   /api/2014/classes         — character classes
 //   /api/2014/equipment       — weapons, armor, gear
 export interface DndTemplate {
-  index: string;   // unique slug used in API calls
-  name: string;    // display name
+  index: string; // unique slug used in API calls
+  name: string; // display name
   // TODO: add more fields from the API response
 }
 

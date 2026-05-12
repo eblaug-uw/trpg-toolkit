@@ -30,11 +30,16 @@ function AddParticipantForm({ onAdd }) {
     switch (sizeStr) {
       case "Tiny":
       case "Small":
-      case "Medium":     return 1;
-      case "Large":      return 2;
-      case "Huge":       return 3;
-      case "Gargantuan": return 4;
-      default:           return 1;
+      case "Medium":
+        return 1;
+      case "Large":
+        return 2;
+      case "Huge":
+        return 3;
+      case "Gargantuan":
+        return 4;
+      default:
+        return 1;
     }
   }
 
@@ -51,7 +56,6 @@ function AddParticipantForm({ onAdd }) {
         if (found.length === 0) throw new Error("No monsters found");
         if (found.length === 1) setMonster(found[0]);
         else setResults(found);
-
       } else {
         setMonster(await fetchDndMonster(query));
       }
@@ -135,9 +139,20 @@ function AddParticipantForm({ onAdd }) {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "4px", marginBottom: "16px", borderBottom: "1px solid #444" }}>
-        <button style={tabStyle(tab === "monster")} onClick={() => setTab("monster")}>Monster</button>
-        <button style={tabStyle(tab === "player")} onClick={() => setTab("player")}>Player</button>
+      <div
+        style={{
+          display: "flex",
+          gap: "4px",
+          marginBottom: "16px",
+          borderBottom: "1px solid #444",
+        }}
+      >
+        <button style={tabStyle(tab === "monster")} onClick={() => setTab("monster")}>
+          Monster
+        </button>
+        <button style={tabStyle(tab === "player")} onClick={() => setTab("player")}>
+          Player
+        </button>
       </div>
 
       {tab === "monster" && (
@@ -147,7 +162,7 @@ function AddParticipantForm({ onAdd }) {
               type="text"
               placeholder="e.g. goblin, dragon, beholder"
               value={query}
-              onChange={e => setQuery(e.target.value)}
+              onChange={(e) => setQuery(e.target.value)}
               style={{ flex: 1 }}
             />
             <button type="submit" disabled={loading}>
@@ -171,7 +186,14 @@ function AddParticipantForm({ onAdd }) {
           )}
 
           {monster && (
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "12px",
+              }}
+            >
               <div>
                 <strong>{is55 ? monster.name : monster.name}</strong>
                 <span style={{ marginLeft: "12px", color: "#aaa", fontSize: "0.9em" }}>
@@ -187,13 +209,16 @@ function AddParticipantForm({ onAdd }) {
       )}
 
       {tab === "player" && (
-        <form onSubmit={handleAddPlayer} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <form
+          onSubmit={handleAddPlayer}
+          style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+        >
           <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             Name
             <input
               type="text"
               value={playerName}
-              onChange={e => setPlayerName(e.target.value)}
+              onChange={(e) => setPlayerName(e.target.value)}
               placeholder="Player name"
               style={{ width: "60%" }}
             />
@@ -205,7 +230,7 @@ function AddParticipantForm({ onAdd }) {
               min={1}
               max={30}
               value={playerDex}
-              onChange={e => setPlayerDex(e.target.value)}
+              onChange={(e) => setPlayerDex(e.target.value)}
               style={{ width: "60px" }}
             />
           </label>
@@ -215,7 +240,7 @@ function AddParticipantForm({ onAdd }) {
               type="number"
               min={1}
               value={playerHp}
-              onChange={e => setPlayerHp(e.target.value)}
+              onChange={(e) => setPlayerHp(e.target.value)}
               style={{ width: "60px" }}
             />
           </label>
@@ -226,12 +251,14 @@ function AddParticipantForm({ onAdd }) {
               min={1}
               max={30}
               value={playerInitiative}
-              onChange={e => setPlayerInitiative(e.target.value)}
+              onChange={(e) => setPlayerInitiative(e.target.value)}
               placeholder="roll manually"
               style={{ width: "60px" }}
             />
           </label>
-          <button type="submit" style={{ alignSelf: "flex-end" }}>Add Player</button>
+          <button type="submit" style={{ alignSelf: "flex-end" }}>
+            Add Player
+          </button>
         </form>
       )}
     </div>
