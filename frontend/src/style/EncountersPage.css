@@ -1,0 +1,53 @@
+/* Row layout that fills viewport height under the TopBar */
+.encounters-shell {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* Left column — scrollable encounter content */
+.encounters-main {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.encounters-main h1 {
+  margin: 4px 0 16px 0;
+}
+
+.encounters-section-title {
+  margin: 16px 0 8px 0;
+}
+
+/* Mode toggle (segmented control) */
+.mode-toggle {
+  display: flex;
+  width: fit-content;
+  border: 1px solid #555;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.mode-toggle-btn {
+  background: #4a4a4a;
+  color: #eee;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.mode-toggle-btn + .mode-toggle-btn {
+  border-left: 1px solid #555;
+}
+
+.mode-toggle-btn.active {
+  background: #4caf50;
+  color: #fff;
+}

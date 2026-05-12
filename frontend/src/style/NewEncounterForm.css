@@ -1,0 +1,26 @@
+.new-encounter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.new-encounter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.new-encounter-field input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #888;
+  background: #fff;
+  color: #222;
+  font-size: 1rem;
+}
+
+.new-encounter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

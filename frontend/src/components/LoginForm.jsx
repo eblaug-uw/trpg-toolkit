@@ -22,7 +22,7 @@ function LoginForm() {
       setError(signInError.message);
     } else {
       setError("");
-      navigate("/");
+      navigate("/campaigns");
     }
   };
 
