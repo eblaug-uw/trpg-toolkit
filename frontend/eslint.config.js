@@ -57,7 +57,10 @@ export default tseslint.config(
       "react/display-name": "off",
 
       // Vite HMR friendliness
-      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true },
+      ],
 
       // Sensible TS defaults
       "@typescript-eslint/no-unused-vars": [
@@ -97,7 +100,10 @@ export default tseslint.config(
 
   // Tests
   {
-    files: ["src/**/*.{test,spec}.{ts,tsx,js,jsx}", "tests/**/*.{ts,tsx,js,jsx}"],
+    files: [
+      "src/**/*.{test,spec}.{ts,tsx,js,jsx}",
+      "tests/**/*.{ts,tsx,js,jsx}",
+    ],
     languageOptions: {
       globals: { ...globals.node, ...globals.jest, ...globals.vitest },
     },

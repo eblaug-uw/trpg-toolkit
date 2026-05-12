@@ -13,12 +13,11 @@
     "coverage": "vitest run --coverage --config tests/config/vitest.config.js",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,json,md}\"",
-    "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
+    "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --max-warnings=10000",
     "lint:fix": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
     "audit:ci": "audit-ci --high",
     "prepare": "cd .. && husky frontend/.husky"
   },
-  "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --max-warnings=10000",
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
       "eslint --fix",
