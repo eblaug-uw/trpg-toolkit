@@ -1,34 +1,39 @@
 /* --Imports-- */
-import { useState, useRef, useEffect } from "react"; // React core hooks
-import { useNavigate } from "react-router-dom"; // Routing
-import { CombatTracker } from "../services/combatTracker"; // Combat tracker service
-import MonsterSearch from "../components/MonsterSearch"; // Table Look - Monster
-import EquipmentSearch from "../components/EquipmentSearch"; // Table Look - Equipment
-import XpCalculator from "../features/xp-calculator/XpCalculator"; // XP Calculator
-import ImageUploader from "../components/ImageUploader"; // Upload-image
-import MapBackgroundPicker from "../components/MapBackgroundPicker"; // Pick-Map
-import Modal from "../components/Modal"; // generic modal
-import TopBar from "../components/TopBar"; // Top Nav
-import MapCanvas from "../components/MapCanvas"; // Konva canvas
+import { useState, useRef, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { CombatTracker } from "../services/combatTracker";
+import MonsterSearch from "../components/MonsterSearch";
+import EquipmentSearch from "../components/EquipmentSearch";
+import XpCalculator from "../features/xp-calculator/XpCalculator";
+import ImageUploader from "../components/ImageUploader";
+import MapBackgroundPicker from "../components/MapBackgroundPicker";
+import Modal from "../components/Modal";
+import TopBar from "../components/TopBar";
+import MapCanvas from "../components/MapCanvas";
 import PillMapContorl from "../components/PillMapContorl";
 import TreasureGenerator from "../features/loot-generator/TreasureGenerator";
 import PillGrid from "../components/PillGrid";
-import PillZoom from "../components/PillZoom"; // Hover ZoomPill
-import PillRight from "../components/PillRight"; // Right NavPill
+import PillZoom from "../components/PillZoom";
+import PillRight from "../components/PillRight";
 import PillBottom from "../components/PillBottom";
-import PillMeasure from "../components/PillMeasure"; // Bottom NavPill
-import InitiativeTracker from "../components/InitiativeTracker"; // Initiative panel
-import AddParticipantForm from "../components/AddParticipantForm"; // Add character form
+import PillMeasure from "../components/PillMeasure";
+import InitiativeTracker from "../components/InitiativeTracker";
+import AddParticipantForm from "../components/AddParticipantForm";
 import ParticipantSheet from "../components/ParticipantSheet";
-import EnemyGenerator from "../features/enemy-generator"; // Selected participant sheet
-import { AiFillThunderbolt } from "react-icons/ai";
+import EnemyGenerator from "../features/enemy-generator";
+import SaveEncounterModal from "../components/SaveEncounterModal";
+import { useCampaigns } from "../context/CampaignsContext";
+import { useEncounters } from "../context/EncountersContext";
+import { serializeVttState } from "../features/vtt/encounter/serialize";
+
 function VTT() {
   /* --States-- */
   const navigate = useNavigate();
   const mapCanvasRef = useRef(null);
   const combatRef = useRef(null);
-  const [backgroundUrl, setBackgroundUrl] = useState(null); // URL of currently selected map image
-  const [openModal, setOpenModal] = useState(null); // Which modal is open
+  const [backgroundUrl, setBackgroundUrl] = useState(null);
+  const [backgroundRef, setBackgroundRef] = useState(null); // { bucket, name } — stable id
+  const [openModal, setOpenModal] = useState(null);
   const [showGrid, setShowGrid] = useState(true);
   const [pixelsPerFoot, setPixelsPerFoot] = useState(10);
   const [gridFineTune, setGridFineTune] = useState(0);
@@ -39,7 +44,10 @@ function VTT() {
   const [gridOffsetX, setGridOffsetX] = useState(0);
   const [gridOffsetY, setGridOffsetY] = useState(0);
   const [measureMode, setMeasureMode] = useState(null);
-  const [mapInfo, setMapInfo] = useState(0); //{ x, y }
+  const [mapInfo, setMapInfo] = useState(0);
+
+  const { campaigns } = useCampaigns();
+  const { encounters, addEncounter, saveVttState } = useEncounters();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -147,9 +155,72 @@ function VTT() {
   function handleMoveToken(id, cell) {
     setParticipants((prev) => prev.map((p) => (p.id === id ? { ...p, cell } : p)));
   }
+
+  /* --Encounter save-- */
+  const currentVttState = useMemo(
+    () =>
+      serializeVttState({
+        showGrid,
+        pixelsPerFoot,
+        gridFineTune,
+        gridOffsetX,
+        gridOffsetY,
+        backgroundRef,
+        participants,
+        combat: {
+          active: combatActive,
+          round: combatRef.current?.round ?? 1,
+          queue: (combatRef.current?.queue ?? []).map((e) => ({
+            participantId: e.entity.id,
+            total: e.total,
+            dex: e.dex,
+          })),
+        },
+        viewport: null,
+      }),
+    [
+      showGrid,
+      pixelsPerFoot,
+      gridFineTune,
+      gridOffsetX,
+      gridOffsetY,
+      backgroundRef,
+      participants,
+      combatActive,
+      initiativeQueue,
+    ],
+  );
+
+  function handleSaveExisting(encounterId, vttState) {
+    console.log("[Encounter Save] overwrite", encounterId, vttState);
+    saveVttState(encounterId, vttState);
+    setOpenModal(null);
+  }
+
+  function handleSaveNew(campaignId, title, vttState) {
+    const created = addEncounter(campaignId, title);
+    console.log("[Encounter Save] new", { campaignId, encounterId: created.id, title }, vttState);
+    saveVttState(created.id, vttState);
+    setOpenModal(null);
+  }
+
+  function handleExportFile(vttState) {
+    console.log("[Encounter Save] export", vttState);
+    const blob = new Blob([JSON.stringify(vttState, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `encounter-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
   /* --Constants-- */
   const modalTitles = {
-    // Title shown in the modal header for each modal type
     image: "Upload Image",
     map: "Set Map Background",
     person: "Add Character",
@@ -163,14 +234,16 @@ function VTT() {
   const gridSize = Math.max(4, 5 * pixelsPerFoot + gridFineTune);
 
   const renderModalContent = () => {
-    // Picks the body content for the modal based on which one is open
     switch (openModal) {
       case "image":
         return <ImageUploader />;
       case "map":
         return (
           <MapBackgroundPicker
-            onSelect={setBackgroundUrl}
+            onSelect={(url, name) => {
+              setBackgroundUrl(url);
+              setBackgroundRef({ bucket: "maps", name });
+            }}
             pixelsPerFoot={pixelsPerFoot}
             onChangePixelsPerFoot={setPixelsPerFoot}
           />
@@ -186,13 +259,10 @@ function VTT() {
         );
       case "dollar":
         return <TreasureGenerator />;
-
       case "chart":
         return <p>Coming Soon</p>;
-
       case "xp":
         return <XpCalculator />;
-
       case "radom in counter":
         return <EnemyGenerator onAdd={handleAddParticipant} />;
       default:
@@ -251,8 +321,6 @@ function VTT() {
           onHeal={handleHeal}
         />
 
-        {/* Right-side pill: loot + stats */}
-
         {/* Lower-right pill: map control */}
         <PillMapContorl>
           <PillZoom
@@ -283,19 +351,30 @@ function VTT() {
             onAddCharacter={() => setOpenModal("person")}
             onEnemyGenerator={() => setOpenModal("radom in counter")}
             onTables={() => setOpenModal("tables")}
+            onSaveEncounter={() => setOpenModal("saveEncounter")}
           />
         </PillMapContorl>
 
-        {/* Bottom pill: image / map / character / lookup tables */}
-
         {/* Generic modal — body is fanned out by openModal value */}
         <Modal
-          isOpen={openModal !== null}
+          isOpen={openModal !== null && openModal !== "saveEncounter"}
           onClose={() => setOpenModal(null)}
           title={modalTitles[openModal] ?? ""}
         >
           {renderModalContent()}
         </Modal>
+
+        {/* Save encounter modal — its own component because it has its own layout */}
+        <SaveEncounterModal
+          isOpen={openModal === "saveEncounter"}
+          vttState={currentVttState}
+          campaigns={campaigns}
+          encounters={encounters}
+          onSaveExisting={handleSaveExisting}
+          onSaveNew={handleSaveNew}
+          onExportFile={handleExportFile}
+          onClose={() => setOpenModal(null)}
+        />
       </div>
     </div>
   );

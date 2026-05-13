@@ -1,12 +1,13 @@
-// MapBackgroundPicker.jsx
+// MapBackgroundPicker.tsx
 // Lists the user's uploaded maps and lets them click one to set as the home page background.
-// Receives an `onSelect` callback prop — calls it with the chosen image's URL.
+// Receives an `onSelect` callback — calls it with the chosen image's signed URL AND its
+// stable storage name (the URL expires, the name doesn't).
 
 import { useState, useEffect } from "react";
 import { getSignedUrl, listImages } from "../services/vttStorage";
 
 type Props = {
-  onSelect: (url: string) => void; // function the parent passes us, called with the chosen image URL
+  onSelect: (url: string, name: string) => void;
   pixelsPerFoot: number;
   onChangePixelsPerFoot: (value: number) => void;
 };
@@ -46,13 +47,13 @@ function MapBackgroundPicker({ onSelect, pixelsPerFoot, onChangePixelsPerFoot }:
     loadMaps();
   }, []);
 
-  const handleMapClick = (e: React.MouseEvent<HTMLButtonElement>, url: string) => {
+  const handleMapClick = (e: React.MouseEvent<HTMLButtonElement>, url: string, name: string) => {
     const img = e.currentTarget.querySelector("img");
     const w = img?.naturalWidth ?? 0;
     if (w > 0) {
       onChangePixelsPerFoot(defaultPixelsPerFoot(w));
     }
-    onSelect(url);
+    onSelect(url, name);
   };
 
   return (
@@ -101,7 +102,7 @@ function MapBackgroundPicker({ onSelect, pixelsPerFoot, onChangePixelsPerFoot }:
           {maps.map((m) => (
             <button
               key={m.name}
-              onClick={(e) => handleMapClick(e, m.url)}
+              onClick={(e) => handleMapClick(e, m.url, m.name)}
               style={{
                 padding: 0,
                 border: "1px solid #999",

@@ -13,6 +13,7 @@ const wrapper = ({ children }) => (
 
 describe("EncountersContext", () => {
   beforeEach(() => {
+    localStorage.clear();
     let n = 0;
     vi.spyOn(crypto, "randomUUID").mockImplementation(() => `enc-${++n}`);
   });
@@ -34,7 +35,12 @@ describe("EncountersContext", () => {
       returned = result.current.enc.addEncounter(targetId, "Bandit Camp");
     });
 
-    expect(returned).toEqual({ id: "enc-1", title: "Bandit Camp" });
+    expect(returned).toEqual({
+      id: "enc-1",
+      title: "Bandit Camp",
+      campaignId: targetId,
+      vttState: null,
+    });
     expect(result.current.enc.encounters).toHaveLength(seedEncounters.length + 1);
     expect(result.current.enc.encounters.at(-1)).toEqual(returned);
 

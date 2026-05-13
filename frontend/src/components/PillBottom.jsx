@@ -1,14 +1,44 @@
-import { useState } from "react";
-import { LuImage, LuMap, LuUserPlus, LuTable, LuPlus, LuSwords } from "react-icons/lu";
+import { useState, useRef, useEffect } from "react";
+import { LuImage, LuMap, LuUserPlus, LuTable, LuPlus, LuSwords, LuSave } from "react-icons/lu";
 import "../style/PillButton.css";
 
-function PillBottom({ onImage, onMap, onAddCharacter, onTables, onEnemyGenerator }) {
+function PillBottom({
+  onImage,
+  onMap,
+  onAddCharacter,
+  onTables,
+  onEnemyGenerator,
+  onSaveEncounter,
+}) {
   const [open, setOpen] = useState(false);
+  const closeTimerRef = useRef(null);
+
+  function cancelPendingClose() {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }
+
+  function scheduleClose() {
+    cancelPendingClose();
+    closeTimerRef.current = setTimeout(() => {
+      setOpen(false);
+      closeTimerRef.current = null;
+    }, 100);
+  }
+
+  function openNow() {
+    cancelPendingClose();
+    setOpen(true);
+  }
+
+  useEffect(() => () => cancelPendingClose(), []);
 
   return (
     <div
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={openNow}
+      onMouseLeave={scheduleClose}
       style={{
         position: "relative",
         display: "flex",
@@ -20,6 +50,8 @@ function PillBottom({ onImage, onMap, onAddCharacter, onTables, onEnemyGenerator
     >
       {open && (
         <div
+          onMouseEnter={openNow}
+          onMouseLeave={scheduleClose}
           style={{
             position: "absolute",
             right: "0%",
@@ -51,6 +83,9 @@ function PillBottom({ onImage, onMap, onAddCharacter, onTables, onEnemyGenerator
           </button>
           <button onClick={onTables} className="icon-button" aria-label="Lookup Tables">
             <LuTable />
+          </button>
+          <button onClick={onSaveEncounter} className="icon-button" aria-label="save encounter">
+            <LuSave />
           </button>
         </div>
       )}

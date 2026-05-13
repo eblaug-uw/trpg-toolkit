@@ -10,7 +10,19 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "allowJs": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "tests/**/*.js",
+    "tests/**/*.jsx"
+  ]
 }
