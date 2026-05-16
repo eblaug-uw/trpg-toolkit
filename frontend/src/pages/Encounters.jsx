@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
@@ -8,11 +8,13 @@ import CharacterSidebar from "../components/CharacterSidebar";
 import { useCampaigns } from "../context/CampaignsContext";
 import { useEncounters } from "../context/EncountersContext";
 import charactersData from "../data/characters.json";
+import LoadEncounterButton from "../components/LoadEncounterButton";
 import "../style/CardGrid.css";
 import "../style/EncountersPage.css";
 
 function Encounters() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { campaigns } = useCampaigns();
   const { encounters: allEncounters, addEncounter } = useEncounters();
   const campaign = campaigns.find((c) => c.id === id);
@@ -45,7 +47,7 @@ function Encounters() {
   }
 
   function handleOpenEncounter(encounter) {
-    console.log(`Open encounter "${encounter.title}" in ${mode.toUpperCase()} mode`);
+    navigate(`/vtt?encounterId=${encounter.id}`);
   }
 
   function handleCreateEncounter(title) {
@@ -65,10 +67,12 @@ function Encounters() {
           <h1>{campaign.title}</h1>
 
           <h2 className="encounters-section-title">Encounters</h2>
-          <button className="page-create-btn" onClick={() => setNewOpen(true)}>
-            New Encounter
-          </button>
-
+          <div className="encounters-actions">
+            <button className="page-create-btn" onClick={() => setNewOpen(true)}>
+              New Encounter
+            </button>
+            <LoadEncounterButton campaignId={campaign.id} />
+          </div>
           <div className="mode-toggle" role="group" aria-label="Mode">
             <button
               className={mode === "edit" ? "mode-toggle-btn active" : "mode-toggle-btn"}

@@ -1,6 +1,8 @@
 /* --Imports-- */
 import { useState, useRef, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { deserializeVttState } from "../features/vtt/encounter/deserialize";
+import { getSignedUrl } from "../services/vttStorage";
 import { CombatTracker } from "../services/combatTracker";
 import MonsterSearch from "../components/MonsterSearch";
 import EquipmentSearch from "../components/EquipmentSearch";
@@ -48,6 +50,9 @@ function VTT() {
 
   const { campaigns } = useCampaigns();
   const { encounters, addEncounter, saveVttState } = useEncounters();
+  const [searchParams] = useSearchParams();
+  const encounterId = searchParams.get("encounterId");
+  const hydratedForId = useRef(null);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -58,7 +63,69 @@ function VTT() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [measureMode]);
+  // Hydrate VTT state from a saved encounter when ?encounterId=… is present.
+  // Guarded by a ref so saving the encounter (which mutates `encounters`)
+  // doesn't re-hydrate and clobber live state.
+  useEffect(() => {
+    if (!encounterId) return;
+    if (hydratedForId.current === encounterId) return;
+    const found = encounters.find((e) => e.id === encounterId);
+    if (!found || !found.vttState) return;
 
+    let restored;
+    try {
+      restored = deserializeVttState(found.vttState);
+    } catch (err) {
+      console.error("[Encounter Load] failed to deserialize", err);
+      return;
+    }
+
+    setShowGrid(restored.showGrid);
+    setPixelsPerFoot(restored.pixelsPerFoot);
+    setGridFineTune(restored.gridFineTune);
+    setGridOffsetX(restored.gridOffsetX);
+    setGridOffsetY(restored.gridOffsetY);
+    setBackgroundRef(restored.backgroundRef);
+    setBackgroundUrl(null); // re-resolved by the effect below
+    setParticipants(restored.participants);
+
+    if (restored.combat.active && restored.participants.length > 0) {
+      const tracker = new CombatTracker(restored.participants);
+      tracker.queue = restored.combat.queue
+        .map((q) => {
+          const entity = restored.participants.find((p) => p.id === q.participantId);
+          if (!entity) return null;
+          return { entity, total: q.total, dex: q.dex };
+        })
+        .filter(Boolean);
+      tracker.round = restored.combat.round;
+      combatRef.current = tracker;
+      setInitiativeQueue(tracker.queue.map((e) => ({ ...e.entity, initiativeTotal: e.total })));
+      setCombatActive(true);
+    } else {
+      combatRef.current = null;
+      setInitiativeQueue([]);
+      setCombatActive(false);
+    }
+
+    hydratedForId.current = encounterId;
+  }, [encounterId, encounters]);
+  // When backgroundRef is set without a corresponding URL (e.g. just hydrated),
+  // resolve a fresh signed URL from storage.
+  useEffect(() => {
+    if (!backgroundRef || backgroundUrl) return;
+    let cancelled = false;
+    getSignedUrl(backgroundRef.bucket, backgroundRef.name)
+      .then((url) => {
+        if (!cancelled) setBackgroundUrl(url);
+      })
+      .catch((err) => {
+        console.error("[Encounter Load] failed to resolve background URL", err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [backgroundRef, backgroundUrl]);
   // Pull the current ordered participant list out of the CombatTracker queue,
   // carrying the rolled initiative total so the UI can display and edit it.
   function syncQueue() {
