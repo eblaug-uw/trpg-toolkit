@@ -37,6 +37,7 @@ function PillBottom({
 
   return (
     <div
+      data-testid="pill-bottom"
       onMouseEnter={openNow}
       onMouseLeave={scheduleClose}
       style={{

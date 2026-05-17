@@ -37,12 +37,23 @@ describe("Encounters page", () => {
     expect(screen.getByRole("button", { name: /load from file/i })).toBeInTheDocument();
   });
 
-  it("navigates to /vtt?encounterId=… when an encounter card is clicked", () => {
+  it("navigates to /vtt/edit?encounterId=… when an encounter card is clicked in edit mode (default)", () => {
     renderAt("/campaigns/c1/encounters");
 
     fireEvent.click(screen.getByRole("button", { name: "Goblin Ambush" }));
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith("/vtt?encounterId=e1");
+    expect(mockNavigate).toHaveBeenCalledWith("/vtt/edit?encounterId=e1");
+  });
+
+  it("logs a TODO and does NOT navigate when play mode is selected (no-op until VTTPlay lands)", () => {
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    renderAt("/campaigns/c1/encounters");
+
+    fireEvent.click(screen.getByRole("button", { name: "Play" }));
+    fireEvent.click(screen.getByRole("button", { name: "Goblin Ambush" }));
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("TODO: route to /vtt/play"));
   });
 });

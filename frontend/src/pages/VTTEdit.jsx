@@ -1,0 +1,224 @@
+/* --Imports-- */
+import { useRef, useState } from "react";
+import { useVttSession } from "../context/VttSessionContext";
+import { useCampaigns } from "../context/CampaignsContext";
+import { useEncounters } from "../context/EncountersContext";
+import TopBar from "../components/TopBar";
+import MapCanvas from "../components/MapCanvas";
+import PillMapContorl from "../components/PillMapContorl";
+import PillZoom from "../components/PillZoom";
+import PillGrid from "../components/PillGrid";
+import PillBottom from "../components/PillBottom";
+import Modal from "../components/Modal";
+import ImageUploader from "../components/ImageUploader";
+import MapBackgroundPicker from "../components/MapBackgroundPicker";
+import AddParticipantForm from "../components/AddParticipantForm";
+import MonsterSearch from "../components/MonsterSearch";
+import EnemyGenerator from "../features/enemy-generator";
+import SaveEncounterModal from "../components/SaveEncounterModal";
+import ParticipantSheet from "../components/ParticipantSheet";
+
+function VTTEdit() {
+  /* --States-- */
+  const mapCanvasRef = useRef(null);
+  const [openModal, setOpenModal] = useState(null);
+
+  const {
+    grid: { showGrid, pixelsPerFoot, gridFineTune, gridOffsetX, gridOffsetY },
+    setShowGrid,
+    setPixelsPerFoot,
+    setGridFineTune,
+    setGridOffsetX,
+    setGridOffsetY,
+    backgroundUrl,
+    setBackground,
+    participants,
+    addParticipant,
+    removeParticipant,
+    moveToken,
+    damage,
+    heal,
+    selectedParticipant,
+    setSelectedParticipant,
+    setMapInfo,
+    currentVttState,
+    saveCurrent,
+  } = useVttSession();
+
+  const { campaigns } = useCampaigns();
+  const { encounters, addEncounter } = useEncounters();
+
+  /* --Constants-- */
+  const gridSize = Math.max(4, 5 * pixelsPerFoot + gridFineTune);
+
+  const modalTitles = {
+    image: "Upload Image",
+    map: "Set Map Background",
+    person: "Add Character",
+    tables: "Lookup Tables",
+    "radom in counter": "Enemy Generator",
+  };
+
+  const renderModalContent = () => {
+    switch (openModal) {
+      case "image":
+        return <ImageUploader />;
+      case "map":
+        return (
+          <MapBackgroundPicker
+            onSelect={(url, name) => setBackground(url, name)}
+            pixelsPerFoot={pixelsPerFoot}
+            onChangePixelsPerFoot={setPixelsPerFoot}
+          />
+        );
+      case "person":
+        return <AddParticipantForm onAdd={addParticipant} />;
+      case "tables":
+        // Edit-mode tables modal: MonsterSearch only.
+        // EquipmentSearch is play-mode only — added when VTTPlay lands.
+        return <MonsterSearch />;
+      case "radom in counter":
+        return <EnemyGenerator onAdd={addParticipant} />;
+      default:
+        return null;
+    }
+  };
+
+  /* --Handlers-- */
+  function handleSaveExisting(encId) {
+    saveCurrent(encId);
+    setOpenModal(null);
+  }
+
+  function handleSaveNew(campaignId, title) {
+    const created = addEncounter(campaignId, title);
+    saveCurrent(created.id);
+    setOpenModal(null);
+  }
+
+  function handleExportFile(vttState) {
+    const blob = new Blob([JSON.stringify(vttState, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `encounter-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function handlePlayClick() {
+    // TODO(play-mode): swap this for
+    //   saveCurrent(encounterId);
+    //   navigate(`/vtt/play?encounterId=${encounterId}`);
+    console.log("[VTTEdit] TODO: save + navigate to /vtt/play when play mode lands");
+  }
+
+  /* --Render-- */
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <TopBar />
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          boxSizing: "border-box",
+          overflow: "hidden",
+          background: "#2a3439",
+          position: "relative",
+        }}
+      >
+        <MapCanvas
+          ref={mapCanvasRef}
+          backgroundUrl={backgroundUrl}
+          showGrid={showGrid}
+          gridSize={gridSize}
+          gridOffsetX={gridOffsetX}
+          gridOffsetY={gridOffsetY}
+          participants={participants}
+          onMapReady={setMapInfo}
+          onMoveToken={moveToken}
+          measureMode={null}
+        />
+
+        <ParticipantSheet
+          participant={selectedParticipant}
+          onClose={() => setSelectedParticipant(null)}
+          onRemove={removeParticipant}
+          onDamage={damage}
+          onHeal={heal}
+        />
+
+        <PillMapContorl>
+          <PillZoom
+            onZoomIn={() => mapCanvasRef.current?.zoomIn()}
+            onZoomOut={() => mapCanvasRef.current?.zoomOut()}
+          />
+          <PillGrid
+            showGrid={showGrid}
+            onToggleGrid={() => setShowGrid((g) => !g)}
+            pixelsPerFoot={pixelsPerFoot}
+            onChangePixelsPerFoot={setPixelsPerFoot}
+            gridFineTune={gridFineTune}
+            onChangeGridFineTune={setGridFineTune}
+            gridOffsetX={gridOffsetX}
+            onChangeGridOffsetX={setGridOffsetX}
+            gridOffsetY={gridOffsetY}
+            onChangeGridOffsetY={setGridOffsetY}
+          />
+          <PillBottom
+            onImage={() => setOpenModal("image")}
+            onMap={() => setOpenModal("map")}
+            onAddCharacter={() => setOpenModal("person")}
+            onEnemyGenerator={() => setOpenModal("radom in counter")}
+            onTables={() => setOpenModal("tables")}
+            onSaveEncounter={() => setOpenModal("saveEncounter")}
+          />
+        </PillMapContorl>
+
+        {/* Edit → Play handoff. Placeholder until VTTPlay lands. */}
+        <button
+          type="button"
+          aria-label="Switch to play mode"
+          onClick={handlePlayClick}
+          style={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            padding: "8px 16px",
+            borderRadius: 999,
+            border: "none",
+            background: "#4a6fa5",
+            color: "white",
+            cursor: "pointer",
+            fontWeight: 600,
+          }}
+        >
+          Play →
+        </button>
+
+        <Modal
+          isOpen={openModal !== null && openModal !== "saveEncounter"}
+          onClose={() => setOpenModal(null)}
+          title={modalTitles[openModal] ?? ""}
+        >
+          {renderModalContent()}
+        </Modal>
+
+        <SaveEncounterModal
+          isOpen={openModal === "saveEncounter"}
+          vttState={currentVttState}
+          campaigns={campaigns}
+          encounters={encounters}
+          onSaveExisting={handleSaveExisting}
+          onSaveNew={handleSaveNew}
+          onExportFile={handleExportFile}
+          onClose={() => setOpenModal(null)}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default VTTEdit;

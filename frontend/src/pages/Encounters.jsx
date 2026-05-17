@@ -47,7 +47,11 @@ function Encounters() {
   }
 
   function handleOpenEncounter(encounter) {
-    navigate(`/vtt?encounterId=${encounter.id}`);
+    if (mode === "play") {
+      console.log("[Encounters] TODO: route to /vtt/play when play mode lands (no-op for now)");
+    } else {
+      navigate(`/vtt/edit?encounterId=${encounter.id}`);
+    }
   }
 
   function handleCreateEncounter(title) {
