@@ -70,24 +70,36 @@ function PillBottom({
             whiteSpace: "nowrap",
           }}
         >
-          <button onClick={onImage} className="icon-button" aria-label="image">
-            <LuImage />
-          </button>
-          <button onClick={onMap} className="icon-button" aria-label="map">
-            <LuMap />
-          </button>
-          <button onClick={onAddCharacter} className="icon-button" aria-label="add character">
-            <LuUserPlus />
-          </button>
-          <button onClick={onEnemyGenerator} className="icon-button" aria-label="enemy generator">
-            <LuSwords />
-          </button>
-          <button onClick={onTables} className="icon-button" aria-label="Lookup Tables">
-            <LuTable />
-          </button>
-          <button onClick={onSaveEncounter} className="icon-button" aria-label="save encounter">
-            <LuSave />
-          </button>
+          {onImage && (
+            <button onClick={onImage} className="icon-button" aria-label="image">
+              <LuImage />
+            </button>
+          )}
+          {onMap && (
+            <button onClick={onMap} className="icon-button" aria-label="map">
+              <LuMap />
+            </button>
+          )}
+          {onAddCharacter && (
+            <button onClick={onAddCharacter} className="icon-button" aria-label="add character">
+              <LuUserPlus />
+            </button>
+          )}
+          {onEnemyGenerator && (
+            <button onClick={onEnemyGenerator} className="icon-button" aria-label="enemy generator">
+              <LuSwords />
+            </button>
+          )}
+          {onTables && (
+            <button onClick={onTables} className="icon-button" aria-label="Lookup Tables">
+              <LuTable />
+            </button>
+          )}
+          {onSaveEncounter && (
+            <button onClick={onSaveEncounter} className="icon-button" aria-label="save encounter">
+              <LuSave />
+            </button>
+          )}
         </div>
       )}
       <LuPlus />

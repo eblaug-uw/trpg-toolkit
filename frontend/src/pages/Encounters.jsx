@@ -48,7 +48,7 @@ function Encounters() {
 
   function handleOpenEncounter(encounter) {
     if (mode === "play") {
-      console.log("[Encounters] TODO: route to /vtt/play when play mode lands (no-op for now)");
+      navigate(`/vtt/${mode}?encounterId=${encounter.id}`);
     } else {
       navigate(`/vtt/edit?encounterId=${encounter.id}`);
     }

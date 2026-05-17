@@ -40,4 +40,11 @@ export class CombatTracker<T extends Combatant> {
 
     return this.activeEntity;
   }
+
+  adjustInitiative(name: string, total: number): void {
+    const entry = this.queue.find((e) => e.entity.name === name);
+    if (!entry) return;
+    entry.total = total;
+    this.queue.sort((a, b) => b.total - a.total || b.dex - a.dex);
+  }
 }

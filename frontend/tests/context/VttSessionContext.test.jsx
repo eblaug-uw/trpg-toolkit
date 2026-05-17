@@ -54,7 +54,8 @@ describe("VttSessionContext", () => {
       gridOffsetX: 0,
       gridOffsetY: 0,
     });
-    expect(result.current.combat).toEqual({ active: false, round: 1, queue: [] });
+    expect(result.current.combatActive).toBe(false);
+    expect(result.current.initiativeQueue).toEqual([]);
   });
 
   it("hydrates from a saved encounter when ?encounterId matches", () => {
@@ -85,6 +86,41 @@ describe("VttSessionContext", () => {
     expect(result.current.participants[0].cell).toEqual({ x: 1, y: 2 });
   });
 
+  it("hydrates an active combat — rebuilds the tracker and seeds initiativeQueue", () => {
+    const p1 = makeParticipant({ id: "p1", name: "Alpha", dexterity: 14 });
+    const p2 = makeParticipant({ id: "p2", name: "Beta", dexterity: 10 });
+    const saved = serializeVttState({
+      showGrid: true,
+      pixelsPerFoot: 10,
+      gridFineTune: 0,
+      gridOffsetX: 0,
+      gridOffsetY: 0,
+      backgroundRef: null,
+      participants: [p1, p2],
+      combat: {
+        active: true,
+        round: 3,
+        queue: [
+          { participantId: "p1", total: 22, dex: 14 },
+          { participantId: "p2", total: 9, dex: 10 },
+        ],
+      },
+      viewport: null,
+    });
+    localStorage.setItem(
+      "trpg:encounters",
+      JSON.stringify([{ id: "enc-c", title: "Combat", campaignId: null, vttState: saved }]),
+    );
+
+    const { result } = renderHook(() => useVttSession(), {
+      wrapper: makeWrapper(["/vtt/play?encounterId=enc-c"]),
+    });
+
+    expect(result.current.combatActive).toBe(true);
+    expect(result.current.initiativeQueue.map((e) => e.id)).toEqual(["p1", "p2"]);
+    expect(result.current.initiativeQueue[0].initiativeTotal).toBe(22);
+  });
+
   it("does not re-hydrate after the encounters list mutates (save guard)", () => {
     const initial = serializeVttState({
       showGrid: true,
@@ -106,13 +142,11 @@ describe("VttSessionContext", () => {
       wrapper: makeWrapper(["/vtt/edit?encounterId=enc-1"]),
     });
 
-    // Live edit (unsaved)
     act(() => {
       result.current.session.addParticipant(makeParticipant({ id: "p2", name: "Added" }));
     });
     expect(result.current.session.participants).toHaveLength(2);
 
-    // Saving mutates EncountersContext.encounters; guard must prevent re-hydration.
     act(() => result.current.session.saveCurrent("enc-1"));
     expect(result.current.session.participants).toHaveLength(2);
   });
@@ -171,6 +205,48 @@ describe("VttSessionContext", () => {
     expect(result.current.participants[0].hit_points).toBe(10);
   });
 
+  it("roll() instantiates a tracker and flips combatActive", () => {
+    const { result } = renderHook(() => useVttSession(), { wrapper: makeWrapper() });
+    act(() => {
+      result.current.addParticipant(makeParticipant({ id: "p1", name: "Alpha", dexterity: 14 }));
+      result.current.addParticipant(makeParticipant({ id: "p2", name: "Beta", dexterity: 10 }));
+    });
+    act(() => result.current.roll());
+    expect(result.current.combatActive).toBe(true);
+    expect(result.current.initiativeQueue).toHaveLength(2);
+  });
+
+  it("roll() is a no-op when there are no participants", () => {
+    const { result } = renderHook(() => useVttSession(), { wrapper: makeWrapper() });
+    act(() => result.current.roll());
+    expect(result.current.combatActive).toBe(false);
+    expect(result.current.initiativeQueue).toEqual([]);
+  });
+
+  it("nextTurn() rotates the initiative queue", () => {
+    const { result } = renderHook(() => useVttSession(), { wrapper: makeWrapper() });
+    act(() => {
+      result.current.addParticipant(makeParticipant({ id: "p1", name: "Alpha", dexterity: 14 }));
+      result.current.addParticipant(makeParticipant({ id: "p2", name: "Beta", dexterity: 10 }));
+    });
+    act(() => result.current.roll());
+    const firstUp = result.current.initiativeQueue[0].id;
+    act(() => result.current.nextTurn());
+    expect(result.current.initiativeQueue[0].id).not.toBe(firstUp);
+  });
+
+  it("adjustInitiative re-sorts the visible queue", () => {
+    const { result } = renderHook(() => useVttSession(), { wrapper: makeWrapper() });
+    act(() => {
+      result.current.addParticipant(makeParticipant({ id: "p1", name: "Alpha", dexterity: 14 }));
+      result.current.addParticipant(makeParticipant({ id: "p2", name: "Beta", dexterity: 10 }));
+    });
+    act(() => result.current.roll());
+    const last = result.current.initiativeQueue.at(-1).name;
+    act(() => result.current.adjustInitiative(last, 99));
+    expect(result.current.initiativeQueue[0].name).toBe(last);
+  });
+
   it("currentVttState mirrors the persisted JSON shape", () => {
     const { result } = renderHook(() => useVttSession(), { wrapper: makeWrapper() });
     act(() => result.current.setMapInfo({ width: 20, height: 10 }));
@@ -202,6 +278,7 @@ describe("VttSessionContext", () => {
     const { result } = renderHook(() => ({ session: useVttSession(), enc: useEncounters() }), {
       wrapper: makeWrapper(),
     });
+
     act(() => {
       result.current.session.setPixelsPerFoot(15);
     });

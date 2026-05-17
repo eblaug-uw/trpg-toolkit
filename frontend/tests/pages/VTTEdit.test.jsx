@@ -8,7 +8,6 @@ import { VttSessionProvider } from "@/context/VttSessionContext";
 import VTTEdit from "@/pages/VTTEdit";
 
 // MapCanvas pulls in react-konva, which doesn't run in jsdom.
-// Render a stub so the page mounts.
 vi.mock("@/components/MapCanvas", () => ({
   default: vi.fn(() => <div data-testid="map-canvas-stub" />),
 }));
@@ -100,15 +99,30 @@ describe("<VTTEdit />", () => {
     expect(screen.queryByRole("heading", { name: /equipment search/i })).not.toBeInTheDocument();
   });
 
-  it("Play → button logs a TODO and does not navigate", async () => {
+  it("Play → button saves and navigates to /vtt/play with the current encounterId", async () => {
+    // Seed an encounter so saveCurrent has a target and ?encounterId hydrates the session.
+    localStorage.setItem(
+      "trpg:encounters",
+      JSON.stringify([{ id: "enc-1", title: "T", campaignId: null, vttState: null }]),
+    );
     const user = userEvent.setup();
-    renderAt();
-    const logSpy = vi.spyOn(console, "log");
+    render(
+      <MemoryRouter initialEntries={["/vtt/edit?encounterId=enc-1"]}>
+        <CampaignsProvider>
+          <EncountersProvider>
+            <Routes>
+              <Route path="/vtt" element={<Layout />}>
+                <Route path="edit" element={<VTTEdit />} />
+                <Route path="play" element={<div data-testid="play-stub" />} />
+              </Route>
+            </Routes>
+          </EncountersProvider>
+        </CampaignsProvider>
+      </MemoryRouter>,
+    );
 
     await user.click(screen.getByRole("button", { name: /switch to play mode/i }));
 
-    expect(logSpy).toHaveBeenCalledWith(
-      expect.stringContaining("TODO: save + navigate to /vtt/play"),
-    );
+    expect(screen.getByTestId("play-stub")).toBeInTheDocument();
   });
 });

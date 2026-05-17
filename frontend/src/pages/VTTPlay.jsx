@@ -1,51 +1,51 @@
 /* --Imports-- */
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useVttSession } from "../context/VttSessionContext";
 import { useCampaigns } from "../context/CampaignsContext";
 import { useEncounters } from "../context/EncountersContext";
-import { useNavigate } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import MapCanvas from "../components/MapCanvas";
 import PillMapContorl from "../components/PillMapContorl";
 import PillZoom from "../components/PillZoom";
-import PillGrid from "../components/PillGrid";
+import PillMeasure from "../components/PillMeasure";
+import PillRight from "../components/PillRight";
 import PillBottom from "../components/PillBottom";
 import Modal from "../components/Modal";
-import ImageUploader from "../components/ImageUploader";
-import MapBackgroundPicker from "../components/MapBackgroundPicker";
-import AddParticipantForm from "../components/AddParticipantForm";
 import MonsterSearch from "../components/MonsterSearch";
-import EnemyGenerator from "../features/enemy-generator";
+import EquipmentSearch from "../components/EquipmentSearch";
+import TreasureGenerator from "../features/loot-generator/TreasureGenerator";
+import XpCalculator from "../features/xp-calculator/XpCalculator";
 import SaveEncounterModal from "../components/SaveEncounterModal";
+import InitiativeTracker from "../components/InitiativeTracker";
 import ParticipantSheet from "../components/ParticipantSheet";
 
-function VTTEdit() {
-  /* --States-- */
+function VTTPlay() {
+  /* --State-- */
+  const navigate = useNavigate();
   const mapCanvasRef = useRef(null);
   const [openModal, setOpenModal] = useState(null);
-  const navigate = useNavigate();
+  const [measureMode, setMeasureMode] = useState(null);
 
   const {
+    encounterId,
     grid: { showGrid, pixelsPerFoot, gridFineTune, gridOffsetX, gridOffsetY },
-    setShowGrid,
-    setPixelsPerFoot,
-    setGridFineTune,
-    setGridOffsetX,
-    setGridOffsetY,
     backgroundUrl,
-    setBackground,
     participants,
-    addParticipant,
-    removeParticipant,
     moveToken,
     damage,
     heal,
+    removeParticipant,
     selectedParticipant,
     setSelectedParticipant,
     setMapInfo,
+    combatActive,
+    initiativeQueue,
+    roll,
+    nextTurn,
+    adjustInitiative,
     currentVttState,
     saveCurrent,
-    encounterId,
   } = useVttSession();
 
   const { campaigns } = useCampaigns();
@@ -55,50 +55,36 @@ function VTTEdit() {
   const gridSize = Math.max(4, 5 * pixelsPerFoot + gridFineTune);
 
   const modalTitles = {
-    image: "Upload Image",
-    map: "Set Map Background",
-    person: "Add Character",
     tables: "Lookup Tables",
-    "radom in counter": "Enemy Generator",
+    dollar: "Loot",
+    chart: "Stats",
+    xp: "XP Calculator",
   };
 
-  const renderModalContent = () => {
-    switch (openModal) {
-      case "image":
-        return <ImageUploader />;
-      case "map":
-        return (
-          <MapBackgroundPicker
-            onSelect={(url, name) => setBackground(url, name)}
-            pixelsPerFoot={pixelsPerFoot}
-            onChangePixelsPerFoot={setPixelsPerFoot}
-          />
-        );
-      case "person":
-        return <AddParticipantForm onAdd={addParticipant} />;
-      case "tables":
-        // Edit-mode tables modal: MonsterSearch only.
-        // EquipmentSearch is play-mode only — added when VTTPlay lands.
-        return <MonsterSearch />;
-      case "radom in counter":
-        return <EnemyGenerator onAdd={addParticipant} />;
-      default:
-        return null;
-    }
-  };
+  /* --Escape cancels measure mode-- */
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape" && measureMode !== null) setMeasureMode(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [measureMode]);
 
   /* --Handlers-- */
+  function handleEditClick() {
+    if (encounterId) saveCurrent(encounterId);
+    navigate(`/vtt/edit${encounterId ? `?encounterId=${encounterId}` : ""}`);
+  }
+
   function handleSaveExisting(encId) {
     saveCurrent(encId);
     setOpenModal(null);
   }
-
   function handleSaveNew(campaignId, title) {
     const created = addEncounter(campaignId, title);
     saveCurrent(created.id);
     setOpenModal(null);
   }
-
   function handleExportFile(vttState) {
     const blob = new Blob([JSON.stringify(vttState, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -111,10 +97,25 @@ function VTTEdit() {
     URL.revokeObjectURL(url);
   }
 
-  function handlePlayClick() {
-    if (encounterId) saveCurrent(encounterId);
-    navigate(`/vtt/play${encounterId ? `?encounterId=${encounterId}` : ""}`);
-  }
+  const renderModalContent = () => {
+    switch (openModal) {
+      case "tables":
+        return (
+          <>
+            <MonsterSearch />
+            <EquipmentSearch />
+          </>
+        );
+      case "dollar":
+        return <TreasureGenerator />;
+      case "chart":
+        return <p>Coming Soon</p>;
+      case "xp":
+        return <XpCalculator />;
+      default:
+        return null;
+    }
+  };
 
   /* --Render-- */
   return (
@@ -140,7 +141,19 @@ function VTTEdit() {
           participants={participants}
           onMapReady={setMapInfo}
           onMoveToken={moveToken}
-          measureMode={null}
+          measureMode={measureMode}
+        />
+
+        <InitiativeTracker
+          participants={participants}
+          queue={initiativeQueue}
+          combatActive={combatActive}
+          onRoll={roll}
+          onNext={nextTurn}
+          onSelect={setSelectedParticipant}
+          onDamage={damage}
+          onHeal={heal}
+          onAdjustInitiative={adjustInitiative}
         />
 
         <ParticipantSheet
@@ -156,33 +169,22 @@ function VTTEdit() {
             onZoomIn={() => mapCanvasRef.current?.zoomIn()}
             onZoomOut={() => mapCanvasRef.current?.zoomOut()}
           />
-          <PillGrid
-            showGrid={showGrid}
-            onToggleGrid={() => setShowGrid((g) => !g)}
-            pixelsPerFoot={pixelsPerFoot}
-            onChangePixelsPerFoot={setPixelsPerFoot}
-            gridFineTune={gridFineTune}
-            onChangeGridFineTune={setGridFineTune}
-            gridOffsetX={gridOffsetX}
-            onChangeGridOffsetX={setGridOffsetX}
-            gridOffsetY={gridOffsetY}
-            onChangeGridOffsetY={setGridOffsetY}
+          <PillMeasure measureMode={measureMode} onSetMeasureMode={setMeasureMode} />
+          <PillRight
+            onLoot={() => setOpenModal("dollar")}
+            onStats={() => setOpenModal("chart")}
+            onXpCalc={() => setOpenModal("xp")}
           />
           <PillBottom
-            onImage={() => setOpenModal("image")}
-            onMap={() => setOpenModal("map")}
-            onAddCharacter={() => setOpenModal("person")}
-            onEnemyGenerator={() => setOpenModal("radom in counter")}
             onTables={() => setOpenModal("tables")}
             onSaveEncounter={() => setOpenModal("saveEncounter")}
           />
         </PillMapContorl>
 
-        {/* Edit → Play handoff. Placeholder until VTTPlay lands. */}
         <button
           type="button"
-          aria-label="Switch to play mode"
-          onClick={handlePlayClick}
+          aria-label="Switch to edit mode"
+          onClick={handleEditClick}
           style={{
             position: "absolute",
             top: 16,
@@ -196,7 +198,7 @@ function VTTEdit() {
             fontWeight: 600,
           }}
         >
-          Play →
+          ← Edit
         </button>
 
         <Modal
@@ -222,4 +224,4 @@ function VTTEdit() {
   );
 }
 
-export default VTTEdit;
+export default VTTPlay;

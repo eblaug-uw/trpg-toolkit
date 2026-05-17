@@ -1,14 +1,15 @@
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
-import VTTEdit from "./pages/VTTEdit";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
-import Campaigns from "./pages/Campaigns";
-import Encounters from "./pages/Encounters";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { RuleSetProvider } from "./context/RuleSetContext";
 import { CampaignsProvider } from "./context/CampaignsContext";
 import { EncountersProvider } from "./context/EncountersContext";
 import { VttSessionProvider } from "./context/VttSessionContext";
+import VTTEdit from "./pages/VTTEdit";
+import VTTPlay from "./pages/VTTPlay";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import Campaigns from "./pages/Campaigns";
+import Encounters from "./pages/Encounters";
 
 function VttSessionLayout() {
   return (
@@ -61,7 +62,7 @@ function App() {
             >
               <Route index element={<Navigate to="edit" replace />} />
               <Route path="edit" element={<VTTEdit />} />
-              {/* /vtt/play */}
+              <Route path="play" element={<VTTPlay />} />
             </Route>
 
             <Route path="/login" element={<Login />} />
