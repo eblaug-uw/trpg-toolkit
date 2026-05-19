@@ -18,6 +18,7 @@ import MonsterSearch from "../components/MonsterSearch";
 import EnemyGenerator from "../features/enemy-generator";
 import SaveEncounterModal from "../components/SaveEncounterModal";
 import ParticipantSheet from "../components/ParticipantSheet";
+import StagingArea from "../features/vtt/StagingArea";
 
 function VTTEdit() {
   /* --States-- */
@@ -36,6 +37,7 @@ function VTTEdit() {
     setBackground,
     participants,
     addParticipant,
+    addToStaging,
     removeParticipant,
     moveToken,
     damage,
@@ -75,13 +77,13 @@ function VTTEdit() {
           />
         );
       case "person":
-        return <AddParticipantForm onAdd={addParticipant} />;
+        return <AddParticipantForm onAdd={addToStaging} />;
       case "tables":
         // Edit-mode tables modal: MonsterSearch only.
         // EquipmentSearch is play-mode only — added when VTTPlay lands.
         return <MonsterSearch />;
       case "radom in counter":
-        return <EnemyGenerator onAdd={addParticipant} />;
+        return <EnemyGenerator onAdd={addToStaging} />;
       default:
         return null;
     }
@@ -142,6 +144,8 @@ function VTTEdit() {
           onMoveToken={moveToken}
           measureMode={null}
         />
+
+        <StagingArea />
 
         <ParticipantSheet
           participant={selectedParticipant}
