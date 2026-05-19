@@ -16,7 +16,10 @@
     "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --max-warnings=10000",
     "lint:fix": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
     "audit:ci": "audit-ci --high",
-    "prepare": "cd .. && husky frontend/.husky"
+    "prepare": "cd .. && husky frontend/.husky",
+    "test:unit": "vitest run --config tests/config/vitest.config.js tests/unit tests/components tests/services tests/context",
+    "test:integration": "vitest run --config tests/config/vitest.config.js tests/integration tests/features tests/pages",
+    "test:smoke": "node scripts/smoke.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
