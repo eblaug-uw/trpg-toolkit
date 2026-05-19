@@ -129,7 +129,17 @@ export default tseslint.config(
     },
     settings: { react: { version: "detect" } },
   },
-
+  {
+    files: ["*.mjs", "scripts/**/*.{js,mjs}"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: "module",
+      globals: { ...globals.node, ...globals.es2022 },
+    },
+    rules: {
+      "no-console": "off",
+    },
+  },
   // Must come last — turns off any rules that conflict with Prettier
   prettier,
 );
