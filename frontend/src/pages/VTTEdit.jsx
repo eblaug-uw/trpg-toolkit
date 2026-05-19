@@ -41,7 +41,6 @@ function VTTEdit() {
     mobVisibilityByLayer,
     toggleMobVisibilityForLayer,
 
-
     // DM 48: Current active map layer state
     currentLayer,
     setCurrentLayer,
