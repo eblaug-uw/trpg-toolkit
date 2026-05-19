@@ -60,6 +60,9 @@ jobs:
     defaults:
       run:
         working-directory: frontend
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -99,6 +102,9 @@ jobs:
 
       - name: Build for GitHub Pages (base=/${{ github.event.repository.name }}/)
         working-directory: frontend
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: npm run build -- --base="/${{ github.event.repository.name }}/"
 
       - name: Configure Pages
@@ -138,6 +144,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
+            VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
   deploy:
     name: Stage 5 — Deploy to GitHub Pages
