@@ -31,6 +31,7 @@ export function VttSessionProvider({ children }) {
   const [grid, setGrid] = useState(DEFAULT_GRID);
   const [backgroundRef, setBackgroundRef] = useState(null);
   const [participants, setParticipants] = useState([]);
+  const [stagingParticipants, setStagingParticipants] = useState([]);
 
   // DM 56: Mobs are hidden by layer until the GM toggles that layer visible.
   const [mobVisibilityByLayer, setMobVisibilityByLayer] = useState(DEFAULT_MOB_VISIBILITY_BY_LAYER);
@@ -164,6 +165,22 @@ export function VttSessionProvider({ children }) {
     setParticipants((prev) => [...prev, { ...participant, cell }]);
   }
 
+  function addToStaging(participant) {
+    setStagingParticipants((prev) => [...prev, participant]);
+  }
+
+  function removeFromStaging(id) {
+    setStagingParticipants((prev) => prev.filter((p) => p.id !== id));
+  }
+
+  function deployFromStaging(id) {
+    const participant = stagingParticipants.find((p) => p.id === id);
+    if (!participant) return;
+
+    addParticipant(participant);
+    removeFromStaging(id);
+  }
+
   function removeParticipant(id) {
     setParticipants((prev) => {
       const next = prev.filter((p) => p.id !== id);
@@ -274,7 +291,11 @@ export function VttSessionProvider({ children }) {
     mobVisibilityByLayer,
     toggleMobVisibilityForLayer,
 
+    stagingParticipants,
     addParticipant,
+    addToStaging,
+    removeFromStaging,
+    deployFromStaging,
     removeParticipant,
     moveToken,
     damage,
