@@ -111,7 +111,8 @@ function VTTPlay() {
       case "chart":
         return <p>Coming Soon</p>;
       case "xp":
-        return <XpCalculator />;
+        // DM 58: Pass encounter participants so XP values can be calculated automatically.
+        return <XpCalculator participants={participants} />;
       default:
         return null;
     }

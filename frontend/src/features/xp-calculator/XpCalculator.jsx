@@ -1,58 +1,44 @@
-import { useState } from "react";
+export default function XpCalculator({ participants = [] }) {
+  // DM 58: Players are pulled from the current encounter participants
+  const playerCount = participants.filter((participant) => {
+    return participant.type === "player";
+  }).length;
 
-export default function XpCalculator() {
-  // Stores the total XP from the encounter
-  const [totalXp, setTotalXp] = useState("");
+  // DM 58: Mob XP is pulled from monster data already attached to encounter participants
+  const totalXp = participants
+    .filter((participant) => {
+      return participant.type === "monster";
+    })
+    .reduce((sum, participant) => {
+      const xpValue =
+        participant.xp ??
+        participant.experience ??
+        participant.monster?.xp ??
+        participant.monster?.experience ??
+        participant.data?.xp ??
+        participant.data?.experience ??
+        0;
 
-  // Stores the number of players who should receive XP
-  const [playerCount, setPlayerCount] = useState("");
-
-  // Stores the calculated XP amount for each player
-  const [xpPerPlayer, setXpPerPlayer] = useState(null);
+      return sum + Number(xpValue);
+    }, 0);
 
   // Calculates how much XP each player receives
-  function handleCalculateXp() {
-    const xpValue = Number(totalXp);
-    const playerValue = Number(playerCount);
-
-    // Stops the calculation if the user enters invalid numbers
-    if (xpValue <= 0 || playerValue <= 0) {
-      alert("Please enter total XP and number of players greater than 0.");
-      return;
-    }
-
-    // Divides the total XP by the number of players and rounds down to a whole XP value
-    const calculatedXp = Math.floor(xpValue / playerValue);
-    setXpPerPlayer(calculatedXp);
-  }
+  const xpPerPlayer = totalXp > 0 && playerCount > 0 ? Math.floor(totalXp / playerCount) : null;
 
   return (
     <section>
-      {/* Input for the total XP from the encounter */}
-      <label htmlFor="total-xp">Total XP:</label>
-      <input
-        id="total-xp"
-        type="number"
-        min="1"
-        value={totalXp}
-        onChange={(event) => setTotalXp(event.target.value)}
-      />
+      {/* DM 58: Displays the total XP from the mobs in the encounter */}
+      <p>Total XP: {totalXp}</p>
 
-      {/* Input for the number of players */}
-      <label htmlFor="player-count">Number of Players:</label>
-      <input
-        id="player-count"
-        type="number"
-        min="1"
-        value={playerCount}
-        onChange={(event) => setPlayerCount(event.target.value)}
-      />
-
-      {/* Button that runs the XP calculation */}
-      <button onClick={handleCalculateXp}>Calculate XP</button>
+      {/* DM 58: Displays the number of players in the encounter */}
+      <p>Number of Players: {playerCount}</p>
 
       {/* Displays the calculated XP per player */}
-      {xpPerPlayer !== null && <p>XP per player: {xpPerPlayer}</p>}
+      {xpPerPlayer !== null ? (
+        <p>XP per player: {xpPerPlayer}</p>
+      ) : (
+        <p>Add players and mobs to calculate XP.</p>
+      )}
     </section>
   );
 }
