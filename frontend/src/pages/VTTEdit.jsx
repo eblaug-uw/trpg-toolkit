@@ -35,6 +35,11 @@ function VTTEdit() {
     backgroundUrl,
     setBackground,
     participants,
+
+    // DM 56: GM controls for mob visibility by layer.
+    mobVisibilityByLayer,
+    toggleMobVisibilityForLayer,
+
     addParticipant,
     removeParticipant,
     moveToken,
@@ -142,6 +147,49 @@ function VTTEdit() {
           onMoveToken={moveToken}
           measureMode={null}
         />
+
+        {/* DM 56: GM controls for revealing mobs to players by layer. */}
+        <div
+          style={{
+            position: "absolute",
+            top: 16,
+            right: 96,
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            padding: "8px 12px",
+            borderRadius: 999,
+            background: "rgba(34, 34, 34, 0.9)",
+            color: "white",
+            fontWeight: 600,
+            zIndex: 20,
+          }}
+        >
+          <span>Mob visibility</span>
+          {[1, 2, 3].map((layer) => {
+            const isVisible = Boolean(mobVisibilityByLayer[layer]);
+
+            return (
+              <button
+                key={layer}
+                type="button"
+                aria-label={`Toggle mobs visible on layer ${layer}`}
+                onClick={() => toggleMobVisibilityForLayer(layer)}
+                style={{
+                  padding: "4px 8px",
+                  borderRadius: 999,
+                  border: "1px solid #666",
+                  background: isVisible ? "#4a6fa5" : "#333",
+                  color: "white",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >
+                {`L${layer} ${isVisible ? "Visible" : "Hidden"}`}
+              </button>
+            );
+          })}
+        </div>
 
         <ParticipantSheet
           participant={selectedParticipant}

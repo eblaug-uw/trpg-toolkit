@@ -32,6 +32,10 @@ function VTTPlay() {
     grid: { showGrid, pixelsPerFoot, gridFineTune, gridOffsetX, gridOffsetY },
     backgroundUrl,
     participants,
+
+    // DM 56: Player view uses mob visibility by layer.
+    mobVisibilityByLayer,
+
     moveToken,
     damage,
     heal,
@@ -53,6 +57,16 @@ function VTTPlay() {
 
   /* --Constants-- */
   const gridSize = Math.max(4, 5 * pixelsPerFoot + gridFineTune);
+
+  // DM 56: Hide mobs from players unless the GM revealed their layer.
+  const visibleParticipants = participants.filter((participant) => {
+    if (participant.type !== "monster") {
+      return true;
+    }
+
+    const participantLayer = participant.layer ?? 1;
+    return Boolean(mobVisibilityByLayer[participantLayer]);
+  });
 
   const modalTitles = {
     tables: "Lookup Tables",
@@ -138,7 +152,7 @@ function VTTPlay() {
           gridSize={gridSize}
           gridOffsetX={gridOffsetX}
           gridOffsetY={gridOffsetY}
-          participants={participants}
+          participants={visibleParticipants}
           onMapReady={setMapInfo}
           onMoveToken={moveToken}
           measureMode={measureMode}
