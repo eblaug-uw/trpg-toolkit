@@ -36,6 +36,11 @@ function VTTEdit() {
     backgroundUrl,
     setBackground,
     participants,
+
+    // DM 48: Current active map layer state
+    currentLayer,
+    setCurrentLayer,
+
     addParticipant,
     addToStaging,
     removeParticipant,
@@ -55,6 +60,12 @@ function VTTEdit() {
 
   /* --Constants-- */
   const gridSize = Math.max(4, 5 * pixelsPerFoot + gridFineTune);
+
+  // DM 48: Only display tokens from the active layer
+  const visibleParticipants = participants.filter((participant) => {
+    const participantLayer = participant.layer ?? 1;
+    return participantLayer === currentLayer;
+  });
 
   const modalTitles = {
     image: "Upload Image",
@@ -139,13 +150,52 @@ function VTTEdit() {
           gridSize={gridSize}
           gridOffsetX={gridOffsetX}
           gridOffsetY={gridOffsetY}
-          participants={participants}
+          participants={visibleParticipants}
           onMapReady={setMapInfo}
           onMoveToken={moveToken}
           measureMode={null}
         />
 
         <StagingArea />
+
+        {/* DM 48: Layer controls */}
+        <div
+          style={{
+            position: "absolute",
+            top: 16,
+            right: 96,
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            padding: "8px 12px",
+            borderRadius: 999,
+            background: "rgba(34, 34, 34, 0.9)",
+            color: "white",
+            fontWeight: 600,
+            zIndex: 20,
+          }}
+        >
+          <span>Layer {currentLayer}</span>
+          {[1, 2, 3].map((layer) => (
+            <button
+              key={layer}
+              type="button"
+              aria-label={`Show layer ${layer}`}
+              onClick={() => setCurrentLayer(layer)}
+              style={{
+                padding: "4px 8px",
+                borderRadius: 999,
+                border: "1px solid #666",
+                background: currentLayer === layer ? "#4a6fa5" : "#333",
+                color: "white",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              {layer}
+            </button>
+          ))}
+        </div>
 
         <ParticipantSheet
           participant={selectedParticipant}

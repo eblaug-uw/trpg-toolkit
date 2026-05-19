@@ -27,6 +27,9 @@ export function VttSessionProvider({ children }) {
   const [participants, setParticipants] = useState([]);
   const [stagingParticipants, setStagingParticipants] = useState([]);
 
+  // DM 48: Track the currently active map layer.
+  const [currentLayer, setCurrentLayer] = useState(1);
+
   // --- Combat: combatRef is the live source of truth;
 
   const combatRef = useRef(null);
@@ -146,7 +149,9 @@ export function VttSessionProvider({ children }) {
           ),
         }
       : { x: 0, y: 0 };
-    setParticipants((prev) => [...prev, { ...participant, cell }]);
+
+    // DM 48: Assign new participants to the active map layer.
+    setParticipants((prev) => [...prev, { ...participant, cell, layer: currentLayer }]);
   }
 
   function addToStaging(participant) {
@@ -271,6 +276,11 @@ export function VttSessionProvider({ children }) {
     setBackground,
     participants,
     stagingParticipants,
+
+    // DM 48: Layer controls for the VTT map.
+    currentLayer,
+    setCurrentLayer,
+
     addParticipant,
     addToStaging,
     removeFromStaging,
