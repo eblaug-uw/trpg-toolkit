@@ -10,7 +10,6 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Campaigns from "./pages/Campaigns";
 import Encounters from "./pages/Encounters";
-import StatsPopout from "./pages/StatsPopout";
 
 function VttSessionLayout() {
   return (
@@ -68,7 +67,6 @@ function App() {
 
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/stats-popout" element={<StatsPopout />} />
           </Routes>
         </EncountersProvider>
       </CampaignsProvider>

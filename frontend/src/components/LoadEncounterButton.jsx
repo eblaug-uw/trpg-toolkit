@@ -6,7 +6,7 @@ import { deserializeVttState } from "../features/vtt/encounter/deserialize";
 function LoadEncounterButton({ campaignId }) {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
-  const { addEncounter } = useEncounters();
+  const { addEncounter, saveVttState } = useEncounters();
   const [error, setError] = useState("");
 
   function handlePick() {
@@ -31,7 +31,8 @@ function LoadEncounterButton({ campaignId }) {
     }
 
     const title = file.name.replace(/\.json$/i, "");
-    const created = addEncounter(campaignId, title, blob);
+    const created = addEncounter(campaignId, title);
+    saveVttState(created.id, blob);
     navigate(`/vtt?encounterId=${created.id}`);
   }
 

@@ -9,15 +9,6 @@ const sample = () => ({
   gridOffsetX: 4,
   gridOffsetY: -3,
   backgroundRef: { bucket: "maps", name: "1700000000-tavern.jpg" },
-  drawings: [
-    {
-      id: "draw-1",
-      tool: "pen",
-      color: "#facc15",
-      strokeWidth: 6,
-      points: [10, 10, 20, 20, 30, 15],
-    },
-  ],
   participants: [
     {
       id: "p1",

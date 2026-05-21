@@ -5,11 +5,6 @@ import "../style/PillButton.css";
 function PillRight({ onLoot, onStats, onXpCalc }) {
   const [open, setOpen] = useState(false);
 
-  function runAndClose(action) {
-    setOpen(false);
-    action();
-  }
-
   return (
     <div
       onMouseEnter={() => setOpen(true)}
@@ -42,17 +37,13 @@ function PillRight({ onLoot, onStats, onXpCalc }) {
             whiteSpace: "nowrap",
           }}
         >
-          <button onClick={() => runAndClose(onLoot)} className="icon-button" aria-label="loot">
+          <button onClick={onLoot} className="icon-button" aria-label="loot">
             <LuCoins />
           </button>
-          <button onClick={() => runAndClose(onStats)} className="icon-button" aria-label="stats">
+          <button onClick={onStats} className="icon-button" aria-label="stats">
             <LuChartBar />
           </button>
-          <button
-            onClick={() => runAndClose(onXpCalc)}
-            className="icon-button"
-            aria-label="xp calculator"
-          >
+          <button onClick={onXpCalc} className="icon-button" aria-label="stats">
             <LuSparkles />
           </button>
         </div>

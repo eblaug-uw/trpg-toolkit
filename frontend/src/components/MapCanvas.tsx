@@ -22,11 +22,6 @@ type TokenParticipant = {
   cell?: { x: number; y: number };
   size?: number;
   statuses?: AppliedStatus[];
-  image_url?: string | null;
-  imageUrl?: string | null;
-  data?: {
-    image_url?: string | null;
-  };
 };
 
 type Props = {
@@ -109,10 +104,6 @@ function tokensOverLap(
   );
 }
 
-function getParticipantImageUrl(participant: TokenParticipant) {
-  return participant.image_url ?? participant.imageUrl ?? participant.data?.image_url ?? null;
-}
-
 const MapCanvas = forwardRef<MapCanvasHandle, Props>(function MapCanvas(
   {
     backgroundUrl,
@@ -132,7 +123,6 @@ const MapCanvas = forwardRef<MapCanvasHandle, Props>(function MapCanvas(
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [imgSize, setImgSize] = useState<{ width: number; height: number } | null>(null);
   const [imgElement, setImgElement] = useState<HTMLImageElement | null>(null);
-  const [tokenImages, setTokenImages] = useState<Record<string, HTMLImageElement | null>>({});
   const [measureLine, setMeasureLine] = useState<{
     anchor: { x: number; y: number };
     end: { x: number; y: number };
@@ -313,32 +303,6 @@ const MapCanvas = forwardRef<MapCanvasHandle, Props>(function MapCanvas(
   }, [backgroundUrl]);
 
   useEffect(() => {
-    let cancelled = false;
-    const urls = [...new Set(participants.map(getParticipantImageUrl).filter(Boolean))] as string[];
-
-    urls.forEach((url) => {
-      if (url in tokenImages) return;
-
-      const img = new Image();
-      img.onload = () => {
-        if (!cancelled) {
-          setTokenImages((prev) => ({ ...prev, [url]: img }));
-        }
-      };
-      img.onerror = () => {
-        if (!cancelled) {
-          setTokenImages((prev) => ({ ...prev, [url]: null }));
-        }
-      };
-      img.src = url;
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [participants, tokenImages]);
-
-  useEffect(() => {
     if (!containerRef.current) return;
     const observer = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
@@ -427,8 +391,6 @@ const MapCanvas = forwardRef<MapCanvasHandle, Props>(function MapCanvas(
               const renderY = Math.round(y);
               const radius = size * gridSize * 0.4;
               const fontSize = Math.max(10, gridSize / 5);
-              const tokenImageUrl = getParticipantImageUrl(p);
-              const tokenImage = tokenImageUrl ? tokenImages[tokenImageUrl] : null;
               const mapCols = Math.floor(drawWidth / gridSize);
               const mapRows = Math.floor(drawHeight / gridSize);
 
@@ -468,30 +430,11 @@ const MapCanvas = forwardRef<MapCanvasHandle, Props>(function MapCanvas(
                     onMoveToken?.(p.id, newCell);
                   }}
                 >
-                  <Circle radius={radius} fill={p.type === "monster" ? "#dd1414" : "#3498db"} />
-                  {tokenImage && (
-                    <Group
-                      clipFunc={(ctx) => {
-                        ctx.arc(0, 0, radius, 0, Math.PI * 2, false);
-                      }}
-                      listening={false}
-                    >
-                      <KonvaImage
-                        image={tokenImage}
-                        x={-radius}
-                        y={-radius}
-                        width={radius * 2}
-                        height={radius * 2}
-                        listening={false}
-                      />
-                    </Group>
-                  )}
                   <Circle
                     radius={radius}
-                    fill="transparent"
+                    fill={p.type === "monster" ? "#dd1414" : "#3498db"}
                     stroke="black"
                     strokeWidth={1}
-                    listening={false}
                   />
                   <Text
                     text={p.name}
@@ -544,7 +487,7 @@ const MapCanvas = forwardRef<MapCanvasHandle, Props>(function MapCanvas(
                   text={statusPopup.statuses
                     .map(
                       (s) =>
-                        `${s.statusId === "down" || s.turnsRemaining === null ? s.name : `${s.name} (${s.turnsRemaining}t)`}${s.effect_summary ? `\n  ${s.effect_summary}` : ""}`,
+                        `${s.name} (${s.turnsRemaining}t)${s.effect_summary ? `\n  ${s.effect_summary}` : ""}`,
                     )
                     .join("\n\n")}
                   padding={8}

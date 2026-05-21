@@ -1,5 +1,5 @@
 /* --Imports-- */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useVttSession } from "../context/VttSessionContext";
 import { useCampaigns } from "../context/CampaignsContext";
@@ -9,7 +9,6 @@ import MapCanvas from "../components/MapCanvas";
 import PillMapContorl from "../components/PillMapContorl";
 import PillZoom from "../components/PillZoom";
 import PillMeasure from "../components/PillMeasure";
-import PillDraw from "../components/PillDraw";
 import PillRight from "../components/PillRight";
 import PillBottom from "../components/PillBottom";
 import Modal from "../components/Modal";
@@ -21,29 +20,17 @@ import SaveEncounterModal from "../components/SaveEncounterModal";
 import InitiativeTracker from "../components/InitiativeTracker";
 import ParticipantSheet from "../components/ParticipantSheet";
 
-const STATS_WINDOW_STORAGE_KEY = "trpg-toolkit:stats-window";
-
 function VTTPlay() {
   /* --State-- */
   const navigate = useNavigate();
   const mapCanvasRef = useRef(null);
   const [openModal, setOpenModal] = useState(null);
-  const [statsOpen, setStatsOpen] = useState(false);
-  const [statsPopupWindow, setStatsPopupWindow] = useState(null);
   const [measureMode, setMeasureMode] = useState(null);
-  const [drawingEnabled, setDrawingEnabled] = useState(false);
 
   const {
     encounterId,
     grid: { showGrid, pixelsPerFoot, gridFineTune, gridOffsetX, gridOffsetY },
     backgroundUrl,
-    drawings,
-    drawingTool,
-    setDrawingTool,
-    addDrawing,
-    removeDrawing,
-    undoDrawing,
-    clearDrawings,
     participants,
 
     // DM 56: Player view uses mob visibility by layer.
@@ -86,6 +73,7 @@ function VTTPlay() {
   const modalTitles = {
     tables: "Lookup Tables",
     dollar: "Loot",
+    chart: "Stats",
     xp: "XP Calculator",
   };
 
@@ -125,87 +113,6 @@ function VTTPlay() {
     URL.revokeObjectURL(url);
   }
 
-  function handleStatsClick() {
-    const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
-    const statsUrl = `${window.location.origin}${basePath}/stats-popout`;
-    localStorage.setItem(
-      STATS_WINDOW_STORAGE_KEY,
-      JSON.stringify({
-        type: "TRPG_STATS_SNAPSHOT",
-        queue: initiativeQueue,
-        updatedAt: Date.now(),
-      }),
-    );
-
-    const popup = window.open(
-      statsUrl,
-      "trpg-stats-window",
-      "popup=yes,width=920,height=760,left=120,top=80,resizable=yes,scrollbars=yes",
-    );
-
-    if (popup) {
-      setStatsPopupWindow(popup);
-      popup.focus();
-    } else {
-      setStatsPopupWindow(null);
-    }
-
-    setStatsOpen(true);
-  }
-
-  const handleStatsClose = useCallback(() => {
-    setStatsOpen(false);
-    if (statsPopupWindow && !statsPopupWindow.closed) {
-      statsPopupWindow.close();
-    }
-    setStatsPopupWindow(null);
-  }, [statsPopupWindow]);
-
-  useEffect(() => {
-    if (!statsOpen) return;
-    const snapshot = {
-      type: "TRPG_STATS_SNAPSHOT",
-      queue: initiativeQueue,
-      updatedAt: Date.now(),
-    };
-    localStorage.setItem(STATS_WINDOW_STORAGE_KEY, JSON.stringify(snapshot));
-    statsPopupWindow?.postMessage(snapshot, window.location.origin);
-  }, [initiativeQueue, statsOpen, statsPopupWindow]);
-
-  useEffect(() => {
-    function onStatsMessage(event) {
-      if (event.origin !== window.location.origin) return;
-      const message = event.data;
-      if (!message || message.source !== "TRPG_STATS_WINDOW") return;
-
-      switch (message.action) {
-        case "damage":
-          damage(message.id, Number(message.amount));
-          break;
-        case "heal":
-          heal(message.id, Number(message.amount));
-          break;
-        case "applyStatus":
-          applyStatus(message.id, message.status);
-          break;
-        case "removeStatus":
-          removeStatus(message.id, message.instanceId);
-          break;
-        case "remove":
-          removeParticipant(message.id);
-          break;
-        case "close":
-          handleStatsClose();
-          break;
-        default:
-          break;
-      }
-    }
-
-    window.addEventListener("message", onStatsMessage);
-    return () => window.removeEventListener("message", onStatsMessage);
-  }, [applyStatus, damage, handleStatsClose, heal, removeParticipant, removeStatus]);
-
   const renderModalContent = () => {
     switch (openModal) {
       case "tables":
@@ -217,6 +124,8 @@ function VTTPlay() {
         );
       case "dollar":
         return <TreasureGenerator />;
+      case "chart":
+        return <p>Coming Soon</p>;
       case "xp":
         // DM 58: Pass encounter participants so XP values can be calculated automatically.
         return <XpCalculator participants={participants} />;
@@ -250,11 +159,6 @@ function VTTPlay() {
           onMapReady={setMapInfo}
           onMoveToken={moveToken}
           measureMode={measureMode}
-          drawings={drawings}
-          drawingEnabled={drawingEnabled}
-          drawingTool={drawingTool}
-          onAddDrawing={addDrawing}
-          onRemoveDrawing={removeDrawing}
         />
 
         <InitiativeTracker
@@ -284,27 +188,10 @@ function VTTPlay() {
             onZoomIn={() => mapCanvasRef.current?.zoomIn()}
             onZoomOut={() => mapCanvasRef.current?.zoomOut()}
           />
-          <PillMeasure
-            measureMode={measureMode}
-            onSetMeasureMode={(mode) => {
-              setDrawingEnabled(false);
-              setMeasureMode(mode);
-            }}
-          />
-          <PillDraw
-            drawingEnabled={drawingEnabled}
-            drawingTool={drawingTool}
-            onToggleDrawing={(enabled) => {
-              if (enabled) setMeasureMode(null);
-              setDrawingEnabled(enabled);
-            }}
-            onChangeDrawingTool={setDrawingTool}
-            onUndoDrawing={undoDrawing}
-            onClearDrawings={clearDrawings}
-          />
+          <PillMeasure measureMode={measureMode} onSetMeasureMode={setMeasureMode} />
           <PillRight
             onLoot={() => setOpenModal("dollar")}
-            onStats={handleStatsClick}
+            onStats={() => setOpenModal("chart")}
             onXpCalc={() => setOpenModal("xp")}
           />
           <PillBottom

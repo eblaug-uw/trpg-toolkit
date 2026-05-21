@@ -1,7 +1,7 @@
 import "../style/CharacterItem.css";
 
 type Props = {
-  character: { name: string; type: string; imageUrl?: string | null };
+  character: { name: string; type: string };
   isActive: boolean;
   onClick: () => void;
   currentHp?: number;
@@ -18,11 +18,7 @@ function CharacterItem({ character, isActive, onClick, currentHp, onHpClick }: P
         onClick={onClick}
         title={character.name}
       >
-        {character.imageUrl ? (
-          <img className="character-item-image" src={character.imageUrl} alt="" />
-        ) : (
-          <span className="character-item-icon">👤</span>
-        )}
+        <span className="character-item-icon">👤</span>
       </button>
 
       {currentHp !== undefined && (

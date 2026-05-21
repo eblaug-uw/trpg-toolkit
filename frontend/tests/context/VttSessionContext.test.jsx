@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { CampaignsProvider } from "@/context/CampaignsContext";
 import { EncountersProvider, useEncounters } from "@/context/EncountersContext";
@@ -8,14 +8,6 @@ import { serializeVttState } from "@/features/vtt/encounter/serialize";
 
 vi.mock("@/services/vttStorage", () => ({
   getSignedUrl: vi.fn(async () => "blob://mock-url"),
-}));
-
-vi.mock("@/services/monsters55Search", () => ({
-  fetchMonster55ByName: vi.fn(async (name) => ({
-    name,
-    image_url: `https://example.test/${name.toLowerCase()}.png`,
-    hp: 7,
-  })),
 }));
 
 function makeWrapper(initialEntries = ["/vtt/edit"]) {
@@ -75,15 +67,6 @@ describe("VttSessionContext", () => {
       gridOffsetY: 4,
       backgroundRef: { bucket: "maps", name: "saved.png" },
       participants: [makeParticipant({ id: "p1", cell: { x: 1, y: 2 } })],
-      drawings: [
-        {
-          id: "draw-1",
-          tool: "pen",
-          color: "#facc15",
-          strokeWidth: 6,
-          points: [1, 2, 3, 4],
-        },
-      ],
       combat: { active: false, round: 1, queue: [] },
       viewport: null,
     });
@@ -99,8 +82,6 @@ describe("VttSessionContext", () => {
     expect(result.current.grid.showGrid).toBe(false);
     expect(result.current.grid.pixelsPerFoot).toBe(12);
     expect(result.current.backgroundRef).toEqual({ bucket: "maps", name: "saved.png" });
-    expect(result.current.drawings).toHaveLength(1);
-    expect(result.current.drawings[0].points).toEqual([1, 2, 3, 4]);
     expect(result.current.participants).toHaveLength(1);
     expect(result.current.participants[0].cell).toEqual({ x: 1, y: 2 });
   });
@@ -200,54 +181,6 @@ describe("VttSessionContext", () => {
     act(() => result.current.addParticipant(makeParticipant({ id: "p1" })));
     act(() => result.current.moveToken("p1", { x: 4, y: 7 }));
     expect(result.current.participants[0].cell).toEqual({ x: 4, y: 7 });
-  });
-
-  it("adds, removes, clears, and serializes map drawings", () => {
-    const { result } = renderHook(() => useVttSession(), { wrapper: makeWrapper() });
-    const drawing = {
-      id: "draw-1",
-      tool: "pen",
-      color: "#38bdf8",
-      strokeWidth: 8,
-      points: [10, 10, 20, 20],
-    };
-
-    act(() => result.current.addDrawing(drawing));
-    expect(result.current.drawings).toEqual([drawing]);
-    expect(result.current.currentVttState.layers[0].drawings).toEqual([drawing]);
-
-    act(() => result.current.addDrawing({ ...drawing, id: "draw-2" }));
-    act(() => result.current.removeDrawing("draw-1"));
-    expect(result.current.drawings.map((d) => d.id)).toEqual(["draw-2"]);
-
-    act(() => result.current.undoDrawing());
-    expect(result.current.drawings).toEqual([]);
-
-    act(() => {
-      result.current.addDrawing(drawing);
-      result.current.clearDrawings();
-    });
-    expect(result.current.drawings).toEqual([]);
-  });
-
-  it("enriches monster participants with Supabase image_url when missing", async () => {
-    const { result } = renderHook(() => useVttSession(), { wrapper: makeWrapper() });
-
-    act(() =>
-      result.current.addParticipant(
-        makeParticipant({
-          id: "goblin-1",
-          name: "Goblin",
-          type: "monster",
-          data: {},
-        }),
-      ),
-    );
-
-    await waitFor(() => {
-      expect(result.current.participants[0].image_url).toBe("https://example.test/goblin.png");
-    });
-    expect(result.current.participants[0].data.image_url).toBe("https://example.test/goblin.png");
   });
 
   it("damage clamps at 0", () => {
@@ -368,13 +301,6 @@ describe("VttSessionContext", () => {
       result.current.setBackground("blob://x", "fancy-map.png");
       result.current.setShowGrid(false);
       result.current.setPixelsPerFoot(11);
-      result.current.addDrawing({
-        id: "draw-1",
-        tool: "pen",
-        color: "#facc15",
-        strokeWidth: 6,
-        points: [1, 2, 3, 4],
-      });
       result.current.addParticipant(makeParticipant({ id: "p1" }));
     });
     const snap = result.current.currentVttState;
@@ -387,7 +313,6 @@ describe("VttSessionContext", () => {
       gridOffsetY: 0,
     });
     expect(snap.layers[0].map.backgroundRef).toEqual({ bucket: "maps", name: "fancy-map.png" });
-    expect(snap.layers[0].drawings).toHaveLength(1);
     expect(snap.layers[0].participants).toHaveLength(1);
     expect(snap.layers[0].combat).toEqual({ active: false, round: 1, queue: [] });
   });

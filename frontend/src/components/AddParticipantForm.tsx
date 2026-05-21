@@ -12,7 +12,6 @@ type Participant = {
   name: string;
   type: "player" | "monster";
   edition?: "5.0" | "5.5";
-  image_url?: string | null;
   dexterity: number;
   hit_points: number;
   size: number;
@@ -105,7 +104,6 @@ function AddParticipantForm({ onAdd }: { onAdd: (p: Participant) => void }) {
         name: m.name,
         type: "monster",
         edition: "5.5",
-        image_url: m.image_url,
         dexterity: m.dex ?? 10,
         hit_points: m.hp ?? 1,
         size: sizeToCells(m.size),

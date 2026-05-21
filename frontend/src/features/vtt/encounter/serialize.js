@@ -22,10 +22,6 @@ export function serializeVttState(state) {
         map: {
           backgroundRef: state.backgroundRef ?? null,
         },
-        drawings: (state.drawings ?? []).map((drawing) => ({
-          ...drawing,
-          points: [...drawing.points],
-        })),
         participants: state.participants.map((p) => ({ ...p })),
         combat: {
           active: state.combat?.active ?? false,

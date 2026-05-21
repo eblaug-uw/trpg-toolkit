@@ -18,11 +18,7 @@ function CharacterItem({
         onClick={onClick}
         title={character.name}
       >
-        {character.imageUrl ? (
-          <img className="character-item-image" src={character.imageUrl} alt="" />
-        ) : (
-          <span className="character-item-icon">👤</span>
-        )}
+        <span className="character-item-icon">👤</span>
       </button>
 
       {onStatusClick && (

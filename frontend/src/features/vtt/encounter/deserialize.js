@@ -12,10 +12,6 @@ export function deserializeVttState(blob) {
     gridOffsetX: blob.grid.gridOffsetX,
     gridOffsetY: blob.grid.gridOffsetY,
     backgroundRef: activeLayer.map.backgroundRef ?? null,
-    drawings: (activeLayer.drawings ?? []).map((drawing) => ({
-      ...drawing,
-      points: [...drawing.points],
-    })),
     participants: activeLayer.participants.map((p) => ({ ...p })),
     combat: {
       active: activeLayer.combat?.active ?? false,

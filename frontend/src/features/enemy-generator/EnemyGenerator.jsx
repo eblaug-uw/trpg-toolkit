@@ -105,7 +105,6 @@ export default function EnemyGenerator({ onAdd }) {
             name,
             type: "monster",
             edition: "5.5",
-            image_url: monster.image_url,
             dexterity: monster.dex ?? 10,
             hit_points: monster.hp ?? 1,
             size: sizeToCells(monster.size),

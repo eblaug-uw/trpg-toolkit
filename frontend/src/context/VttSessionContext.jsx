@@ -5,7 +5,6 @@ import { deserializeVttState } from "../features/vtt/encounter/deserialize";
 import { serializeVttState } from "../features/vtt/encounter/serialize";
 import { getSignedUrl } from "../services/vttStorage";
 import { CombatTracker } from "../services/combatTracker";
-import { fetchMonster55ByName } from "../services/monsters55Search";
 
 const VttSessionContext = createContext(null);
 
@@ -23,41 +22,6 @@ const DEFAULT_MOB_VISIBILITY_BY_LAYER = {
   3: false,
 };
 
-const DEFAULT_DRAWING_TOOL = {
-  color: "#facc15",
-  strokeWidth: 6,
-  mode: "pen",
-};
-
-const DOWN_STATUS_ID = "down";
-
-const DOWN_STATUS = {
-  instanceId: DOWN_STATUS_ID,
-  statusId: DOWN_STATUS_ID,
-  name: "Down",
-  turnsRemaining: null,
-  stackable: false,
-  effect_summary: "Health is 0. This participant is down until healed above 0 HP.",
-};
-
-function getParticipantImageUrl(participant) {
-  return participant.image_url ?? participant.imageUrl ?? participant.data?.image_url ?? null;
-}
-
-function tickParticipantStatuses(statuses = []) {
-  return statuses
-    .filter((status) => status.statusId === DOWN_STATUS_ID || status.turnsRemaining !== null)
-    .map((status) => {
-      if (status.statusId === DOWN_STATUS_ID) return status;
-
-      return {
-        ...status,
-        turnsRemaining: Math.max(0, Number(status.turnsRemaining ?? 0) - 1),
-      };
-    })
-    .filter((status) => status.statusId === DOWN_STATUS_ID || status.turnsRemaining > 0);
-}
-
 export function VttSessionProvider({ children }) {
   const [searchParams] = useSearchParams();
   const encounterId = searchParams.get("encounterId");
@@ -66,8 +30,6 @@ export function VttSessionProvider({ children }) {
   // --- Persistable state (mirrors serialized JSON shape)
   const [grid, setGrid] = useState(DEFAULT_GRID);
   const [backgroundRef, setBackgroundRef] = useState(null);
-  const [drawings, setDrawings] = useState([]);
-  const [drawingTool, setDrawingTool] = useState(DEFAULT_DRAWING_TOOL);
   const [participants, setParticipants] = useState([]);
   const [stagingParticipants, setStagingParticipants] = useState([]);
 
@@ -80,7 +42,6 @@ export function VttSessionProvider({ children }) {
   // --- Combat: combatRef is the live source of truth;
 
   const combatRef = useRef(null);
-  const imageLookupRef = useRef(new Set());
   const [combatActive, setCombatActive] = useState(false);
   const [initiativeQueue, setInitiativeQueue] = useState([]);
 
@@ -115,55 +76,15 @@ export function VttSessionProvider({ children }) {
     setSelectedParticipant((prev) => (prev?.id === id ? updater(prev) : prev));
   }
 
-  useEffect(() => {
-    const missingImageParticipants = participants.filter((participant) => {
-      if (participant.type !== "monster") return false;
-      if (getParticipantImageUrl(participant)) return false;
-      if (imageLookupRef.current.has(participant.id)) return false;
-      return Boolean(participant.name);
-    });
-
-    if (missingImageParticipants.length === 0) return;
-
-    let cancelled = false;
-    missingImageParticipants.forEach((participant) => imageLookupRef.current.add(participant.id));
-
-    Promise.allSettled(
-      missingImageParticipants.map((participant) =>
-        fetchMonster55ByName(participant.name).then((monster) => ({
-          participantId: participant.id,
-          monster,
-        })),
-      ),
-    ).then((results) => {
-      if (cancelled) return;
-
-      results.forEach((result) => {
-        if (result.status !== "fulfilled") return;
-
-        const { participantId, monster } = result.value;
-        if (!monster.image_url) return;
-
-        updateParticipant(participantId, (participant) => ({
-          ...participant,
-          image_url: monster.image_url,
-          data: {
-            ...participant.data,
-            ...monster,
-          },
-        }));
-      });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [participants]);
-
   function tickStatusesForParticipant(id) {
     updateParticipant(id, (participant) => ({
       ...participant,
-      statuses: tickParticipantStatuses(participant.statuses),
+      statuses: (participant.statuses ?? [])
+        .map((status) => ({
+          ...status,
+          turnsRemaining: Math.max(0, Number(status.turnsRemaining ?? 0) - 1),
+        }))
+        .filter((status) => status.turnsRemaining > 0),
     }));
   }
 
@@ -190,7 +111,6 @@ export function VttSessionProvider({ children }) {
     });
     setBackgroundRef(restored.backgroundRef);
     setBackgroundUrl(null);
-    setDrawings(restored.drawings ?? []);
     setParticipants(restored.participants);
 
     if (restored.combat.active && restored.participants.length > 0) {
@@ -248,22 +168,6 @@ export function VttSessionProvider({ children }) {
     setBackgroundRef({ bucket: "maps", name });
   }
 
-  function addDrawing(drawing) {
-    setDrawings((prev) => [...prev, drawing]);
-  }
-
-  function undoDrawing() {
-    setDrawings((prev) => prev.slice(0, -1));
-  }
-
-  function removeDrawing(id) {
-    setDrawings((prev) => prev.filter((drawing) => drawing.id !== id));
-  }
-
-  function clearDrawings() {
-    setDrawings([]);
-  }
-
   function toggleMobVisibilityForLayer(layer) {
     setMobVisibilityByLayer((prev) => ({
       ...prev,
@@ -308,7 +212,6 @@ export function VttSessionProvider({ children }) {
   }
 
   function removeParticipant(id) {
-    setStagingParticipants((prev) => prev.filter((p) => p.id !== id));
     setParticipants((prev) => {
       const next = prev.filter((p) => p.id !== id);
       if (next.length === 0) {
@@ -320,13 +223,6 @@ export function VttSessionProvider({ children }) {
     });
     if (combatRef.current) {
       combatRef.current.queue = combatRef.current.queue.filter((e) => e.entity.id !== id);
-      if (combatRef.current.queue.length === 0) {
-        combatRef.current = null;
-        setCombatActive(false);
-        setInitiativeQueue([]);
-        setSelectedParticipant((prev) => (prev?.id === id ? null : prev));
-        return;
-      }
       syncQueue();
     }
     setSelectedParticipant((prev) => (prev?.id === id ? null : prev));
@@ -337,22 +233,6 @@ export function VttSessionProvider({ children }) {
   }
 
   function updateHp(id, calc) {
-    updateParticipant(id, (p) => {
-      const nextHp = calc(p);
-      const currentStatuses = p.statuses ?? [];
-      const hasDownStatus = currentStatuses.some((status) => status.statusId === DOWN_STATUS_ID);
-      let nextStatuses = currentStatuses;
-
-      if (nextHp <= 0 && !hasDownStatus) {
-        nextStatuses = [...currentStatuses, DOWN_STATUS];
-      }
-
-      if (nextHp > 0 && hasDownStatus) {
-        nextStatuses = currentStatuses.filter((status) => status.statusId !== DOWN_STATUS_ID);
-      }
-
-      return { ...p, hit_points: nextHp, statuses: nextStatuses };
-    });
     updateParticipant(id, (p) => ({ ...p, hit_points: calc(p) }));
   }
 
@@ -421,7 +301,6 @@ export function VttSessionProvider({ children }) {
       serializeVttState({
         ...grid,
         backgroundRef,
-        drawings,
         participants,
         combat: {
           active: combatActive,
@@ -434,7 +313,7 @@ export function VttSessionProvider({ children }) {
         },
         viewport: null,
       }),
-    [grid, backgroundRef, drawings, participants, combatActive, initiativeQueue],
+    [grid, backgroundRef, participants, combatActive, initiativeQueue],
   );
 
   function saveCurrent(targetId) {
@@ -453,13 +332,6 @@ export function VttSessionProvider({ children }) {
     setGridOffsetY,
     backgroundRef,
     setBackground,
-    drawings,
-    drawingTool,
-    setDrawingTool,
-    addDrawing,
-    removeDrawing,
-    undoDrawing,
-    clearDrawings,
     participants,
 
     // DM 56: Mob visibility controls for map layers.
