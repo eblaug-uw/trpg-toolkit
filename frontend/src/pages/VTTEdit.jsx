@@ -208,7 +208,7 @@ function VTTEdit() {
         <div
           style={{
             position: "absolute",
-            top: 16,
+            top: 64,
             right: 96,
             display: "flex",
             gap: 8,
