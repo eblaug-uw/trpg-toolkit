@@ -4,7 +4,7 @@
 // stable storage name (the URL expires, the name doesn't).
 
 import { useState, useEffect } from "react";
-import { getSignedUrl, listImages } from "../services/vttStorage";
+import { getSignedThumbnailUrls, getSignedUrl, listImages } from "../services/vttStorage";
 
 type Props = {
   onSelect: (url: string, name: string) => void;
@@ -14,7 +14,9 @@ type Props = {
 
 type MapItem = {
   name: string;
-  url: string;
+  thumbnailUrl?: string;
+  originalUrl?: string;
+  fallbackRequested?: boolean;
 };
 
 function defaultPixelsPerFoot(naturalWidth: number): number {
@@ -22,38 +24,104 @@ function defaultPixelsPerFoot(naturalWidth: number): number {
   return 12;
 }
 
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : "Could not load maps";
+}
+
 function MapBackgroundPicker({ onSelect, pixelsPerFoot, onChangePixelsPerFoot }: Props) {
   const [maps, setMaps] = useState<MapItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectingName, setSelectingName] = useState("");
 
   useEffect(() => {
+    let cancelled = false;
+
     const loadMaps = async () => {
       try {
         const names = (await listImages("maps")).filter((n) => !n.startsWith("."));
-        const items = await Promise.all(
-          names.map(async (name) => ({
-            name,
-            url: await getSignedUrl("maps", name),
-          })),
-        );
-        setMaps(items);
-      } catch (err: any) {
-        setError(err.message);
+        if (!cancelled) {
+          setMaps(names.map((name) => ({ name })));
+          setLoading(false);
+        }
+        await getSignedThumbnailUrls("maps", names, undefined, ({ name, url }) => {
+          if (!cancelled) {
+            setMaps((items) =>
+              items.map((item) => (item.name === name ? { ...item, thumbnailUrl: url } : item)),
+            );
+          }
+        });
+      } catch (err: unknown) {
+        if (!cancelled) {
+          setError(getErrorMessage(err));
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
-    loadMaps();
+    void loadMaps();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const handleMapClick = (e: React.MouseEvent<HTMLButtonElement>, url: string, name: string) => {
-    const img = e.currentTarget.querySelector("img");
-    const w = img?.naturalWidth ?? 0;
-    if (w > 0) {
-      onChangePixelsPerFoot(defaultPixelsPerFoot(w));
+  const prepareOriginalUrl = async (name: string): Promise<string> => {
+    const map = maps.find((item) => item.name === name);
+    if (map?.originalUrl) return map.originalUrl;
+
+    const url = await getSignedUrl("maps", name);
+    setMaps((items) =>
+      items.map((item) => (item.name === name ? { ...item, originalUrl: url } : item)),
+    );
+    return url;
+  };
+
+  const prefetchOriginalUrl = (name: string) => {
+    void prepareOriginalUrl(name).catch(() => {});
+  };
+
+  const handleMapClick = async (name: string) => {
+    try {
+      setSelectingName(name);
+      setError("");
+      const previewUrl = maps.find((item) => item.name === name)?.thumbnailUrl;
+      if (previewUrl) {
+        onSelect(previewUrl, name);
+      }
+
+      const url = await prepareOriginalUrl(name);
+      const img = new Image();
+      img.onload = () => onChangePixelsPerFoot(defaultPixelsPerFoot(img.naturalWidth));
+      img.src = url;
+      if (url !== previewUrl) {
+        onSelect(url, name);
+      }
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
+    } finally {
+      setSelectingName("");
     }
-    onSelect(url, name);
+  };
+
+  const handleThumbnailError = async (name: string) => {
+    const map = maps.find((item) => item.name === name);
+    if (!map || map.fallbackRequested) return;
+
+    setMaps((items) =>
+      items.map((item) => (item.name === name ? { ...item, fallbackRequested: true } : item)),
+    );
+
+    try {
+      const url = await getSignedUrl("maps", name);
+      setMaps((items) =>
+        items.map((item) => (item.name === name ? { ...item, thumbnailUrl: url } : item)),
+      );
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
+    }
   };
 
   return (
@@ -102,7 +170,11 @@ function MapBackgroundPicker({ onSelect, pixelsPerFoot, onChangePixelsPerFoot }:
           {maps.map((m) => (
             <button
               key={m.name}
-              onClick={(e) => handleMapClick(e, m.url, m.name)}
+              aria-label={`Select ${m.name}`}
+              onClick={() => void handleMapClick(m.name)}
+              onMouseEnter={() => prefetchOriginalUrl(m.name)}
+              onFocus={() => prefetchOriginalUrl(m.name)}
+              disabled={Boolean(selectingName)}
               style={{
                 padding: 0,
                 border: "1px solid #999",
@@ -111,16 +183,33 @@ function MapBackgroundPicker({ onSelect, pixelsPerFoot, onChangePixelsPerFoot }:
                 background: "transparent",
               }}
             >
-              <img
-                src={m.url}
-                alt={m.name}
-                style={{
-                  width: "120px",
-                  height: "80px",
-                  objectFit: "cover",
-                  display: "block",
-                }}
-              />
+              {m.thumbnailUrl ? (
+                <img
+                  src={m.thumbnailUrl}
+                  alt={m.name}
+                  loading="lazy"
+                  decoding="async"
+                  width="120"
+                  height="80"
+                  onError={() => void handleThumbnailError(m.name)}
+                  style={{
+                    width: "120px",
+                    height: "80px",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              ) : (
+                <span
+                  aria-label={`Loading ${m.name}`}
+                  style={{
+                    width: "120px",
+                    height: "80px",
+                    display: "block",
+                    background: "#333",
+                  }}
+                />
+              )}
             </button>
           ))}
         </div>

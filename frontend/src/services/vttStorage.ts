@@ -1,5 +1,40 @@
 import { supabase } from "./supabaseClient";
 
+type SignedUrlCacheItem = {
+  url: string;
+  expiresAt: number;
+};
+
+type SignedThumbnail = {
+  name: string;
+  url: string;
+};
+
+const signedUrlCache = new Map<string, SignedUrlCacheItem>();
+const signedThumbnailUrlCache = new Map<string, SignedUrlCacheItem>();
+const signedUrlRequests = new Map<string, Promise<string>>();
+
+function getCachedUrl(cache: Map<string, SignedUrlCacheItem>, key: string): string | undefined {
+  const item = cache.get(key);
+  if (!item || item.expiresAt <= Date.now()) {
+    cache.delete(key);
+    return undefined;
+  }
+  return item.url;
+}
+
+function setCachedUrl(
+  cache: Map<string, SignedUrlCacheItem>,
+  key: string,
+  url: string,
+  expiresInSeconds: number,
+) {
+  cache.set(key, {
+    url,
+    expiresAt: Date.now() + Math.max(0, expiresInSeconds - 60) * 1000,
+  });
+}
+
 async function requireUserId(): Promise<string> {
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) {
@@ -45,14 +80,77 @@ export async function getSignedUrl(
 ): Promise<string> {
   const userId = await requireUserId();
   const path = `${userId}/${name}`;
+  const cacheKey = `${bucket}/${path}`;
+  const cachedUrl = getCachedUrl(signedUrlCache, cacheKey);
+  if (cachedUrl) return cachedUrl;
 
-  const { data, error } = await supabase.storage
+  const existingRequest = signedUrlRequests.get(cacheKey);
+  if (existingRequest !== undefined) return existingRequest;
+
+  const request = supabase.storage
     .from(bucket)
-    .createSignedUrl(path, expiresInSeconds);
+    .createSignedUrl(path, expiresInSeconds)
+    .then(({ data, error }) => {
+      if (error || !data) {
+        throw new Error(`Could not sign URL: ${error?.message ?? "unknown error"}`);
+      }
 
-  if (error || !data) {
-    throw new Error(`Could not sign URL: ${error?.message ?? "unknown error"}`);
-  }
+      setCachedUrl(signedUrlCache, cacheKey, data.signedUrl, expiresInSeconds);
+      return data.signedUrl;
+    })
+    .finally(() => {
+      signedUrlRequests.delete(cacheKey);
+    });
 
-  return data.signedUrl;
+  signedUrlRequests.set(cacheKey, request);
+  return request;
+}
+
+export async function getSignedThumbnailUrls(
+  bucket: "maps" | "tokens",
+  names: string[],
+  expiresInSeconds: number = 3600,
+  onThumbnail?: (thumbnail: SignedThumbnail) => void,
+): Promise<SignedThumbnail[]> {
+  const userId = await requireUserId();
+
+  return Promise.all(
+    names.map(async (name) => {
+      const path = `${userId}/${name}`;
+      const cacheKey = `${bucket}/${path}`;
+      const cachedUrl = getCachedUrl(signedThumbnailUrlCache, cacheKey);
+      if (cachedUrl) {
+        const thumbnail = { name, url: cachedUrl };
+        onThumbnail?.(thumbnail);
+        return thumbnail;
+      }
+
+      const storage = supabase.storage.from(bucket);
+      const { data, error } = await storage.createSignedUrl(path, expiresInSeconds, {
+        transform: { width: 240, height: 160, resize: "cover", quality: 60 },
+      });
+
+      if (data) {
+        const thumbnail = { name, url: data.signedUrl };
+        setCachedUrl(signedThumbnailUrlCache, cacheKey, thumbnail.url, expiresInSeconds);
+        onThumbnail?.(thumbnail);
+        return thumbnail;
+      }
+
+      const { data: fallbackData, error: fallbackError } = await storage.createSignedUrl(
+        path,
+        expiresInSeconds,
+      );
+      if (!fallbackData) {
+        throw new Error(
+          `Could not sign thumbnail URL: ${fallbackError?.message ?? error?.message ?? "unknown error"}`,
+        );
+      }
+
+      const thumbnail = { name, url: fallbackData.signedUrl };
+      setCachedUrl(signedThumbnailUrlCache, cacheKey, thumbnail.url, expiresInSeconds);
+      onThumbnail?.(thumbnail);
+      return thumbnail;
+    }),
+  );
 }
