@@ -143,3 +143,82 @@ using (
   and (storage.foldername(name))[1] = auth.uid()::text
 );
 
+-- Campaigns
+create table if not exists campaigns (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  title       text not null,
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists campaigns_user_id_idx on campaigns (user_id);
+
+alter table campaigns enable row level security;
+
+drop policy if exists "Users can read their own campaigns"   on campaigns;
+drop policy if exists "Users can insert their own campaigns" on campaigns;
+drop policy if exists "Users can update their own campaigns" on campaigns;
+drop policy if exists "Users can delete their own campaigns" on campaigns;
+
+create policy "Users can read their own campaigns"
+on campaigns for select
+to authenticated
+using (auth.uid() = user_id);
+
+create policy "Users can insert their own campaigns"
+on campaigns for insert
+to authenticated
+with check (auth.uid() = user_id);
+
+create policy "Users can update their own campaigns"
+on campaigns for update
+to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+create policy "Users can delete their own campaigns"
+on campaigns for delete
+to authenticated
+using (auth.uid() = user_id);
+
+-- Encounters
+
+create table if not exists encounters (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      uuid not null references auth.users(id) on delete cascade,
+  campaign_id  uuid not null references campaigns(id) on delete cascade,
+  title        text not null,
+  vtt_state    jsonb,
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists encounters_user_id_idx     on encounters (user_id);
+create index if not exists encounters_campaign_id_idx on encounters (campaign_id);
+
+alter table encounters enable row level security;
+
+drop policy if exists "Users can read their own encounters"   on encounters;
+drop policy if exists "Users can insert their own encounters" on encounters;
+drop policy if exists "Users can update their own encounters" on encounters;
+drop policy if exists "Users can delete their own encounters" on encounters;
+
+create policy "Users can read their own encounters"
+on encounters for select
+to authenticated
+using (auth.uid() = user_id);
+
+create policy "Users can insert their own encounters"
+on encounters for insert
+to authenticated
+with check (auth.uid() = user_id);
+
+create policy "Users can update their own encounters"
+on encounters for update
+to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+create policy "Users can delete their own encounters"
+on encounters for delete
+to authenticated
+using (auth.uid() = user_id);
