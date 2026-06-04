@@ -21,12 +21,16 @@ import EnemyGenerator from "../features/enemy-generator";
 import SaveEncounterModal from "../components/SaveEncounterModal";
 import ParticipantSheet from "../components/ParticipantSheet";
 import StagingArea from "../features/vtt/StagingArea";
+import VttTutorial from "../features/vtt/VttTutorial";
 
 function VTTEdit() {
   /* --States-- */
   const mapCanvasRef = useRef(null);
   const [openModal, setOpenModal] = useState(null);
   const [drawingEnabled, setDrawingEnabled] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(() => {
+    return localStorage.getItem("vttTutorialSeen") !== "true";
+  });
   const navigate = useNavigate();
 
   const {
@@ -144,6 +148,11 @@ function VTTEdit() {
   function handlePlayClick() {
     if (encounterId) saveCurrent(encounterId);
     navigate(`/vtt/play${encounterId ? `?encounterId=${encounterId}` : ""}`);
+  }
+
+  function handleCloseTutorial() {
+    localStorage.setItem("vttTutorialSeen", "true");
+    setShowTutorial(false);
   }
 
   /* --Render-- */
@@ -350,6 +359,8 @@ function VTTEdit() {
           onExportFile={handleExportFile}
           onClose={() => setOpenModal(null)}
         />
+
+        {showTutorial && <VttTutorial onClose={handleCloseTutorial} />}
       </div>
     </div>
   );
