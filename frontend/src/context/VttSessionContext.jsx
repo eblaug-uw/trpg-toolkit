@@ -17,7 +17,6 @@ import { fetchMonster55ByName } from "../services/monsters55Search";
 import { supabase } from "../services/supabaseClient";
 
 const VttSessionContext = createContext(null);
-const AUTOSAVE_DEBOUNCE_MS = 800;
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
