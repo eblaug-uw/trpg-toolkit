@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { CharacterDraftProvider } from "@/context/CharacterDraftContext";
 
 vi.mock("@/services/supabaseClient", async () => {
   const { createSupabaseMock, FAKE_USER_ID } = await import("../helpers/supabaseMock");
@@ -66,9 +67,11 @@ function renderAt(path) {
     <MemoryRouter initialEntries={[path]}>
       <CampaignsProvider>
         <EncountersProvider>
-          <Routes>
-            <Route path="/campaigns/:id/encounters" element={<EncountersPage />} />
-          </Routes>
+          <CharacterDraftProvider>
+            <Routes>
+              <Route path="/campaigns/:id/encounters" element={<EncountersPage />} />
+            </Routes>
+          </CharacterDraftProvider>
         </EncountersProvider>
       </CampaignsProvider>
     </MemoryRouter>,
