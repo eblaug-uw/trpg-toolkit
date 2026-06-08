@@ -18,9 +18,7 @@ function SaveEncounterModal({
     if (!campaignId) return [];
     const campaign = campaigns.find((c) => c.id === campaignId);
     if (!campaign) return [];
-    return encounters.filter(
-      (e) => e.campaignId === campaignId || campaign.encounterIds.includes(e.id),
-    );
+    return encounters.filter((e) => e.campaign_id === campaignId);
   }, [campaignId, campaigns, encounters]);
 
   const canSaveNew = newName.trim().length > 0;

@@ -16,3 +16,31 @@
 .character-list-manage {
   font-size: 0.85rem;
 }
+
+.character-list__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.character-list-meta {
+  font-size: 0.78rem;
+  color: #aaa;
+}
+
+.character-list__actions {
+  display: flex;
+  gap: 6px;
+}
+.character-list-delete {
+  font-size: 0.85rem;
+  color: #eee;
+  background: #5a2222;
+  border: 1px solid #844;
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.character-list-delete:hover {
+  background: #7a2828;
+}

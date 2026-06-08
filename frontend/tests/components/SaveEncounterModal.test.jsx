@@ -15,8 +15,8 @@ const sampleVttState = () => ({
   viewport: null,
 });
 
-const campaign = { id: "c1", title: "Lost Mines", encounterIds: ["e1"] };
-const encounters = [{ id: "e1", title: "Goblin Ambush", campaignId: "c1", vttState: null }];
+const campaign = { id: "c1", title: "Lost Mines" };
+const encounters = [{ id: "e1", title: "Goblin Ambush", campaign_id: "c1", vtt_state: null }];
 
 const setup = (overrides = {}) => {
   const props = {

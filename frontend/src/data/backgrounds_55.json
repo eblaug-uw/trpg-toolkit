@@ -1,0 +1,1608 @@
+{
+  "backgrounds": [
+    {
+      "id": "aberrant_heir",
+      "name": "Aberrant Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Aberrant Dragonmark",
+      "ability_score_options": ["Strength", "Constitution", "Charisma"],
+      "skill_proficiencies": ["History", "Intimidation"],
+      "tool_proficiency": "Disguise Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Dagger", "Disguise Kit", "Costume", "Traveler’s Clothes"],
+          "gold": 16
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Your aberrant dragonmark has made life challenging since it manifested. You might have hidden it successfully for most of your life or managed to avoid notice. Alternatively, you might have encountered suspicion and fear, perhaps coupled with the outright antagonism of one or more dragonmarked houses. You might have formed an association with the House Tarkanan criminal organization (named for one of the most notorious leaders of the aberrant dragonmarked in the War of the Mark twenty-five centuries ago). Or you might struggle to find your own way in the world, relying on your wits and the power of your mark."
+    },
+    {
+      "id": "acolyte",
+      "name": "Acolyte",
+      "source": "Player’s Handbook",
+      "feat": "Magic Initiate (Cleric)",
+      "ability_score_options": ["Intelligence", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Insight", "Religion"],
+      "tool_proficiency": "Calligrapher's Supplies",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Calligrapher's Supplies",
+            "Book (prayers)",
+            "Holy Symbol",
+            "Parchment (10 sheets)",
+            "Robe"
+          ],
+          "gold": 8
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You devoted yourself to service in a temple, either nestled in a town or secluded in a sacred grove. There you performed rites in honor of a god or pantheon. You served under a priest and studied religion. Thanks to your priest’s instruction and your own devotion, you also learned how to channel a modicum of divine power in service to your place of worship and the people who prayed there."
+    },
+    {
+      "id": "archaeologist",
+      "name": "Archaeologist",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Skilled",
+      "ability_score_options": ["Dexterity", "Intelligence", "Wisdom"],
+      "skill_proficiencies": ["History", "Survival"],
+      "tool_proficiency": "Cartographer's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Cartographer's Tools",
+            "Bullseye Lantern",
+            "Map",
+            "Map or Scroll Case",
+            "Shovel",
+            "Tent",
+            "Traveler's Clothes"
+          ],
+          "gold": 17
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You’ve made a lifelong study of the lost and fallen cultures of the past, visiting their ruins, deciphering their written records, and examining their surviving masterworks. Perhaps you studied at Morgrave University or a similar institution, supplementing your time in the library with fieldwork amid ancient ruins in remote locations. Some archaeologists plunder the treasures of the past in search of wealth or fame, but most consider it their calling to learn from the past. In any case, the archaeologists of Eberron combine the qualities of learned historians with the grit of treasure hunters."
+    },
+    {
+      "id": "artisan",
+      "name": "Artisan",
+      "source": "Player’s Handbook",
+      "feat": "Crafter",
+      "ability_score_options": ["Strength", "Dexterity", "Intelligence"],
+      "skill_proficiencies": ["Investigation", "Persuasion"],
+      "tool_proficiency": "Choose one kind of Artisan's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Artisan's Tools (same as above)", "2 Pouches", "Traveler’s Clothes"],
+          "gold": 32
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You began mopping floors and scrubbing counters in an artisan’s workshop for a few coppers per day as soon as you were strong enough to carry a bucket. When you were old enough to apprentice, you learned to create basic crafts of your own, as well as how to sweet-talk the occasional demanding customer. Your trade has also given you a keen eye for detail."
+    },
+    {
+      "id": "carouser",
+      "name": "Carouser",
+      "source": "Astarion's Book of Hungers",
+      "feat": "Tireless Reveler",
+      "ability_score_options": ["Dexterity", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Deception", "Persuasion"],
+      "tool_proficiency": "Choose one kind of Gaming Set",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Dagger",
+            "Gaming Set",
+            "Fine Clothes",
+            "Glass Bottle",
+            "Mirror",
+            "Perfume",
+            "Pouch",
+            "Tinderbox"
+          ],
+          "gold": 19
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You grew to adulthood in the beating heart of a large city, such as Baldur’s Gate. You spent countless evenings in taverns, playhouses, parlors, and gambling dens, savoring all the city had to offer. You’re a natural at interacting with people to learn their secrets, whether over a high-stakes game or at a high-class soiree. You might have been thrown out of an establishment or ten, but only by people who don’t know how to party."
+    },
+    {
+      "id": "charlatan",
+      "name": "Charlatan",
+      "source": "Player’s Handbook",
+      "feat": "Skilled",
+      "ability_score_options": ["Dexterity", "Constitution", "Charisma"],
+      "skill_proficiencies": ["Deception", "Sleight of Hand"],
+      "tool_proficiency": "Forgery Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Forgery Kit", "Costume", "Fine Clothes"],
+          "gold": 15
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Once you were old enough to order an ale, you soon had a favorite stool in every tavern within ten miles of where you were born. As you traveled the circuit from public house to watering hole, you learned to prey on unfortunates who were in the market for a comforting lie or two—perhaps a sham potion or forged ancestry records."
+    },
+    {
+      "id": "chondathan_freebooter",
+      "name": "Chondathan Freebooter",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Skilled",
+      "ability_score_options": ["Strength", "Dexterity", "Wisdom"],
+      "skill_proficiencies": ["Athletics", "Sleight of Hand"],
+      "tool_proficiency": "Weaver’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Dagger",
+            "Weaver’s Tools",
+            "Backpack",
+            "Ball Bearings",
+            "Basket",
+            "Bedroll",
+            "Bucket",
+            "Rations (3 days’ worth)",
+            "Rope",
+            "Signal Whistle",
+            "Traveler’s Clothes"
+          ],
+          "gold": 38
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Though most youths in Chondath accept their four-year term of compulsory military service, you bristled at that authoritarian attempt to control your life. You forsook your nationhood, discarded your given name, and worked as a freebooter with the first ship that would have you. Since then, you’ve traveled the Vilhon Reach. Though you’ve never sailed more than a few dozen leagues from land, you make up for it with deep local connections and the breadth of your experiences."
+    },
+    {
+      "id": "criminal",
+      "name": "Criminal",
+      "source": "Player’s Handbook",
+      "feat": "Alert",
+      "ability_score_options": ["Dexterity", "Constitution", "Intelligence"],
+      "skill_proficiencies": ["Sleight of Hand", "Stealth"],
+      "tool_proficiency": "Thieves’ Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["2 Daggers", "Thieves’ Tools", "Crowbar", "2 Pouches", "Traveler’s Clothes"],
+          "gold": 16
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You eked out a living in dark alleyways, cutting purses or burgling shops. Perhaps you were part of a small gang of like- minded wrongdoers who looked out for each other. Or maybe you were a lone wolf, fending for yourself against the local thieves’ guild and more fearsome lawbreakers."
+    },
+    {
+      "id": "dead_magic_dweller",
+      "name": "Dead Magic Dweller",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Healer",
+      "ability_score_options": ["Strength", "Constitution", "Wisdom"],
+      "skill_proficiencies": ["Medicine", "Survival"],
+      "tool_proficiency": "Leatherworker’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Greatclub",
+            "Leatherworker’s Tools",
+            "Bedroll",
+            "Blanket",
+            "Healer’s Kit",
+            "Pole",
+            "Rations (3 days’ worth)",
+            "Tent",
+            "Tinderbox",
+            "5 Torches",
+            "Traveler’s Clothes",
+            "Waterskin"
+          ],
+          "gold": 32
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "The dead magic zones of the Anauroch desert are anathema to spellcasters and monsters that rely on magic—which is exactly why you made your life there. Perhaps you’re on the run from Red Wizards, or you ran afoul of a powerful djinni in Calimshan. Whatever the case, you decided that living in Anauroch was your best option. After long months or years, you’re stronger, wiser, and armed with hard-earned knowledge of desert medicine and wasteland survival."
+    },
+    {
+      "id": "dragon_cultist",
+      "name": "Dragon Cultist",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Cult of the Dragon Initiate",
+      "ability_score_options": ["Dexterity", "Constitution", "Intelligence"],
+      "skill_proficiencies": ["Deception", "Stealth"],
+      "tool_proficiency": "Calligrapher's Supplies",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Calligrapher’s Supplies",
+            "Dagger",
+            "Glass Bottle",
+            "Lamp",
+            "Manacles",
+            "Oil (5 flasks)",
+            "2 Pouches",
+            "Robe",
+            "Rope"
+          ],
+          "gold": 30
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You are an initiate of the Cult of the Dragon. You discovered or were brought to a cell cult, where you exemplified the values honored by dragon cultists: duplicity, secrecy, and determination. In exchange for your oath to serve the cult, the cult offered you the company of fellow dragon worshipers, plus access to resources that might help further your studies in the realms of arcana and occultism."
+    },
+    {
+      "id": "emerald_enclave_caretaker",
+      "name": "Emerald Enclave Caretaker",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Emerald Enclave Fledgling",
+      "ability_score_options": ["Constitution", "Intelligence", "Wisdom"],
+      "skill_proficiencies": ["Nature", "Survival"],
+      "tool_proficiency": "Herbalism Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Shortbow",
+            "20 Arrows",
+            "Herbalism Kit",
+            "Bedroll",
+            "Blanket",
+            "Pouch",
+            "Tent",
+            "Traveler’s Clothes"
+          ],
+          "gold": 13
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "As a Caretaker with the Emerald Enclave, you take care of those who care for the world. Either alongside your fellow Emerald Enclave members or by yourself, you’ve learned essential skills for living with the land: how to track game, where to forage for useful herbs, and even how to forecast the weather. You use these talents to maintain the balance between civilization and the wilds and to rid the world of unnatural creatures."
+    },
+    {
+      "id": "entertainer",
+      "name": "Entertainer",
+      "source": "Player’s Handbook",
+      "feat": "Musician",
+      "ability_score_options": ["Strength", "Dexterity", "Charisma"],
+      "skill_proficiencies": ["Acrobatics", "Performance"],
+      "tool_proficiency": "Choose one kind of Musical Instrument",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Musical Instrument (same as above)",
+            "2 Costumes",
+            "Mirror",
+            "Perfume",
+            "Traveler’s Clothes"
+          ],
+          "gold": 11
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You spent much of your youth following roving fairs and carnivals, performing odd jobs for musicians and acrobats in exchange for lessons. You may have learned how to walk a tightrope, how to play a lute in a distinct style, or how to recite poetry with impeccable diction. To this day, you thrive on applause and long for the stage."
+    },
+    {
+      "id": "farmer",
+      "name": "Farmer",
+      "source": "Player’s Handbook",
+      "feat": "Tough",
+      "ability_score_options": ["Strength", "Constitution", "Wisdom"],
+      "skill_proficiencies": ["Animal Handling", "Nature"],
+      "tool_proficiency": "Carpenter's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Sickle",
+            "Carpenter's Tools",
+            "Healer's Kit",
+            "Iron Pot",
+            "Shovel",
+            "Traveler’s Clothes"
+          ],
+          "gold": 30
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You grew up close to the land. Years tending animals and cultivating the earth rewarded you with patience and good health. You have a keen appreciation for nature’s bounty alongside a healthy respect for nature’s wrath."
+    },
+    {
+      "id": "flaming_fist_mercenary",
+      "name": "Flaming Fist Mercenary",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Tough",
+      "ability_score_options": ["Strength", "Constitution", "Charisma"],
+      "skill_proficiencies": ["Intimidation", "Perception"],
+      "tool_proficiency": "Smith’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Mace", "Smith’s Tools", "Fine Clothes", "Manacles", "Portable Ram"],
+          "gold": 4
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "The chief law enforcement branch of Baldur’s Gate is the Flaming Fist, a brawny mercenary guild led by the city’s grand duke. You once served as a Flaming Fist, where you learned how to preempt trouble with your intimidating stare and, when necessary, absorb deadly blows. Flaming Fist mercenaries, active or retired, are known as some of the toughest, most resilient warriors along the Sword Coast, and you seek to maintain that reputation."
+    },
+    {
+      "id": "genie_touched",
+      "name": "Genie Touched",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Magic Initiate (Wizard)",
+      "ability_score_options": ["Dexterity", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Perception", "Persuasion"],
+      "tool_proficiency": "Glassblower’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Light Hammer",
+            "Glassblower’s Tools",
+            "Fine Clothes",
+            "Lamp",
+            "Oil (3 flasks)",
+            "Waterskin"
+          ],
+          "gold": 2
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Although genies no longer rule Calimshan, genie magic is still common in your homeland. Perhaps you inadvertently summoned a djinni from a magic lamp, or maybe you came upon an oasis guarded by a marid. A dao might have saved you from a landslide, or you bargained with an efreeti for fleeting wealth. However your fate intersected with that of a genie, the experience left you with a keen eye, a silver tongue, and more than a touch of magic."
+    },
+    {
+      "id": "guard",
+      "name": "Guard",
+      "source": "Player’s Handbook",
+      "feat": "Alert",
+      "ability_score_options": ["Strength", "Intelligence", "Wisdom"],
+      "skill_proficiencies": ["Athletics", "Perception"],
+      "tool_proficiency": "Choose one kind of Gaming Set",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Spear",
+            "Light Crossbow",
+            "20 Bolts",
+            "Gaming Set (same as above)",
+            "Hooded Lantern",
+            "Manacles",
+            "Quiver",
+            "Traveler’s Clothes"
+          ],
+          "gold": 12
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Your feet ache when you remember the countless hours you spent at your post in the tower. You were trained to keep one eye looking outside the wall, watching for marauders sweeping from the nearby forest, and your other eye looking inside the wall, searching for cutpurses and troublemakers."
+    },
+    {
+      "id": "guide",
+      "name": "Guide",
+      "source": "Player’s Handbook",
+      "feat": "Magic Initiate (Druid)",
+      "ability_score_options": ["Dexterity", "Constitution", "Wisdom"],
+      "skill_proficiencies": ["Stealth", "Survival"],
+      "tool_proficiency": "Cartographer's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Shortbow",
+            "20 Arrows",
+            "Cartographer's Tools",
+            "Bedroll",
+            "Quiver",
+            "Tent",
+            "Traveler’s Clothes"
+          ],
+          "gold": 3
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You came of age outdoors, far from settled lands. Your home was anywhere you chose to spread your bedroll. There are wonders in the wilderness— strange monsters, pristine forests and streams, overgrown ruins of great halls once trod by giants— and you learned to fend for yourself as you explored them. From time to time, you guided friendly nature priests who instructed you in the fundamentals of channeling the magic of the wild."
+    },
+    {
+      "id": "harper",
+      "name": "Harper",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Harper Agent",
+      "ability_score_options": ["Dexterity", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Performance", "Sleight of Hand"],
+      "tool_proficiency": "Disguise Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Disguise Kit",
+            "Bedroll",
+            "Costume",
+            "Grappling Hook",
+            "Rope",
+            "Traveler’s Clothes"
+          ],
+          "gold": 14
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You accepted an invitation to join the Harpers, pledging an oath to uphold the Harper code and act in service to the common good. Like all Harpers, you understand the value of teamwork as well as when it’s best to go it alone. Harper veterans have taught you the order’s secrets—magical melodies, special watchwords, and legerdemain—and have entrusted you to use such knowledge to surveil and undermine the forces of evil."
+    },
+    {
+      "id": "hermit",
+      "name": "Hermit",
+      "source": "Player’s Handbook",
+      "feat": "Healer",
+      "ability_score_options": ["Constitution", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Medicine", "Religion"],
+      "tool_proficiency": "Herbalism Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Quarterstaff",
+            "Herbalism Kit",
+            "Bedroll",
+            "Book (philosophy)",
+            "Lamp",
+            "Oil (3 flasks)",
+            "Traveler’s Clothes"
+          ],
+          "gold": 16
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You spent your early years secluded in a hut or monastery located well beyond the outskirts of the nearest settlement. In those days, your only companions were the creatures of the forest and those who would occasionally visit to bring news of the outside world and supplies. The solitude allowed you to spend many hours pondering the mysteries of creation."
+    },
+    {
+      "id": "house_agent",
+      "name": "House Agent",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Lucky",
+      "ability_score_options": ["Strength", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Investigation", "Persuasion"],
+      "tool_proficiency": "Choose one kind of Artisan’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Artisan’s Tools (same as above)", "Fine Clothes"],
+          "gold": 20
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You are connected to one of the dragonmarked houses, but you haven’t (yet) manifested a dragonmark. You might be a member of the family by birth or an employee of the house with no familial connection. You’ve earned your living by doing the business of the house, serving as the hands, feet, and eyes of house leadership in the world. You might have many old friends, mentors, and rivals in the house you serve, plus allies or enemies in other houses."
+    },
+    {
+      "id": "house_cannith_heir",
+      "name": "House Cannith Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Making",
+      "ability_score_options": ["Strength", "Dexterity", "Intelligence"],
+      "skill_proficiencies": ["Investigation", "Sleight of Hand"],
+      "tool_proficiency": "Choose one kind of Artisan’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Artisan’s Tools (same as above)", "Crowbar", "Fine Clothes", "2 Pouches"],
+          "gold": 17
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "As a scion of House Cannith, you carry a proud legacy. Cannith creates wonders of the modern world, and you’re expected to contribute to the ongoing success of the house through invention, scholarship, business, or diplomacy. The only thing that can stand in your way is the deep rift within your own house. The sooner the three barons sort out which of them is the true head of the house (and you no doubt have your preference) the sooner House Cannith can claim its of them is the true head of the house (and you, no doubt, have your preference), the sooner House Cannith can claim its rightful position of leadership among all the dragonmarked houses."
+    },
+    {
+      "id": "house_deneith_heir",
+      "name": "House Deneith Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Sentinel",
+      "ability_score_options": ["Strength", "Constitution", "Wisdom"],
+      "skill_proficiencies": ["Insight", "Perception"],
+      "tool_proficiency": "Choose one kind of Gaming Set",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Spear",
+            "Shortbow",
+            "20 Arrows",
+            "Gaming Set (same as above)",
+            "Fine Clothes",
+            "Healer’s Kit",
+            "Quiver"
+          ],
+          "gold": 1
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "As an heir of House Deneith, you’ve been trained for combat—not to seek it out, but not to shy from it either. You’ve learned the importance of duty, honor, and the laws used to govern society when duty and honor fail. As you established your name in the house, you might have worked as a bodyguard for some minor dignitary, as a mercenary, or as a marshal hunting fugitives. Now you’re prepared to claim your rightful standing in the mightiest of the dragonmarked houses."
+    },
+    {
+      "id": "house_ghallanda_heir",
+      "name": "House Ghallanda Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Hospitality",
+      "ability_score_options": ["Dexterity", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Insight", "Persuasion"],
+      "tool_proficiency": "Cook's Utensils",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Cook’s Utensils",
+            "Fine Clothes",
+            "Iron Pot",
+            "Lamp",
+            "Oil (5 flasks)",
+            "Perfume"
+          ],
+          "gold": 26
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Thanks to your connections to House Ghallanda, you grew up accustomed to creature comforts, lively conversation, good drink, and delicious food. You might be a charming and witty scion of the house who loves nothing more than a pleasant evening beside a warm hearth. Or you could be a schemer who exploits bonds of trust and friendship to bend others to your will. You might pursue an adventuring career to master the cuisines of other cultures and ages, expand your network of useful contacts, or earn enough money to open your own inn."
+    },
+    {
+      "id": "house_jorasco_heir",
+      "name": "House Jorasco Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Healing",
+      "ability_score_options": ["Dexterity", "Constitution", "Wisdom"],
+      "skill_proficiencies": ["Medicine", "Stealth"],
+      "tool_proficiency": "Herbalism Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Herbalism Kit", "Fine Clothes", "Healer’s Kit"],
+          "gold": 25
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "House Jorasco teaches that illness and injury stalk the living like ghosts, robbing people of health and longevity. You’ve been taught ways to combat these scourges, both magically and medically. You’re trained to use those skills in the service of others—and to ascertain that you are always appropriately compensated for this service, ensuring the health and longevity of House Jorasco. You might be a kindly healer with no stomach for combat or a dispassionate specialist who knows exactly how to incapacitate or kill an enemy with precise strikes."
+    },
+    {
+      "id": "house_kundarak_heir",
+      "name": "House Kundarak Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Warding",
+      "ability_score_options": ["Strength", "Constitution", "Intelligence"],
+      "skill_proficiencies": ["Arcana", "Investigation"],
+      "tool_proficiency": "Thieves’ Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Thieves’ Tools", "Fine Clothes"],
+          "gold": 10
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "As an heir of House Kundarak, you take great pride in your family and its work of safeguarding the valuables of Khorvaire. Your house has always been a leader among the clans of the Mror Holds. Though it has never held the crown, it has a reputation for professionalism, honor, and order. You might strive to uphold that reputation, you might place your own sense of honor over your family’s, or you could rebel against the house’s expectations and fl out the demands of honor."
+    },
+    {
+      "id": "house_lyrandar_heir",
+      "name": "House Lyrandar Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Storm",
+      "ability_score_options": ["Strength", "Dexterity", "Charisma"],
+      "skill_proficiencies": ["Acrobatics", "Nature"],
+      "tool_proficiency": "Navigator's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Navigator’s Tools", "Fine Clothes"],
+          "gold": 10
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "As an heir of House Lyrandar, the wind is your ally, the sea and sky your dominion. Despite the devastation of the Last War, your house is on the ascendancy, buoyed by its mastery of the new airship technology. You might have spent your early career on the sea as a sailor or navigator; as a shipwright; or as a member of the Raincallers’ Guild, manipulating the weather and assisting with irrigation and similar public works. Or you might have been among the fi rst in your house to take to the skies as part of an airship crew. Service to the house might call you to hunt pirates in the Lhazaar Sea, to explore ancient ruins in search of magical technology to bind elemental forces, or to salvage a wrecked airship in the Mournland."
+    },
+    {
+      "id": "house_medani_heir",
+      "name": "House Medani Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Detection",
+      "ability_score_options": ["Dexterity", "Intelligence", "Wisdom"],
+      "skill_proficiencies": ["Insight", "Investigation"],
+      "tool_proficiency": "Disguise Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Disguise Kit", "Fine Clothes"],
+          "gold": 10
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "As a member of House Medani, your life revolves around subterfuge—not engaging in it, but preventing others from doing so. You see the world around you as an intricate web of schemes, plots, and counterplots. Assessing the range of possibilities, you use instinct to predict threats to your clients and defend against them well before those threats can turn into danger. Defending against an assassin’s blade is a job any Deneith sellsword or Tharashk enforcer can do— making sure no one ever draws that blade is the Medani way."
+    },
+    {
+      "id": "house_orien_heir",
+      "name": "House Orien Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Passage",
+      "ability_score_options": ["Dexterity", "Constitution", "Intelligence"],
+      "skill_proficiencies": ["Acrobatics", "Athletics"],
+      "tool_proficiency": "Cartographer's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Cartographer’s Tools", "Fine Clothes", "Map", "Map or Scroll Case"],
+          "gold": 18
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Before the Last War, Orien’s influence covered Khorvaire, and its trade roads and lightning rails were the lifeblood of a vibrant kingdom. But the war cut those arteries, leaving Galifar dead and House Orien bloodied. While the house’s couriers and shippers still keep goods moving on both sides of the continent, finding a way to reestablish routes across the Mournland remains the house’s top priority. In the meantime, Orien adventurers can serve their house by investigating missing couriers, recovering goods stolen from caravans, and troubleshooting disruptions to the lightning rail."
+    },
+    {
+      "id": "house_phiarlan_heir",
+      "name": "House Phiarlan Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Shadow",
+      "ability_score_options": ["Dexterity", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Deception", "Stealth"],
+      "tool_proficiency": "Disguise Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Disguise Kit", "Fine Clothes"],
+          "gold": 10
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Though you have seen wealth, fame, and beauty as a child of House Phiarlan, you consider knowledge (and the power it brings) the greatest treasure of all. You might pursue that power as an artist or performer, always alert for secrets even as you regale the world with story, song, acrobatics, or art. Or you might foster ties to the secretive espionage arm of your house: the Serpentine Table."
+    },
+    {
+      "id": "house_sivis_heir",
+      "name": "House Sivis Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Scribing",
+      "ability_score_options": ["Intelligence", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["History", "Perception"],
+      "tool_proficiency": "Calligrapher's Supplies",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Calligrapher's Supplies",
+            "Fine Clothes",
+            "Ink",
+            "5 Ink Pens",
+            "Paper (30 sheets)",
+            "Parchment (9 sheets)"
+          ],
+          "gold": 8
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "For nearly thirty centuries, your family has worked to maintain order. Communication is the cord that binds civilization together, and your ancestors settled the disputes of sovereigns and helped the dragonmarked houses find a place in the world. Few people realize the influence House Sivis has had on the shape of the modern age—just as few know how often a royal adviser holds more power than the actual ruler. While the other dragonmarked houses fight for fame and recognition, House Sivis plays a long game of subtle influence behind the scenes, keeping order amid the chaos of unending intrigue."
+    },
+    {
+      "id": "house_tharashk_heir",
+      "name": "House Tharashk Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Finding",
+      "ability_score_options": ["Constitution", "Intelligence", "Wisdom"],
+      "skill_proficiencies": ["Perception", "Survival"],
+      "tool_proficiency": "Choose one kind of Gaming Set",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Gaming Set (same as above)",
+            "Climber’s Kit",
+            "Fine Clothes",
+            "Hunting Trap",
+            "Manacles"
+          ],
+          "gold": 2
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Heirs of other houses lead lives of luxury, but in House Tharashk you learned self-reliance from an early age. What your young house lacks in resources, it makes up for in spirit and determination. Tharashk has a destiny to fulfill, and you have a part in it. Whether in combat or in social interaction, you have learned to play the role of the hunter: study your enemies, exploit their weaknesses, and do whatever it takes to achieve victory."
+    },
+    {
+      "id": "house_thuranni_heir",
+      "name": "House Thuranni Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Shadow",
+      "ability_score_options": ["Dexterity", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Performance", "Stealth"],
+      "tool_proficiency": "Choose one kind of Musical Instrument",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Musical Instrument (same as above)", "Costume", "Fine Clothes"],
+          "gold": 13
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Given House Thuranni’s short history and focus on espionage, its leaders expect you to further the interests of the house at every opportunity. During the house’s formative years as an independent entity, every move you make has been watched closely. This isn’t to say that every Thuranni heir must actively spy at the behest of house elders. But even the house’s most insular artists and artisans must keep up with current political events and pass on or collect information when asked."
+    },
+    {
+      "id": "house_vadalis_heir",
+      "name": "House Vadalis Heir",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Mark of Handling",
+      "ability_score_options": ["Constitution", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Animal Handling", "Nature"],
+      "tool_proficiency": "Herbalism Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Herbalism Kit", "Fine Clothes", "Net"],
+          "gold": 29
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You have grown up with respect for both family and nature. You understand the culture of the Five Nations, but you don’t get drawn into the games of ambition and status that others play. You know the beauty and power inherent in life, the mysteries of birth and death, and the miracles that happen in between. Your insights into the natural world allow you to see through the lies and deception of city folk—and never let on how much of their subterfuge you recognize."
+    },
+    {
+      "id": "ice_fisher",
+      "name": "Ice Fisher",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Alert",
+      "ability_score_options": ["Strength", "Dexterity", "Constitution"],
+      "skill_proficiencies": ["Animal Handling", "Athletics"],
+      "tool_proficiency": "Woodcarver’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Woodcarver’s Tools",
+            "Basket",
+            "Block and Tackle",
+            "Bucket",
+            "Chain",
+            "Hunting Trap",
+            "Net",
+            "Pole",
+            "Rations (3 days’ worth)",
+            "Rope",
+            "Traveler’s Clothes"
+          ],
+          "gold": 32
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You come from a proud line of ice fishers out of Ten-Towns in Icewind Dale. Catching knucklehead trout isn’t the most glorious trade in the North, but it’s an honest living. You’ve trained your senses for the slightest tug on the line, wrestled big trout out of ice-covered lakes, and gutted enough knucklehead trout to feed your village many times over. These experiences have toughened your body and mind for a life of adventuring."
+    },
+    {
+      "id": "inquisitive",
+      "name": "Inquisitive",
+      "source": "Eberron: Forge of the Artificer",
+      "feat": "Alert",
+      "ability_score_options": ["Constitution", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Insight", "Investigation"],
+      "tool_proficiency": "Thieves’ Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Thieves’ Tools",
+            "Bullseye Lantern",
+            "Crowbar",
+            "Oil (10 flasks)",
+            "Traveler’s Clothes"
+          ],
+          "gold": 10
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You have honed your talents of investigation and deduction—fueled by a boundless curiosity—to explore mysteries, find missing people, recover stolen goods, unearth corruption and conspiracies, and solve crimes. As an inquisitive, you might have pursued freelance work, signed on with an inquisitive agency (perhaps one licensed by a dragonmarked house such as Medani or Tharashk), reported for a broadsheet, or worked for a police force."
+    },
+    {
+      "id": "knight_of_the_gauntlet",
+      "name": "Knight of the Gauntlet",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Tyro of the Gauntlet",
+      "ability_score_options": ["Strength", "Intelligence", "Wisdom"],
+      "skill_proficiencies": ["Athletics", "Medicine"],
+      "tool_proficiency": "Smith's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Spear",
+            "Smith’s Tools",
+            "Bullseye Lantern",
+            "Holy Symbol",
+            "Manacles",
+            "Oil (5 flasks)",
+            "Tinderbox",
+            "Traveler’s Clothes"
+          ],
+          "gold": 9
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Not all who answer the call of a higher power are content to pore over scripture in a stuffy temple apse. You chose the path of the holy warrior by joining the Order of the Gauntlet. As a knight of the Gauntlet, you exercise righteous scorn for the forces of evil, unswerving camaraderie for your siblings in arms, and heartfelt compassion for the survivors of war. With weapon and holy symbol in hand, you’ve sworn not to rest until the light of justice has vanquished the shadow of chaos across Faerûn."
+    },
+    {
+      "id": "lords_alliance_vassal",
+      "name": "Lords’ Alliance Vassal",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Lords’ Alliance Agent",
+      "ability_score_options": ["Strength", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Insight", "Persuasion"],
+      "tool_proficiency": "Calligrapher's Supplies",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "2 Javelins",
+            "Calligrapher’s Supplies",
+            "Fine Clothes",
+            "Ink",
+            "5 Ink Pens",
+            "Parchment (9 sheets)"
+          ],
+          "gold": 13
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You’ve pledged your loyalty to a member-city of the Lords’ Alliance. As an Alliance agent, you must uphold the tenets of the Alliance and seek to increase safety and prosperity along the Sword Coast. You’re sworn to bring honor and glory to your lord’s house, whether that means securing trade roads for a merchant-lord of Waterdeep or vanquishing monsters upriver of Daggerford. You’ve trained in the arts of swordplay and statecraft and are as deft with a blade as you are with a quill."
+    },
+    {
+      "id": "lorwyn_expert",
+      "name": "Lorwyn Expert",
+      "source": "Lorwyn: First Light",
+      "feat": "Child of the Sun",
+      "ability_score_options": ["Strength", "Constitution", "Wisdom"],
+      "skill_proficiencies": ["Athletics", "Nature"],
+      "tool_proficiency": "Cartographer’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Quarterstaff",
+            "Cartographer’s Tools",
+            "Backpack",
+            "Basket",
+            "Parchment (4 sheets)",
+            "Rope",
+            "Traveler’s Clothes"
+          ],
+          "gold": 29
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You hail from Lorwyn, a land of eternal sunshine, or you have studied the place with great intensity. You consider the majestic creature Eirdu the living embodiment of the sun, and you love embarking on whimsical adventures. You hold your loved ones close even if only emotionally for you’ve seen some venture into Shadowmoor or beyond and become your loved ones close, even if only emotionally, for you ve seen some venture into Shadowmoor or beyond and become faded versions of themselves. You’re nevertheless courageous and always long for new experiences."
+    },
+    {
+      "id": "merchant",
+      "name": "Merchant",
+      "source": "Player’s Handbook",
+      "feat": "Lucky",
+      "ability_score_options": ["Constitution", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Animal Handling", "Persuasion"],
+      "tool_proficiency": "Navigator's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Navigator's Tools", "2 Pouches", "Traveler’s Clothes"],
+          "gold": 22
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You were apprenticed to a trader, caravan master, or shopkeeper, learning the fundamentals of commerce. You traveled broadly, and you earned a living by buying and selling the raw materials artisans need to practice their craft or finished works from such crafters. You might have transported goods from one place to another (by ship, wagon, or caravan) or bought them from traveling traders and sold them in your own shop."
+    },
+    {
+      "id": "moonwell_pilgrim",
+      "name": "Moonwell Pilgrim",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Magic Initiate (Druid)",
+      "ability_score_options": ["Constitution", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Nature", "Performance"],
+      "tool_proficiency": "Painter's Supplies",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Quarterstaff",
+            "Painter's Supplies",
+            "Bedroll",
+            "Bell",
+            "Pouch",
+            "Robe",
+            "String",
+            "Traveler’s Clothes",
+            "Waterskin"
+          ],
+          "gold": 38
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Like many who hail from the Moonshae Isles, you grew up revering the blessed land, its unique gods, and the mysterious shrines called the moonwells. As a moonwell pilgrim, you undertook a quest to visit and commune with every moonwell on (or off) the map. Along your idyllic journeys, you collected a repertoire of Moonshavian folk songs, painted landscapes of enchanting vistas, and even learned how to wield a bit of primal magic."
+    },
+    {
+      "id": "mulhorandi_tomb_raider",
+      "name": "Mulhorandi Tomb Raider",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Lucky",
+      "ability_score_options": ["Dexterity", "Constitution", "Intelligence"],
+      "skill_proficiencies": ["Investigation", "Religion"],
+      "tool_proficiency": "Mason's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Dagger",
+            "Light Hammer",
+            "Mason's Tools",
+            "Backpack",
+            "Bedroll",
+            "Crowbar",
+            "Ladder",
+            "Pole",
+            "2 Pouches",
+            "Rope",
+            "String",
+            "Tinderbox",
+            "5 Torches",
+            "Traveler’s Clothes",
+            "Waterskin"
+          ],
+          "gold": 26
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You grew up in a land of living god-kings, and as a child you were told countless stories of ancient empires and buried cities. In these tales, Mulhorand was a land overflowing with forgotten riches—priceless treasures awaiting anyone cunning and brave enough to seek them out. You’ve taken it upon yourself to explore your homeland’s crypts, tombs, and pyramids to reclaim your people’s relics."
+    },
+    {
+      "id": "mythalkeeper",
+      "name": "Mythalkeeper",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Crafter",
+      "ability_score_options": ["Intelligence", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Arcana", "History"],
+      "tool_proficiency": "Jeweler’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Quarterstaff",
+            "Jeweler’s Tools",
+            "Perfume",
+            "Pouch",
+            "Robe",
+            "Shovel",
+            "String",
+            "Waterskin"
+          ],
+          "gold": 16
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Mythals are sources of great magical power that can alter the Weave or even the very nature of reality. Most were constructed in antiquity, and many have since been damaged or gone dormant. As a mythalkeeper from the Dalelands, your first experience with a mythal was likely in the ruins of Myth Drannor. You roam Faerûn in search of other ruined places of power, hoping to learn more about the history and powers of mythals— or even restore a malfunctioning one."
+    },
+    {
+      "id": "noble",
+      "name": "Noble",
+      "source": "Player’s Handbook",
+      "feat": "Skilled",
+      "ability_score_options": ["Strength", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["History", "Persuasion"],
+      "tool_proficiency": "Choose one kind of Gaming Set",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Gaming Set (same as above)", "Fine Clothes", "Perfume"],
+          "gold": 29
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You were raised in a castle, surrounded by wealth, power, and privilege. Your family of minor aristocrats ensured that you received a first-class education, some of which you appreciated and some of which you resented. Your time in the castle, especially the many hours you spent observing your family at court, also taught you a great deal about leadership."
+    },
+    {
+      "id": "purple_dragon_squire",
+      "name": "Purple Dragon Squire",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Purple Dragon Rook",
+      "ability_score_options": ["Strength", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Animal Handling", "Insight"],
+      "tool_proficiency": "Navigator’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Spear", "Navigator’s Tools", "Fine Clothes"],
+          "gold": 9
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You’ve pledged your life to the safety of Cormyr and sought admission to that realm’s order of elite warriors: the Purple Dragon Knights. But before you have the chance to join the ranks officially, you must first serve as a knight’s squire. You’ve found a liege willing to take you on and teach you the order’s ways. Will you uphold the Purple Dragon Knights’ ideals of glory, honor, and strength and prove yourself worthy of knighthood?"
+    },
+    {
+      "id": "rashemi_wanderer",
+      "name": "Rashemi Wanderer",
+      "source": "Feat: Tough",
+      "feat": null,
+      "ability_score_options": ["Strength", "Constitution", "Charisma"],
+      "skill_proficiencies": ["Intimidation", "Perception"],
+      "tool_proficiency": "Cartographer’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Cartographer’s Tools",
+            "Backpack",
+            "Bedroll",
+            "Hooded Lantern",
+            "Oil (3 flasks)",
+            "Rope",
+            "Tinderbox",
+            "Traveler’s Clothes",
+            "Waterskin"
+          ],
+          "gold": 23
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Forgotten Realms: Heroes of Faerûn You spent years wandering the highlands of Rashemen, a dangerous windswept heath that’s dotted with ancient obelisks enchanted to imprison Fiends and home to dragons, gnolls, and other deadly creatures. Friendships are hard to find in such an isolated land, and you’ve learned to keep strangers at a distance."
+    },
+    {
+      "id": "sage",
+      "name": "Sage",
+      "source": "Player’s Handbook",
+      "feat": "Magic Initiate (Wizard)",
+      "ability_score_options": ["Constitution", "Intelligence", "Wisdom"],
+      "skill_proficiencies": ["Arcana", "History"],
+      "tool_proficiency": "Calligrapher's Supplies",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Quarterstaff",
+            "Calligrapher's Supplies",
+            "Book (history)",
+            "Parchment (8 sheets)",
+            "Robe"
+          ],
+          "gold": 8
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You spent your formative years traveling between manors and monasteries, performing various odd jobs and services in exchange for access to their libraries. You whiled away many a long evening studying books and scrolls, learning the lore of the multiverse—even the rudiments of magic—and your mind yearns for more."
+    },
+    {
+      "id": "sailor",
+      "name": "Sailor",
+      "source": "Player’s Handbook",
+      "feat": "Tavern Brawler",
+      "ability_score_options": ["Strength", "Dexterity", "Wisdom"],
+      "skill_proficiencies": ["Acrobatics", "Perception"],
+      "tool_proficiency": "Navigator's Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": ["Dagger", "Navigator's Tools", "Rope", "Traveler’s Clothes"],
+          "gold": 20
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You lived as a seafarer, wind at your back and decks swaying beneath your feet. You’ve perched on barstools in more ports of call than you can remember, faced mighty storms, and swapped stories with folk who live beneath the waves."
+    },
+    {
+      "id": "scribe",
+      "name": "Scribe",
+      "source": "Player’s Handbook",
+      "feat": "Skilled",
+      "ability_score_options": ["Dexterity", "Intelligence", "Wisdom"],
+      "skill_proficiencies": ["Investigation", "Perception"],
+      "tool_proficiency": "Calligrapher's Supplies",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Calligrapher's Supplies",
+            "Fine Clothes",
+            "Lamp",
+            "Oil",
+            "Parchment (12 sheets)"
+          ],
+          "gold": 23
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You spent formative years in a scriptorium, a monastery dedicated to the preservation of knowledge, or a government agency, where you learned to write with a clear hand and produce finely written texts. Perhaps you scribed government documents or copied tomes of literature. You might have some skill as a writer of poetry, narrative, or scholarly research. Above all, you have a careful attention to detail, helping you avoid introducing mistakes to the documents you copy and create."
+    },
+    {
+      "id": "shadowmasters_exile",
+      "name": "Shadowmasters Exile",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Savage Attacker",
+      "ability_score_options": ["Dexterity", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Acrobatics", "Stealth"],
+      "tool_proficiency": "Thieves’ Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "2 Daggers",
+            "Thieves’ Tools",
+            "Caltrops",
+            "Costume",
+            "Grappling Hook",
+            "Iron Spikes",
+            "Mirror",
+            "2 Pouches",
+            "Rope",
+            "Traveler’s Clothes"
+          ],
+          "gold": 3
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You trained your whole life to become a member of the Shadowmasters, the mysterious thieves’ guild that controls the realm of Thesk from behind the scenes. Stealth and quick reflexes were just the start of your Shadowmaster education; you also needed to hone your ruthlessness to ensure the safety of the guild’s secrets. But one wrong move led to your expulsion from the order. Now you must walk your own path."
+    },
+    {
+      "id": "shadowmoor_expert",
+      "name": "Shadowmoor Expert",
+      "source": "Lorwyn: First Light",
+      "feat": "Shadowmoor Hexer",
+      "ability_score_options": ["Dexterity", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Acrobatics", "Deception"],
+      "tool_proficiency": "Glassblower’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Dagger",
+            "Glassblower’s Tools",
+            "Backpack",
+            "Hunting Trap",
+            "Lamp",
+            "Oil (3 flasks)",
+            "Traveler’s Clothes",
+            "Waterskin"
+          ],
+          "gold": 8
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You are from Shadowmoor or have studied it for years. It’s a gloomy, chaotic place perpetually lit by pale moonlight. You might survive Shadowmoor’s merciless conditions thanks to your wit and cunning, or you might keep threats at bay with your brawn and bravery. Regardless of where you tread, you keenly understand that friendship is a rare commodity. You believe that knowing who to trust and who to keep at arm’s length isn’t just practical— it’s often a matter of life or death."
+    },
+    {
+      "id": "soldier",
+      "name": "Soldier",
+      "source": "Player’s Handbook",
+      "feat": "Savage Attacker",
+      "ability_score_options": ["Strength", "Dexterity", "Constitution"],
+      "skill_proficiencies": ["Athletics", "Intimidation"],
+      "tool_proficiency": "Choose one kind of Gaming Set",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Spear",
+            "Shortbow",
+            "20 Arrows",
+            "Gaming Set (same as above)",
+            "Healer's Kit",
+            "Quiver",
+            "Traveler’s Clothes"
+          ],
+          "gold": 14
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You began training for war as soon as you reached adulthood and carry precious few memories of life before you took up arms. Battle is in your blood. Sometimes you catch yourself reflexively performing the basic fighting exercises you learned first. Eventually, you put that training to use on the battlefield, protecting the realm by waging war."
+    },
+    {
+      "id": "spellfire_initiate",
+      "name": "Spellfire Initiate",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Spellfire Spark",
+      "ability_score_options": ["Constitution", "Intelligence", "Charisma"],
+      "skill_proficiencies": ["Arcana", "Perception"],
+      "tool_proficiency": "Choose one kind of Gaming Set",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Gaming Set (same as above)",
+            "Arcane Focus (Crystal or Wand)",
+            "2 Pouches",
+            "Traveler’s Clothes"
+          ],
+          "gold": 36
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You bear the gift of spellfire: a rare form of magic that channels the raw power of the Weave. Wielding spellfire takes a heavy toll on the body. You’ve trained both mind and body to efficiently wield this sacred power."
+    },
+    {
+      "id": "vampire_devotee",
+      "name": "Vampire Devotee",
+      "source": "Astarion's Book of Hungers",
+      "feat": "Vampire's Plaything",
+      "ability_score_options": ["Strength", "Constitution", "Charisma"],
+      "skill_proficiencies": ["Persuasion", "Stealth"],
+      "tool_proficiency": "Cook’s Utensils",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Cook’s Utensils",
+            "Fine Clothes",
+            "2 Glass Bottles",
+            "Healer’s Kit",
+            "Perfume",
+            "Lamp",
+            "Oil (3 flasks)",
+            "Waterskin"
+          ],
+          "gold": 19
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You were in service to a vampire or a small group of vampires lairing together. The Undead drank your blood more times than you can count. You might have served willingly, perhaps with aspirations of one day becoming a vampire yourself. Or you might have been magically charmed and retain only a few muddled memories of your time as a vampire familiar. In either case, your time in the vampire den is over."
+    },
+    {
+      "id": "vampire_survivor",
+      "name": "Vampire Survivor",
+      "source": "Astarion's Book of Hungers",
+      "feat": "Vampire Hunter",
+      "ability_score_options": ["Dexterity", "Constitution", "Wisdom"],
+      "skill_proficiencies": ["Insight", "Religion"],
+      "tool_proficiency": "Woodcarver’s Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Woodcarver’s Tools",
+            "Crowbar",
+            "Hooded Lantern",
+            "Holy Symbol (reliquary)",
+            "Holy Water",
+            "Mirror",
+            "Oil (3 flasks)",
+            "Tinderbox",
+            "Traveler’s Clothes",
+            "Waterskin"
+          ],
+          "gold": 4
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You witnessed or survived a vampire attack. You might have been directly involved in this confrontation, or perhaps you were frozen in terror by what you saw. Regardless, you remain vigilant for monster attacks and pride yourself on being ready for anything. No vampire will catch you or your allies by surprise again."
+    },
+    {
+      "id": "wayfarer",
+      "name": "Wayfarer",
+      "source": "Player’s Handbook",
+      "feat": "Lucky",
+      "ability_score_options": ["Dexterity", "Wisdom", "Charisma"],
+      "skill_proficiencies": ["Insight", "Stealth"],
+      "tool_proficiency": "Thieves’ Tools",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "2 Daggers",
+            "Thieves' Tools",
+            "Gaming Set (any)",
+            "Bedroll",
+            "2 Pouches",
+            "Traveler’s Clothes"
+          ],
+          "gold": 16
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "You grew up on the streets surrounded by similarly ill-fated castoffs, a few of them friends and a few of them rivals. You slept where you could and did odd jobs for food. At times, when the hunger became unbearable, you resorted to theft. Still, you never lost your pride and never abandoned hope. Fate is not yet finished with you."
+    },
+    {
+      "id": "zhentarim_mercenary",
+      "name": "Zhentarim Mercenary",
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Zhentarim Ruffian",
+      "ability_score_options": ["Strength", "Dexterity", "Charisma"],
+      "skill_proficiencies": ["Intimidation", "Perception"],
+      "tool_proficiency": "Forgery Kit",
+      "language": null,
+      "equipment_options": [
+        {
+          "label": "A",
+          "items": [
+            "Club",
+            "Dagger",
+            "Forgery Kit",
+            "Fine Clothes",
+            "Hooded Lantern",
+            "Oil (3 flasks)",
+            "2 Pouches",
+            "String",
+            "Tinderbox"
+          ],
+          "gold": 11
+        },
+        {
+          "label": "B",
+          "items": [],
+          "gold": 50
+        }
+      ],
+      "description": "Maybe you needed the money. Maybe you longed for a family, no matter how dubious. Or maybe you’re just good at getting the job done by any means necessary. Whatever your reason, you enlisted with the Zhentarim, the most notorious mercenary guild in the Realms. Though the Zhentarim’s leaders insist the organization is more like a family than a shadowy syndicate, few families exhibit as much dishonesty, nepotism, and corruption as this one. You’ve honed your cunning, reflexes, and blade to climb the guild’s ranks."
+    }
+  ]
+}

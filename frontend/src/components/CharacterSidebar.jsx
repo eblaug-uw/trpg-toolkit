@@ -3,7 +3,7 @@ import { FaBars } from "react-icons/fa";
 import CharacterList from "./CharacterList";
 import "../style/CharacterSidebar.css";
 
-function CharacterSidebar({ characters, onAddCharacter, onManageCharacter }) {
+function CharacterSidebar({ characters, onAddCharacter, onManageCharacter, onDeleteCharacter }) {
   const [open, setOpen] = useState(true);
 
   if (!open) {
@@ -41,7 +41,12 @@ function CharacterSidebar({ characters, onAddCharacter, onManageCharacter }) {
       ) : (
         <ul className="character-sidebar-list">
           {characters.map((ch) => (
-            <CharacterList key={ch.id} character={ch} onManage={onManageCharacter} />
+            <CharacterList
+              key={ch.id}
+              character={ch}
+              onManage={onManageCharacter}
+              onDelete={onDeleteCharacter}
+            />
           ))}
         </ul>
       )}

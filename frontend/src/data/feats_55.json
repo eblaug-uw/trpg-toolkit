@@ -1,0 +1,243 @@
+{
+  "feats": [
+    {
+      "id": "alert",
+      "name": "Alert",
+      "category": "Origin",
+      "source": "Player's Handbook (2024)",
+      "summary": "Initiative Proficiency, Initiative Swap",
+      "prerequisite": null,
+      "repeatable": false,
+      "description": "You gain the following benefits. Initiative Proficiency. When you roll Initiative, you can add your Proficiency Bonus to the roll. Initiative Swap. Immediately after you roll Initiative, you can swap your Initiative with the Initiative of one willing ally in the same combat. You can't make this swap if you or the ally has the Incapacitated condition.",
+      "grants": {
+        "initiative_proficiency": true
+      }
+    },
+    {
+      "id": "healer",
+      "name": "Healer",
+      "category": "Origin",
+      "source": "Player's Handbook (2024)",
+      "summary": "Battle Medic, Healing Surge",
+      "prerequisite": null,
+      "repeatable": false,
+      "description": "You have the training and intuition to administer first aid. You gain the following benefits. Battle Medic. If you have a Healer's Kit, you can expend one use of it and tend to a creature within 5 feet of yourself as a Utilize action. That creature can expend one of its Hit Point Dice, and you then roll that die. The creature regains a number of Hit Points equal to the roll plus your Proficiency Bonus. Healing Surge. As a Bonus Action, you can heal yourself by expending one Hit Point Die.",
+      "grants": {
+        "tool_proficiency": { "fixed": ["Healer's Kit"] }
+      }
+    },
+    {
+      "id": "lucky",
+      "name": "Lucky",
+      "category": "Origin",
+      "source": "Player's Handbook (2024)",
+      "summary": "Luck Points equal to Proficiency Bonus per long rest",
+      "prerequisite": null,
+      "repeatable": false,
+      "description": "You have inexplicable luck that can kick in at just the right moment. You have a number of Luck Points equal to your Proficiency Bonus and can spend the points on the following benefits. Advantage. When you roll a d20 for a D20 Test, you can spend 1 Luck Point to give yourself Advantage on the roll. Disadvantage. When a creature rolls a d20 for an attack roll against you, you can spend 1 Luck Point to impose Disadvantage on that roll. You regain your expended Luck Points when you finish a Long Rest.",
+      "grants": {
+        "luck_points_per_long_rest": "proficiency_bonus"
+      }
+    },
+    {
+      "id": "magic_initiate",
+      "name": "Magic Initiate",
+      "category": "Origin",
+      "source": "Player's Handbook (2024)",
+      "summary": "2 cantrips + 1 level-1 spell from chosen class list",
+      "prerequisite": null,
+      "repeatable": true,
+      "description": "You have learned spells from a spellcasting class. Choose a class: Cleric, Druid, or Wizard. You learn two cantrips of your choice from that class's spell list. In addition, choose a level 1 spell from the same list. You learn that spell and can cast it at its lowest level. Once you cast it, you must finish a Long Rest before you can cast it again without a spell slot. You can also cast the spell using any spell slots you have. Intelligence, Wisdom, or Charisma is your spellcasting ability for these spells (choose when you select this feat). Repeatable. You can take this feat more than once, but you must choose a different class each time.",
+      "grants": {
+        "spells_known": {
+          "cantrips": 2,
+          "level_1": 1,
+          "from_class_list": ["cleric", "druid", "wizard"],
+          "choose_class": 1
+        },
+        "spellcasting_ability_choice": ["int", "wis", "cha"]
+      }
+    },
+    {
+      "id": "tough",
+      "name": "Tough",
+      "category": "Origin",
+      "source": "Player's Handbook (2024)",
+      "summary": "+2 Hit Points per character level",
+      "prerequisite": null,
+      "repeatable": false,
+      "description": "Your Hit Point maximum increases by an amount equal to twice your character level when you gain this feat. Whenever you gain a character level thereafter, your Hit Point maximum increases by an additional 2 Hit Points.",
+      "grants": {
+        "hp_bonus_per_level": 2
+      }
+    },
+    {
+      "id": "skilled",
+      "name": "Skilled",
+      "category": "Origin",
+      "source": "Player's Handbook (2024)",
+      "summary": "Proficiency in three skills or tools",
+      "prerequisite": null,
+      "repeatable": true,
+      "description": "You gain proficiency in any combination of three skills or tools of your choice. Repeatable. You can take this feat more than once.",
+      "grants": {
+        "skill_or_tool_proficiency": { "choose": 3, "from": "any" }
+      }
+    },
+    {
+      "id": "ability_score_improvement",
+      "name": "Ability Score Improvement",
+      "category": "General",
+      "source": "Player's Handbook (2024)",
+      "summary": "+2 to one ability, or +1 to two abilities (max 20)",
+      "prerequisite": "Level 4+ Character",
+      "repeatable": true,
+      "description": "You increase one ability score of your choice by 2, or you increase two ability scores of your choice by 1. You can't increase an ability score above 20 using this feat. Repeatable. You can take this feat more than once.",
+      "grants": {
+        "ability_increase_options": [
+          {
+            "choose": 1,
+            "amount": 2,
+            "from": ["str", "dex", "con", "int", "wis", "cha"],
+            "max": 20
+          },
+          {
+            "choose": 2,
+            "amount": 1,
+            "from": ["str", "dex", "con", "int", "wis", "cha"],
+            "max": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "athlete",
+      "name": "Athlete",
+      "category": "General",
+      "source": "Player's Handbook (2024)",
+      "summary": "+1 Str or Dex; stand up cheap; climb at full speed; running jump after 5 ft",
+      "prerequisite": "Level 4+ Character",
+      "repeatable": false,
+      "description": "You have undergone extensive physical training, granting you the following benefits. Ability Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20. Climb Speed. You gain a Climb Speed equal to your Speed. Jumping. Increase the distance of any High Jump or Long Jump you make by a number of feet equal to your Proficiency Bonus. You can make this special High Jump or Long Jump after moving only 5 feet on foot rather than 10 feet. Stand Up. When you have the Prone condition, you can right yourself with only 5 feet of movement rather than half your Speed.",
+      "grants": {
+        "ability_increase": { "choose": 1, "amount": 1, "from": ["str", "dex"], "max": 20 }
+      }
+    },
+    {
+      "id": "great_weapon_master",
+      "name": "Great Weapon Master",
+      "category": "General",
+      "source": "Player's Handbook (2024)",
+      "summary": "+1 Str or Con; Heavy weapon mastery damage bonus; bonus action attack on crit/kill",
+      "prerequisite": "Level 4+ Character",
+      "repeatable": false,
+      "description": "You've practiced moves that let you wield massive weapons to great effect. You gain the following benefits. Ability Score Increase. Increase your Strength or Constitution score by 1, to a maximum of 20. Cleaving Strike. Immediately after you score a Critical Hit or reduce a creature to 0 Hit Points with a melee weapon as part of the Attack action on your turn, you can make one melee weapon attack as a Bonus Action. Heavy Weapon Mastery. When you hit a creature with a melee weapon that has the Heavy property and is wielded with two hands as part of the Attack action on your turn, you can cause the weapon to deal extra damage to the target. The extra damage equals your Proficiency Bonus.",
+      "grants": {
+        "ability_increase": { "choose": 1, "amount": 1, "from": ["str", "con"], "max": 20 }
+      }
+    },
+    {
+      "id": "sharpshooter",
+      "name": "Sharpshooter",
+      "category": "General",
+      "source": "Player's Handbook (2024)",
+      "summary": "+1 Dex or Wis; ignore long range Disadvantage and half/three-quarters cover; extra damage on heavy ranged hits",
+      "prerequisite": "Level 4+ Character, Proficiency with a Martial Weapon that has the Ammunition Property",
+      "repeatable": false,
+      "description": "You have spent extra time practicing techniques that let you make tricky ranged weapon shots. You gain the following benefits. Ability Score Increase. Increase your Dexterity or Wisdom score by 1, to a maximum of 20. Bypass Cover. Your ranged weapon attacks ignore Half Cover and Three-Quarters Cover. Firing in Melee. Being within 5 feet of an enemy doesn't impose Disadvantage on your ranged attack rolls. Long Shots. When you hit a target with a ranged weapon attack as part of the Attack action, the attack deals extra damage equal to your Proficiency Bonus if the target is beyond that weapon's normal range.",
+      "grants": {
+        "ability_increase": { "choose": 1, "amount": 1, "from": ["dex", "wis"], "max": 20 }
+      }
+    },
+    {
+      "id": "sentinel",
+      "name": "Sentinel",
+      "category": "General",
+      "source": "Player's Handbook (2024)",
+      "summary": "+1 Str or Dex; opportunity attack hits set speed to 0; OA on disengage; allies under attack near you draw OA",
+      "prerequisite": "Level 4+ Character",
+      "repeatable": false,
+      "description": "You have mastered techniques to take advantage of every drop in any enemy's guard, gaining the following benefits. Ability Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20. Daunting Strike. When you hit a creature with an Opportunity Attack, the target's Speed becomes 0 until the end of the current turn. Stop Movement. When you hit a creature with an Opportunity Attack, the target's Speed becomes 0 for the rest of the turn. Block. When a creature within 5 feet of you attacks a target other than you (and that target doesn't have this feat), you can use your Reaction to make a melee weapon attack against the attacker.",
+      "grants": {
+        "ability_increase": { "choose": 1, "amount": 1, "from": ["str", "dex"], "max": 20 }
+      }
+    },
+    {
+      "id": "war_caster",
+      "name": "War Caster",
+      "category": "General",
+      "source": "Player's Handbook (2024)",
+      "summary": "+1 spellcasting ability; advantage on Concentration saves; cast spells with hands full; OA can be a spell",
+      "prerequisite": "Level 4+ Character, Spellcasting or Pact Magic Feature",
+      "repeatable": false,
+      "description": "You have practiced casting spells in the midst of combat, learning techniques that grant you the following benefits. Ability Score Increase. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20. Concentration. You have Advantage on Constitution saving throws that you make to maintain Concentration. Reactive Spell. When a creature provokes an Opportunity Attack from you by leaving your reach, you can take that Reaction to cast a spell at the creature rather than making a melee attack. The spell must have a casting time of one action and must target only that creature. Somatic Components. You can perform the Somatic components of spells even when you have weapons or a Shield in one or both hands.",
+      "grants": {
+        "ability_increase": { "choose": 1, "amount": 1, "from": ["int", "wis", "cha"], "max": 20 }
+      }
+    },
+    {
+      "id": "resilient",
+      "name": "Resilient",
+      "category": "General",
+      "source": "Player's Handbook (2024)",
+      "summary": "+1 to chosen ability and gain saving throw proficiency in it",
+      "prerequisite": "Level 4+ Character",
+      "repeatable": true,
+      "description": "Choose one ability score. You gain the following benefits. Ability Score Increase. Increase the chosen ability score by 1, to a maximum of 20. Saving Throw Proficiency. You gain Saving Throw Proficiency with the chosen ability. Repeatable. You can take this feat more than once, but you must choose a different ability each time.",
+      "grants": {
+        "ability_increase_and_save": {
+          "choose": 1,
+          "amount": 1,
+          "from": ["str", "dex", "con", "int", "wis", "cha"],
+          "max": 20,
+          "also_grants": "saving_throw_proficiency_in_chosen"
+        }
+      }
+    },
+    {
+      "id": "boon_of_combat_prowess",
+      "name": "Boon of Combat Prowess",
+      "category": "Epic Boon",
+      "source": "Player's Handbook (2024)",
+      "summary": "+1 to any ability; once per turn turn a miss into a hit",
+      "prerequisite": "Level 19+ Character",
+      "repeatable": false,
+      "description": "You gain the following benefits. Ability Score Increase. Increase one ability score of your choice by 1, to a maximum of 30. Master Strike. When you miss with an attack roll, you can hit instead. Once you use this benefit, you can't use it again until you finish a Short or Long Rest.",
+      "grants": {
+        "ability_increase": {
+          "choose": 1,
+          "amount": 1,
+          "from": ["str", "dex", "con", "int", "wis", "cha"],
+          "max": 30
+        }
+      }
+    },
+    {
+      "id": "boon_of_energy_resistance",
+      "name": "Boon of Energy Resistance",
+      "category": "Epic Boon",
+      "source": "Player's Handbook (2024)",
+      "summary": "+1 Con or Cha; resistance to two damage types; deal extra damage on a hit",
+      "prerequisite": "Level 19+ Character",
+      "repeatable": false,
+      "description": "You gain the following benefits. Ability Score Increase. Increase your Constitution or Charisma score by 1, to a maximum of 30. Damage Resistance. Choose two of the following damage types: Acid, Cold, Fire, Lightning, Necrotic, Poison, Psychic, Radiant, or Thunder. You have Resistance to the chosen damage types. Whenever you finish a Long Rest, you can change those choices. Fearsome Power. When you hit a creature with an attack roll and deal damage to it, you can also deal 2d10 extra damage of one of the types chosen for this feat's Damage Resistance benefit. Once you use this benefit, you can't use it again until you finish a Short or Long Rest.",
+      "grants": {
+        "ability_increase": { "choose": 1, "amount": 1, "from": ["con", "cha"], "max": 30 },
+        "damage_resistance_choice": {
+          "choose": 2,
+          "from": [
+            "acid",
+            "cold",
+            "fire",
+            "lightning",
+            "necrotic",
+            "poison",
+            "psychic",
+            "radiant",
+            "thunder"
+          ]
+        }
+      }
+    }
+  ]
+}

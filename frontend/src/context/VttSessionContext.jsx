@@ -197,11 +197,11 @@ export function VttSessionProvider({ children }) {
     if (!encounterId) return;
     if (hydratedForId.current === encounterId) return;
     const found = encounters.find((e) => e.id === encounterId);
-    if (!found || !found.vttState) return;
+    if (!found || !found.vtt_state) return;
 
     let restored;
     try {
-      restored = deserializeVttState(found.vttState);
+      restored = deserializeVttState(found.vtt_state);
     } catch (err) {
       console.error("[VttSession] failed to deserialize", err);
       return;

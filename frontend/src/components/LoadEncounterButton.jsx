@@ -31,7 +31,7 @@ function LoadEncounterButton({ campaignId }) {
     }
 
     const title = file.name.replace(/\.json$/i, "");
-    const created = addEncounter(campaignId, title, blob);
+    const created = await addEncounter(campaignId, title, blob);
     navigate(`/vtt?encounterId=${created.id}`);
   }
 

@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, Route, Outlet } from "react-router-dom";
-import { CampaignsProvider } from "@/context/CampaignsContext";
-import { EncountersProvider } from "@/context/EncountersContext";
-import { VttSessionProvider } from "@/context/VttSessionContext";
-import VTTEdit from "@/pages/VTTEdit";
+
+vi.mock("@/services/supabaseClient", async () => {
+  const { createSupabaseMock } = await import("../helpers/supabaseMock");
+  return { supabase: createSupabaseMock({ encounters: [] }) };
+});
 
 // MapCanvas pulls in react-konva, which doesn't run in jsdom.
 vi.mock("@/components/MapCanvas", () => ({
@@ -21,6 +22,13 @@ vi.mock("@/services/vttStorage", () => ({
 vi.mock("@/components/TopBar", () => ({
   default: () => <header data-testid="topbar-stub" />,
 }));
+
+import { CampaignsProvider } from "@/context/CampaignsContext";
+import { EncountersProvider } from "@/context/EncountersContext";
+import { VttSessionProvider } from "@/context/VttSessionContext";
+import VTTEdit from "@/pages/VTTEdit";
+import { supabase } from "@/services/supabaseClient";
+import { FAKE_USER_ID } from "../helpers/supabaseMock";
 
 function Layout() {
   return (
@@ -56,7 +64,7 @@ async function openPillBottom(user) {
 
 describe("<VTTEdit />", () => {
   beforeEach(() => {
-    localStorage.clear();
+    supabase.__reset({ encounters: [] });
     vi.spyOn(console, "log").mockImplementation(() => {});
   });
 
@@ -110,10 +118,19 @@ describe("<VTTEdit />", () => {
 
   it("Play → button saves and navigates to /vtt/play with the current encounterId", async () => {
     // Seed an encounter so saveCurrent has a target and ?encounterId hydrates the session.
-    localStorage.setItem(
-      "trpg:encounters",
-      JSON.stringify([{ id: "enc-1", title: "T", campaignId: null, vttState: null }]),
-    );
+    supabase.__reset({
+      encounters: [
+        {
+          id: "enc-1",
+          user_id: FAKE_USER_ID,
+          campaign_id: null,
+          title: "T",
+          vtt_state: null,
+          created_at: "2024-01-01T00:00:00Z",
+        },
+      ],
+    });
+
     const user = userEvent.setup();
     render(
       <MemoryRouter initialEntries={["/vtt/edit?encounterId=enc-1"]}>
@@ -132,6 +149,6 @@ describe("<VTTEdit />", () => {
 
     await user.click(screen.getByRole("button", { name: /switch to play mode/i }));
 
-    expect(screen.getByTestId("play-stub")).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByTestId("play-stub")).toBeInTheDocument());
   });
 });

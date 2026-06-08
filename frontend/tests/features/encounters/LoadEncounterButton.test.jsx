@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { CampaignsProvider } from "@/context/CampaignsContext";
-import { EncountersProvider } from "@/context/EncountersContext";
-import LoadEncounterButton from "@/components/LoadEncounterButton";
 import { CURRENT_SCHEMA_VERSION } from "@/features/vtt/encounter/encounterSchema";
+
+vi.mock("@/services/supabaseClient", async () => {
+  const { createSupabaseMock } = await import("../../helpers/supabaseMock");
+  return { supabase: createSupabaseMock({ encounters: [] }) };
+});
 
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
@@ -12,10 +14,25 @@ vi.mock("react-router-dom", async () => {
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
+import { CampaignsProvider } from "@/context/CampaignsContext";
+import { EncountersProvider, useEncounters } from "@/context/EncountersContext";
+import LoadEncounterButton from "@/components/LoadEncounterButton";
+import { supabase } from "@/services/supabaseClient";
+
+// Probes the context's loading state so tests can wait for session + initial
+// fetch to finish before triggering actions that call addEncounter().
+function ReadyProbe() {
+  const { loading } = useEncounters();
+  return loading ? null : <span data-testid="enc-ready" />;
+}
+
 const wrapper = ({ children }) => (
   <MemoryRouter>
     <CampaignsProvider>
-      <EncountersProvider>{children}</EncountersProvider>
+      <EncountersProvider>
+        <ReadyProbe />
+        {children}
+      </EncountersProvider>
     </CampaignsProvider>
   </MemoryRouter>
 );
@@ -49,28 +66,26 @@ const validBlob = () => ({
 
 describe("LoadEncounterButton", () => {
   beforeEach(() => {
-    localStorage.clear();
+    supabase.__reset({ encounters: [] });
     mockNavigate.mockClear();
-    let n = 0;
-    vi.spyOn(crypto, "randomUUID").mockImplementation(() => `enc-${++n}`);
   });
 
   it("persists an imported encounter and navigates to VTT", async () => {
     render(<LoadEncounterButton campaignId="c1" />, { wrapper });
+    await screen.findByTestId("enc-ready");
     const input = document.querySelector("input[type=file]");
 
     fireEvent.change(input, { target: { files: [makeFile(validBlob())] } });
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith("/vtt?encounterId=enc-1");
+      expect(mockNavigate).toHaveBeenCalledWith(expect.stringMatching(/^\/vtt\?encounterId=/));
     });
 
-    const stored = JSON.parse(localStorage.getItem("trpg:encounters"));
-    const imported = stored.find((e) => e.id === "enc-1");
-    expect(imported).toBeTruthy();
-    expect(imported.campaignId).toBe("c1");
+    expect(supabase.__store.encounters).toHaveLength(1);
+    const imported = supabase.__store.encounters[0];
+    expect(imported.campaign_id).toBe("c1");
     expect(imported.title).toBe("bandit-camp");
-    expect(imported.vttState.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+    expect(imported.vtt_state.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
   });
 
   it("shows an error and does not persist on invalid JSON", async () => {
@@ -84,6 +99,7 @@ describe("LoadEncounterButton", () => {
 
     await screen.findByText(/Could not load file/i);
     expect(mockNavigate).not.toHaveBeenCalled();
+    expect(supabase.__store.encounters).toHaveLength(0);
   });
 
   it("shows an error on unknown schemaVersion and does not persist", async () => {
@@ -95,5 +111,6 @@ describe("LoadEncounterButton", () => {
 
     await screen.findByText(/Could not load file/i);
     expect(mockNavigate).not.toHaveBeenCalled();
+    expect(supabase.__store.encounters).toHaveLength(0);
   });
 });
