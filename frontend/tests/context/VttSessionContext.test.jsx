@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 vi.mock("@/services/supabaseClient", async () => {
   const { createSupabaseMock } = await import("../helpers/supabaseMock");
   return { supabase: createSupabaseMock({ encounters: [] }) };
@@ -6,7 +8,7 @@ vi.mock("@/services/supabaseClient", async () => {
 import { supabase } from "@/services/supabaseClient";
 import { FAKE_USER_ID } from "../helpers/supabaseMock";
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { fireEvent, renderHook, act, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { CampaignsProvider } from "@/context/CampaignsContext";
