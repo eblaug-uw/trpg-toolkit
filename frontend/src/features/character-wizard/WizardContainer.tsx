@@ -54,31 +54,7 @@ export default function WizardContainer() {
     loadFromSupabase,
   } = useCharacterDraft();
 
-  useEffect(() => {
-    if (!campaignId) return;
-    if (editCharId) {
-      // Edit mode — hydrate from Supabase if we haven't loaded this character yet
-      if (ctxCharId === editCharId && ctxCampaignId === campaignId) return;
-      loadFromSupabase(editCharId, campaignId).catch(() => {});
-      return;
-    }
-    // New mode
-    if (ctxCampaignId === campaignId && !ctxCharId) return;
-    if (hasStoredDraft(campaignId)) {
-      resume();
-    } else {
-      startBlank(campaignId);
-    }
-  }, [
-    campaignId,
-    editCharId,
-    ctxCampaignId,
-    ctxCharId,
-    hasStoredDraft,
-    resume,
-    startBlank,
-    loadFromSupabase,
-  ]);
+  if (ctxCharId && ctxCampaignId === campaignId) return;
 
   const stepId = slug ? stepIdFromSlug(slug) : null;
   if (!stepId) return <p>Unknown step.</p>;
@@ -91,7 +67,8 @@ export default function WizardContainer() {
 
   async function handleNext() {
     try {
-      await commitStep(stepId);
+      if (!campaignId) return;
+      await commitStep(stepId, campaignId);
       if (next) navigate(`/campaigns/${campaignId}/characters/new/${stepSlug(next.id)}`);
       else navigate(`/campaigns/${campaignId}/encounters`); // done
     } catch {
@@ -100,10 +77,8 @@ export default function WizardContainer() {
   }
 
   async function handleTabJump(targetId: WizardStepId) {
-    // Commit the current step before navigating so progress isn't lost
-    // and the character row exists for subsequent steps.
     try {
-      await commitStep(stepId);
+      if (campaignId) await commitStep(stepId, campaignId);
     } catch {
       /* error surfaced via context.error — still allow navigation */
     }

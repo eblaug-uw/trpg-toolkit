@@ -149,6 +149,10 @@ function VTTEdit() {
     if (encounterId) saveCurrent(encounterId);
     navigate(`/vtt/play${encounterId ? `?encounterId=${encounterId}` : ""}`);
   }
+  function handleBackToEncounters() {
+    const campaignId = encounters.find((e) => e.id === encounterId)?.campaign_id;
+    navigate(campaignId ? `/campaigns/${campaignId}/encounters` : "/campaigns");
+  }
 
   function handleCloseTutorial() {
     localStorage.setItem("vttTutorialSeen", "true");
@@ -339,6 +343,27 @@ function VTTEdit() {
           }}
         >
           Play →
+        </button>
+
+        <button
+          type="button"
+          aria-label="Back to encounters"
+          onClick={handleBackToEncounters}
+          style={{
+            position: "absolute",
+            top: 16,
+            left: 16,
+            padding: "8px 16px",
+            borderRadius: 999,
+            border: "none",
+            background: "#4a6fa5",
+            color: "white",
+            cursor: "pointer",
+            fontWeight: 600,
+            zIndex: 30,
+          }}
+        >
+          ← Encounters
         </button>
 
         <Modal

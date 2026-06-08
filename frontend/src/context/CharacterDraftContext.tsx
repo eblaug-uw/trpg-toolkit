@@ -71,7 +71,7 @@ interface CharacterDraftContextValue {
     patch: T extends TableKey ? Partial<CharacterDraft[T]> : Record<string, unknown>,
   ) => void;
   setTable: <T extends TableKey>(table: T, value: CharacterDraft[T]) => void;
-  commitStep: (stepId: WizardStepId) => Promise<void>;
+  commitStep: (stepId: WizardStepId, campaignIdOverride?: string) => Promise<void>;
   startBlank: (campaignId: string) => void;
   startFromPdf: (parsed: Partial<CharacterDraft>, campaignId: string) => void;
   resume: () => void;
@@ -207,7 +207,6 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
 
   // ── Delete character (sub-tables first, then characters) ──
   const deleteCharacter = useCallback(async (cid: string) => {
-    // Sub-tables keyed by id (same as character id)
     const subById = [
       "abilities",
       "skills",
@@ -217,7 +216,6 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
       "currency",
       "spell_slots",
     ];
-    // Sub-tables keyed by character_id
     const subByCharId = ["features_traits", "spells", "inventory"];
 
     await Promise.all([
@@ -265,7 +263,6 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
   const hasStoredDraft = useCallback((forCampaignId: string) => {
     const stored = readStorage();
     if (!stored || stored.campaignId !== forCampaignId) return false;
-    // Don't count an empty/unfilled draft as resumable
     const name = (stored.draft?.characters as { name?: string } | undefined)?.name;
     return typeof name === "string" && name.trim().length > 0;
   }, []);
@@ -274,9 +271,10 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
 
   // ── commitStep ─────────────────────────────────────────────
   const commitStep = useCallback(
-    async (stepId: WizardStepId) => {
+    async (stepId: WizardStepId, campaignIdOverride?: string) => {
       if (!session) throw new Error("Not signed in");
-      if (!campaignId) throw new Error("No campaign selected");
+      const effectiveCampaignId = campaignIdOverride ?? campaignId;
+      if (!effectiveCampaignId) throw new Error("No campaign selected");
       setLoading(true);
       setError(null);
 
@@ -306,11 +304,11 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
       async function commitBasicInfo() {
         const charPayload = {
           user_id: session!.user.id,
-          campaign_id: campaignId,
+          campaign_id: effectiveCampaignId,
           ...draft.characters,
         };
 
-        let id = characterId;
+        let id = characterIdRef.current;
 
         if (!id) {
           const { data, error: insErr } = await supabase
@@ -355,6 +353,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
       async function commitAbilities() {
         if (!characterIdRef.current)
           throw new Error("Character row missing — complete Basic Info first");
+        const id = characterIdRef.current;
         if (!Object.keys(draft.abilities).length) return;
 
         const ABILITY_COLUMNS = new Set<string>([
@@ -378,7 +377,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
         }
 
         const { error: upErr } = await supabase.from("abilities").upsert({
-          id: characterId,
+          id,
           user_id: session!.user.id,
           ...clean,
         });
@@ -389,6 +388,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
       async function commitSpecies() {
         if (!characterIdRef.current)
           throw new Error("Character row missing — complete Basic Info first");
+        const id = characterIdRef.current;
         const userId = session!.user.id;
 
         await supabase
@@ -398,11 +398,11 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
             subspecies: (draft.characters.subspecies as string | undefined) ?? null,
             size: (draft.characters.size as string | undefined) ?? null,
           })
-          .eq("id", characterId);
+          .eq("id", id);
 
         if (Object.values(draft.speed).some((v) => v !== null && v !== undefined)) {
           const { error: spdErr } = await supabase.from("speed").upsert({
-            id: characterId,
+            id,
             user_id: userId,
             ...draft.speed,
           });
@@ -412,7 +412,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
         await supabase
           .from("features_traits")
           .delete()
-          .eq("character_id", characterId)
+          .eq("character_id", id)
           .eq("source", "species");
         const speciesTraits = (
           draft.features_traits as Array<{ name?: string; description?: string; source?: string }>
@@ -420,7 +420,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
         if (speciesTraits.length) {
           const { error: ftErr } = await supabase.from("features_traits").insert(
             speciesTraits.map((t) => ({
-              character_id: characterId,
+              character_id: id,
               user_id: userId,
               name: t.name,
               source: "species",
@@ -430,11 +430,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
           if (ftErr) throw ftErr;
         }
 
-        await supabase
-          .from("spells")
-          .delete()
-          .eq("character_id", characterId)
-          .eq("source", "species");
+        await supabase.from("spells").delete().eq("character_id", id).eq("source", "species");
         const speciesSpells = (
           draft.spells as Array<{
             name?: string;
@@ -448,7 +444,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
         if (speciesSpells.length) {
           const { error: spErr } = await supabase.from("spells").insert(
             speciesSpells.map((s) => ({
-              character_id: characterId,
+              character_id: id,
               user_id: userId,
               name: s.name,
               level: s.level,
@@ -466,9 +462,9 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
       async function commitBackground() {
         if (!characterIdRef.current)
           throw new Error("Character row missing — complete Basic Info first");
+        const id = characterIdRef.current;
         const userId = session!.user.id;
 
-        // Update top-level character columns
         await supabase
           .from("characters")
           .update({
@@ -476,52 +472,43 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
             feats: (draft.characters.feats as string[] | undefined) ?? [],
             tool: (draft.characters.tool as string[] | undefined) ?? [],
           })
-          .eq("id", characterId);
+          .eq("id", id);
 
-        // Abilities — scores now include any ASI bonuses applied
         if (Object.keys(draft.abilities).length) {
           const { error } = await supabase.from("abilities").upsert({
-            id: characterId,
+            id,
             user_id: userId,
             ...draft.abilities,
           });
           if (error) throw error;
         }
 
-        // Skills — background flipped 2 proficiencies
         if (Object.keys(draft.skills).length) {
           const { error } = await supabase.from("skills").upsert({
-            id: characterId,
+            id,
             user_id: userId,
             ...draft.skills,
           });
           if (error) throw error;
         }
 
-        // Currency — background gold rolled in
         if (Object.keys(draft.currency).length) {
           const { error } = await supabase.from("currency").upsert({
-            id: characterId,
+            id,
             user_id: userId,
             ...draft.currency,
           });
           if (error) throw error;
         }
 
-        // Replace background-sourced inventory items.
-        // Inventory has no `source` column, so we tag via `notes='background'`.
-        await supabase
-          .from("inventory")
-          .delete()
-          .eq("character_id", characterId)
-          .eq("notes", "background");
+        await supabase.from("inventory").delete().eq("character_id", id).eq("notes", "background");
         const bgItems = (
           draft.inventory as Array<{ name?: string; quantity?: number; source?: string }>
         ).filter((i) => i.source === "background");
         if (bgItems.length) {
           const { error } = await supabase.from("inventory").insert(
             bgItems.map((i) => ({
-              character_id: characterId,
+              character_id: id,
               user_id: userId,
               name: i.name,
               quantity: i.quantity ?? 1,
@@ -532,26 +519,22 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
           if (error) throw error;
         }
       }
+
       // ── equipment ─────────────────────────────────────────
       async function commitEquipment() {
         if (!characterIdRef.current)
           throw new Error("Character row missing — complete Basic Info first");
+        const id = characterIdRef.current;
         const userId = session!.user.id;
 
-        // Currency upsert
         if (Object.keys(draft.currency).length) {
           const { error } = await supabase
             .from("currency")
-            .upsert({ id: characterId, user_id: userId, ...draft.currency });
+            .upsert({ id, user_id: userId, ...draft.currency });
           if (error) throw error;
         }
 
-        // Replace manual-source inventory (tagged via notes='manual')
-        await supabase
-          .from("inventory")
-          .delete()
-          .eq("character_id", characterId)
-          .eq("notes", "manual");
+        await supabase.from("inventory").delete().eq("character_id", id).eq("notes", "manual");
         const manualItems = (
           draft.inventory as Array<{
             name?: string;
@@ -563,7 +546,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
         if (manualItems.length) {
           const { error } = await supabase.from("inventory").insert(
             manualItems.map((i) => ({
-              character_id: characterId,
+              character_id: id,
               user_id: userId,
               name: i.name,
               quantity: i.quantity ?? 1,
@@ -574,12 +557,14 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
           if (error) throw error;
         }
       }
+
+      // ── class ─────────────────────────────────────────────
       async function commitClass() {
         if (!characterIdRef.current)
           throw new Error("Character row missing — complete Basic Info first");
+        const id = characterIdRef.current;
         const userId = session!.user.id;
 
-        // Top-level character columns
         await supabase
           .from("characters")
           .update({
@@ -595,41 +580,28 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
             feats: (draft.characters.feats as string[] | undefined) ?? [],
             tool: (draft.characters.tool as string[] | undefined) ?? [],
           })
-          .eq("id", characterId);
+          .eq("id", id);
 
-        // Abilities (save proficiencies)
         if (Object.keys(draft.abilities).length) {
-          await supabase
-            .from("abilities")
-            .upsert({ id: characterId, user_id: userId, ...draft.abilities });
+          await supabase.from("abilities").upsert({ id, user_id: userId, ...draft.abilities });
         }
 
-        // Skills (chosen skill proficiencies)
         if (Object.keys(draft.skills).length) {
-          await supabase
-            .from("skills")
-            .upsert({ id: characterId, user_id: userId, ...draft.skills });
+          await supabase.from("skills").upsert({ id, user_id: userId, ...draft.skills });
         }
 
-        // Spell slots
         if (Object.keys(draft.spell_slots).length) {
-          await supabase
-            .from("spell_slots")
-            .upsert({ id: characterId, user_id: userId, ...draft.spell_slots });
+          await supabase.from("spell_slots").upsert({ id, user_id: userId, ...draft.spell_slots });
         }
 
-        // Currency
         if (Object.keys(draft.currency).length) {
-          await supabase
-            .from("currency")
-            .upsert({ id: characterId, user_id: userId, ...draft.currency });
+          await supabase.from("currency").upsert({ id, user_id: userId, ...draft.currency });
         }
 
-        // Replace class-sourced features_traits
         await supabase
           .from("features_traits")
           .delete()
-          .eq("character_id", characterId)
+          .eq("character_id", id)
           .eq("source", "class");
         const classTraits = (
           draft.features_traits as Array<{ name?: string; description?: string; source?: string }>
@@ -637,7 +609,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
         if (classTraits.length) {
           await supabase.from("features_traits").insert(
             classTraits.map((t) => ({
-              character_id: characterId,
+              character_id: id,
               user_id: userId,
               name: t.name,
               source: "class",
@@ -646,19 +618,14 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
           );
         }
 
-        // Replace class-sourced inventory (tagged via notes='class')
-        await supabase
-          .from("inventory")
-          .delete()
-          .eq("character_id", characterId)
-          .eq("notes", "class");
+        await supabase.from("inventory").delete().eq("character_id", id).eq("notes", "class");
         const classItems = (
           draft.inventory as Array<{ name?: string; quantity?: number; source?: string }>
         ).filter((i) => i.source === "class");
         if (classItems.length) {
           await supabase.from("inventory").insert(
             classItems.map((i) => ({
-              character_id: characterId,
+              character_id: id,
               user_id: userId,
               name: i.name,
               quantity: i.quantity ?? 1,
@@ -669,7 +636,7 @@ export function CharacterDraftProvider({ children }: { children: ReactNode }) {
         }
       }
     },
-    [session, campaignId, characterId, draft],
+    [session, campaignId, draft],
   );
 
   return (

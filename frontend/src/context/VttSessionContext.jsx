@@ -14,8 +14,13 @@ import { serializeVttState } from "../features/vtt/encounter/serialize";
 import { getSignedUrl } from "../services/vttStorage";
 import { CombatTracker } from "../services/combatTracker";
 import { fetchMonster55ByName } from "../services/monsters55Search";
+import { supabase } from "../services/supabaseClient";
 
 const VttSessionContext = createContext(null);
+const AUTOSAVE_DEBOUNCE_MS = 800;
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const DEFAULT_GRID = {
   showGrid: true,
@@ -98,15 +103,23 @@ export function VttSessionProvider({ children }) {
   const imageLookupRef = useRef(new Set());
   const [combatActive, setCombatActive] = useState(false);
   const [initiativeQueue, setInitiativeQueue] = useState([]);
-
+  const undoLastActionRef = useRef(() => {});
   // --- Ephemeral / never serialized
   const [backgroundUrl, setBackgroundUrl] = useState(null);
   const [mapInfo, setMapInfo] = useState(null);
   const [selectedParticipant, setSelectedParticipant] = useState(null);
 
   const hydratedForId = useRef(null);
+  const charactersHydratedForId = useRef(null);
   const undoStackRef = useRef([]);
-  const undoLastActionRef = useRef(() => {});
+
+  const saveTimerRef = useRef(null);
+  const latestStateRef = useRef({ encounterId: null, vttState: null });
+  const lastSavedRef = useRef(null); // JSON snapshot of last loaded/saved state
+  const saveInFlightRef = useRef(false);
+  const pendingSaveRef = useRef(null); // { id, state, serialized }
+  const prevEncounterIdRef = useRef(encounterId);
+  const accessTokenRef = useRef(null); // cached for beforeunload
 
   const pushUndoAction = useCallback((action) => {
     undoStackRef.current = [...undoStackRef.current.slice(-(MAX_UNDO_ACTIONS - 1)), action];
@@ -192,56 +205,6 @@ export function VttSessionProvider({ children }) {
       statuses: tickParticipantStatuses(participant.statuses),
     }));
   }
-
-  useEffect(() => {
-    if (!encounterId) return;
-    if (hydratedForId.current === encounterId) return;
-    const found = encounters.find((e) => e.id === encounterId);
-    if (!found || !found.vtt_state) return;
-
-    let restored;
-    try {
-      restored = deserializeVttState(found.vtt_state);
-    } catch (err) {
-      console.error("[VttSession] failed to deserialize", err);
-      return;
-    }
-
-    setGrid({
-      showGrid: restored.showGrid,
-      pixelsPerFoot: restored.pixelsPerFoot,
-      gridFineTune: restored.gridFineTune,
-      gridOffsetX: restored.gridOffsetX,
-      gridOffsetY: restored.gridOffsetY,
-    });
-    setBackgroundRef(restored.backgroundRef);
-    setMapRotation(restored.mapRotation ?? DEFAULT_MAP_ROTATION);
-    setBackgroundUrl(null);
-    setDrawings(restored.drawings ?? []);
-    setParticipants(restored.participants);
-    undoStackRef.current = [];
-
-    if (restored.combat.active && restored.participants.length > 0) {
-      const tracker = new CombatTracker(restored.participants);
-      tracker.queue = restored.combat.queue
-        .map((q) => {
-          const entity = restored.participants.find((p) => p.id === q.participantId);
-          if (!entity) return null;
-          return { entity, name: entity.name, total: q.total, dex: q.dex };
-        })
-        .filter(Boolean);
-      tracker.round = restored.combat.round;
-      combatRef.current = tracker;
-      setInitiativeQueue(tracker.queue.map((e) => ({ ...e.entity, initiativeTotal: e.total })));
-      setCombatActive(true);
-    } else {
-      combatRef.current = null;
-      setInitiativeQueue([]);
-      setCombatActive(false);
-    }
-
-    hydratedForId.current = encounterId;
-  }, [encounterId, encounters]);
 
   // --- Resolve a signed URL whenever backgroundRef is set without one
   useEffect(() => {
@@ -548,6 +511,9 @@ export function VttSessionProvider({ children }) {
         backgroundRef,
         drawings,
         participants,
+        stagingParticipants,
+        currentLayer,
+        mobVisibilityByLayer,
         combat: {
           active: combatActive,
           round: combatRef.current?.round ?? 1,
@@ -559,11 +525,230 @@ export function VttSessionProvider({ children }) {
         },
         viewport: null,
       }),
-    [grid, mapRotation, backgroundRef, drawings, participants, combatActive, initiativeQueue],
+    [
+      grid,
+      mapRotation,
+      backgroundRef,
+      drawings,
+      participants,
+      stagingParticipants,
+      currentLayer,
+      mobVisibilityByLayer,
+      combatActive,
+      initiativeQueue,
+    ],
+  );
+  // Keep latest values reachable from async handlers (beforeunload, in-flight save resume).
+  useEffect(() => {
+    latestStateRef.current = { encounterId, vttState: currentVttState };
+  });
+
+  const performSave = useCallback(
+    async (id, state, serialized) => {
+      if (!id || !state) return;
+      const snapshot = serialized ?? JSON.stringify(state);
+      if (saveInFlightRef.current) {
+        pendingSaveRef.current = { id, state, serialized: snapshot };
+        return;
+      }
+      saveInFlightRef.current = true;
+      try {
+        await saveVttState(id, state);
+        lastSavedRef.current = snapshot;
+      } catch (err) {
+        console.error("[VttSession] autosave failed", err);
+      } finally {
+        saveInFlightRef.current = false;
+        const pending = pendingSaveRef.current;
+        pendingSaveRef.current = null;
+        if (pending) {
+          performSave(pending.id, pending.state, pending.serialized);
+        }
+      }
+    },
+    [saveVttState],
   );
 
+  const flushSaveNow = useCallback(
+    (id, state) => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+      }
+      const serialized = JSON.stringify(state);
+      if (serialized === lastSavedRef.current) return;
+      performSave(id, state, serialized);
+    },
+    [performSave],
+  );
+
+  // Debounced autosave: writes to Supabase ~800ms after the last change.
+  useEffect(() => {
+    if (!encounterId) return;
+    if (hydratedForId.current === encounterId) return;
+    const found = encounters.find((e) => e.id === encounterId);
+    if (!found) return; // encounters list not loaded yet
+
+    if (!found.vtt_state) {
+      // Brand-new encounter, nothing stored yet.
+      lastSavedRef.current = null;
+    } else {
+      let restored;
+      try {
+        restored = deserializeVttState(found.vtt_state);
+      } catch (err) {
+        console.error("[VttSession] failed to deserialize", err);
+        return;
+      }
+
+      setGrid({
+        showGrid: restored.showGrid,
+        pixelsPerFoot: restored.pixelsPerFoot,
+        gridFineTune: restored.gridFineTune,
+        gridOffsetX: restored.gridOffsetX,
+        gridOffsetY: restored.gridOffsetY,
+      });
+      setBackgroundRef(restored.backgroundRef);
+      setMapRotation(restored.mapRotation ?? DEFAULT_MAP_ROTATION);
+      setBackgroundUrl(null);
+      setDrawings(restored.drawings ?? []);
+      setParticipants(restored.participants);
+      setStagingParticipants(restored.stagingParticipants ?? []);
+      setCurrentLayer(restored.currentLayer ?? 1);
+      setMobVisibilityByLayer(restored.mobVisibilityByLayer ?? DEFAULT_MOB_VISIBILITY_BY_LAYER);
+      undoStackRef.current = [];
+
+      if (restored.combat.active && restored.participants.length > 0) {
+        const tracker = new CombatTracker(restored.participants);
+        tracker.queue = restored.combat.queue
+          .map((q) => {
+            const entity = restored.participants.find((p) => p.id === q.participantId);
+            if (!entity) return null;
+            return { entity, name: entity.name, total: q.total, dex: q.dex };
+          })
+          .filter(Boolean);
+        tracker.round = restored.combat.round;
+        combatRef.current = tracker;
+        setInitiativeQueue(tracker.queue.map((e) => ({ ...e.entity, initiativeTotal: e.total })));
+        setCombatActive(true);
+      } else {
+        combatRef.current = null;
+        setInitiativeQueue([]);
+        setCombatActive(false);
+      }
+
+      lastSavedRef.current = JSON.stringify(found.vtt_state);
+    }
+
+    hydratedForId.current = encounterId;
+  }, [encounterId, encounters]);
+  // Auto-add campaign characters to staging when an encounter is opened.
+  // Uses a ref to gate by encounterId so encounters-list updates (e.g. autosave)
+  // don't re-trigger the fetch or cancel an in-flight one.
+  useEffect(() => {
+    if (!encounterId) return;
+    if (charactersHydratedForId.current === encounterId) return;
+    const found = encounters.find((e) => e.id === encounterId);
+    if (!found || !found.campaign_id) return;
+
+    charactersHydratedForId.current = encounterId;
+    const targetEncounterId = encounterId;
+
+    supabase
+      .from("characters")
+      .select("id, name, player_name, hit_points, hit_points_max")
+      .eq("campaign_id", found.campaign_id)
+      .then(({ data, error }) => {
+        // Only apply if the user is still on the same encounter.
+        if (charactersHydratedForId.current !== targetEncounterId) return;
+        if (error) {
+          console.error("[VttSession] characters fetch failed", error);
+          return;
+        }
+        const toAdd = (data ?? []).map((c) => ({
+          id: `character-${c.id}`,
+          name: c.name,
+          type: "player",
+          dexterity: 10,
+          size: 1,
+          hit_points: c.hit_points ?? c.hit_points_max ?? 1,
+          data: {
+            name: c.name,
+            player_name: c.player_name,
+            dexterity: 10,
+            hit_points: c.hit_points ?? c.hit_points_max ?? 1,
+            hit_points_max: c.hit_points_max,
+          },
+        }));
+        if (toAdd.length === 0) return;
+        setStagingParticipants((prev) => {
+          const prevIds = new Set(prev.map((p) => p.id));
+          const deployedIdsLatest = new Set(
+            (latestStateRef.current.vttState?.layers?.[0]?.participants ?? []).map((p) => p.id),
+          );
+          return [
+            ...prev,
+            ...toAdd.filter((c) => !prevIds.has(c.id) && !deployedIdsLatest.has(c.id)),
+          ];
+        });
+      });
+  }, [encounterId, encounters]);
+  // Flush pending save when leaving an encounter (route change, switch to another encounter).
+  useEffect(() => {
+    const prev = prevEncounterIdRef.current;
+    if (prev && prev !== encounterId) {
+      const { vttState } = latestStateRef.current;
+      if (vttState) flushSaveNow(prev, vttState);
+    }
+    prevEncounterIdRef.current = encounterId;
+  }, [encounterId, flushSaveNow]);
+
+  // Cache access token so beforeunload can build an authenticated fetch synchronously.
+  useEffect(() => {
+    let cancelled = false;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!cancelled) accessTokenRef.current = data.session?.access_token ?? null;
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      accessTokenRef.current = session?.access_token ?? null;
+    });
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Best-effort save on tab close / refresh via fetch+keepalive.
+  useEffect(() => {
+    const onBeforeUnload = () => {
+      const { encounterId: id, vttState } = latestStateRef.current;
+      if (!id || !vttState) return;
+      const serialized = JSON.stringify(vttState);
+      if (serialized === lastSavedRef.current) return;
+      const token = accessTokenRef.current;
+      if (!token || !SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+      try {
+        fetch(`${SUPABASE_URL}/rest/v1/encounters?id=eq.${encodeURIComponent(id)}`, {
+          method: "PATCH",
+          keepalive: true,
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${token}`,
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({ vtt_state: vttState }),
+        });
+      } catch {
+        // best-effort
+      }
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, []);
+
   function saveCurrent(targetId) {
-    saveVttState(targetId, currentVttState);
+    flushSaveNow(targetId, currentVttState);
   }
 
   const value = {

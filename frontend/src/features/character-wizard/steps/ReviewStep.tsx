@@ -47,7 +47,7 @@ export default function ReviewStep() {
     try {
       for (const step of WIZARD_STEPS) {
         if (step.id === "review") continue;
-        await commitStep(step.id);
+        await commitStep(step.id, campaignId);
       }
       navigate(`/campaigns/${campaignId}/encounters`);
       reset();

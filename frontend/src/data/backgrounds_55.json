@@ -1239,8 +1239,8 @@
     {
       "id": "rashemi_wanderer",
       "name": "Rashemi Wanderer",
-      "source": "Feat: Tough",
-      "feat": null,
+      "source": "Forgotten Realms: Heroes of Faerûn",
+      "feat": "Tough",
       "ability_score_options": ["Strength", "Constitution", "Charisma"],
       "skill_proficiencies": ["Intimidation", "Perception"],
       "tool_proficiency": "Cartographer’s Tools",

@@ -14,6 +14,9 @@ export function serializeVttState(state) {
       gridOffsetY: state.gridOffsetY,
     },
     activeLayerId: DEFAULT_LAYER_ID,
+    currentLayer: state.currentLayer ?? 1,
+    mobVisibilityByLayer: state.mobVisibilityByLayer ?? { 1: false, 2: false, 3: false },
+    stagingParticipants: (state.stagingParticipants ?? []).map((p) => ({ ...p })),
     layers: [
       {
         id: DEFAULT_LAYER_ID,

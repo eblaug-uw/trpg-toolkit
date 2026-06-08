@@ -13,6 +13,9 @@ export function deserializeVttState(blob) {
     gridOffsetY: blob.grid.gridOffsetY,
     backgroundRef: activeLayer.map.backgroundRef ?? null,
     mapRotation: activeLayer.map.rotation ?? 0,
+    currentLayer: blob.currentLayer ?? 1,
+    mobVisibilityByLayer: blob.mobVisibilityByLayer ?? { 1: false, 2: false, 3: false },
+    stagingParticipants: (blob.stagingParticipants ?? []).map((p) => ({ ...p })),
     drawings: (activeLayer.drawings ?? []).map((drawing) => ({
       ...drawing,
       points: [...drawing.points],
