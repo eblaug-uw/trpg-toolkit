@@ -1,6 +1,7 @@
 /* --Imports-- */
 import { useState } from "react";
-import { LuZoomIn, LuZoomOut, LuSearch } from "react-icons/lu";
+import { LuZoomIn, LuZoomOut } from "react-icons/lu";
+import zoomIcon from "../assets/icons/zoom.svg";
 import "../style/PillButton.css";
 
 function PillZoom({ onZoomIn, onZoomOut }) {
@@ -50,7 +51,7 @@ function PillZoom({ onZoomIn, onZoomOut }) {
       )}
 
       {/* Always-visible magnifier icon */}
-      <LuSearch />
+      <img src={zoomIcon} alt="" />
     </div>
   );
 }

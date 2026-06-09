@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { LuImage, LuMap, LuUserPlus, LuTable, LuPlus, LuSwords, LuSave } from "react-icons/lu";
+import { LuMap, LuUserPlus, LuTable, LuPlus, LuSave } from "react-icons/lu";
+import imageUploadIcon from "../assets/icons/image-upload.svg";
+import enemyGeneratorIcon from "../assets/icons/enemy-generator.svg";
 import "../style/PillButton.css";
 
 function PillBottom({
@@ -72,7 +74,7 @@ function PillBottom({
         >
           {onImage && (
             <button onClick={onImage} className="icon-button" aria-label="image">
-              <LuImage />
+              <img src={imageUploadIcon} alt="" />
             </button>
           )}
           {onMap && (
@@ -87,7 +89,7 @@ function PillBottom({
           )}
           {onEnemyGenerator && (
             <button onClick={onEnemyGenerator} className="icon-button" aria-label="enemy generator">
-              <LuSwords />
+              <img src={enemyGeneratorIcon} alt="" />
             </button>
           )}
           {onTables && (

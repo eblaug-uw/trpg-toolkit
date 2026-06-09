@@ -7,6 +7,7 @@ import {
   LuArrowLeftRight,
   LuArrowUpDown,
 } from "react-icons/lu";
+import gridResizeIcon from "../assets/icons/grid-resize.svg";
 import "../style/PillButton.css";
 
 function PillGrid({
@@ -134,7 +135,7 @@ function PillGrid({
       )}
 
       {/* Always-visible grid icon */}
-      <LuLayoutGrid />
+      <img src={gridResizeIcon} alt="" />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { LuCoins, LuChartBar, LuPackage, LuSparkles } from "react-icons/lu";
+import { LuChartBar, LuPackage, LuSparkles } from "react-icons/lu";
+import lootIcon from "../assets/icons/loot.svg";
 import "../style/PillButton.css";
 
 function PillRight({ onLoot, onStats, onXpCalc }) {
@@ -43,7 +44,7 @@ function PillRight({ onLoot, onStats, onXpCalc }) {
           }}
         >
           <button onClick={() => runAndClose(onLoot)} className="icon-button" aria-label="loot">
-            <LuCoins />
+            <img src={lootIcon} alt="" />
           </button>
           <button onClick={() => runAndClose(onStats)} className="icon-button" aria-label="stats">
             <LuChartBar />
