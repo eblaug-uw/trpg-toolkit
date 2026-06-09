@@ -23,19 +23,22 @@ export default function CharacterEntryPage() {
     navigate(`/campaigns/${campaignId}/characters/new/basic-info`);
   }
 
+  function goBackToCampaign() {
+    navigate(`/campaigns/${campaignId}/encounters`);
+  }
+
   return (
     <div className="wizard-page">
+      <button onClick={goBackToCampaign} style={{ marginBottom: 16 }}>
+        ← Back to Campaign
+      </button>
+
       <h1>New Character</h1>
       <p>Choose how to start.</p>
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 16 }}>
         <button onClick={goBlank} style={cardStyle}>
           <h3>Start blank</h3>
           <p>Build from scratch.</p>
-        </button>
-
-        <button disabled style={cardStyle} title="Coming soon">
-          <h3>Upload PDF</h3>
-          <p>Import a fillable D&amp;D 5e sheet. (TODO)</p>
         </button>
 
         {showResume && (
