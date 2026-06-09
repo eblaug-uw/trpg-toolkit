@@ -6,3 +6,14 @@
   cursor: pointer;
   padding: 8px;
 }
+
+.custom-icon {
+  width: 2em;
+  height: 2em;
+  display: block;
+}
+.custom-icon-2 {
+  width: 1em;
+  height: 1em;
+  display: block;
+}

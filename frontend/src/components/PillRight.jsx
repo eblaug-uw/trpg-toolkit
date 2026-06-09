@@ -44,7 +44,7 @@ function PillRight({ onLoot, onStats, onXpCalc }) {
           }}
         >
           <button onClick={() => runAndClose(onLoot)} className="icon-button" aria-label="loot">
-            <img src={lootIcon} alt="" />
+            <img className="custom-icon" src={lootIcon} alt="" />
           </button>
           <button onClick={() => runAndClose(onStats)} className="icon-button" aria-label="stats">
             <LuChartBar />

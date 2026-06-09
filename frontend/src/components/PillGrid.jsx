@@ -135,7 +135,7 @@ function PillGrid({
       )}
 
       {/* Always-visible grid icon */}
-      <img src={gridResizeIcon} alt="" />
+      <img className="custom-icon-2" src={gridResizeIcon} alt="" />
     </div>
   );
 }

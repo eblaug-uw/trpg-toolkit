@@ -51,7 +51,7 @@ function PillZoom({ onZoomIn, onZoomOut }) {
       )}
 
       {/* Always-visible magnifier icon */}
-      <img src={zoomIcon} alt="" />
+      <img className="custom-icon" src={zoomIcon} alt="" />
     </div>
   );
 }

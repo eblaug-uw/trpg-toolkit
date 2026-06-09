@@ -74,7 +74,7 @@ function PillBottom({
         >
           {onImage && (
             <button onClick={onImage} className="icon-button" aria-label="image">
-              <img src={imageUploadIcon} alt="" />
+              <img className="custom-icon" src={imageUploadIcon} alt="" />
             </button>
           )}
           {onMap && (
@@ -89,7 +89,7 @@ function PillBottom({
           )}
           {onEnemyGenerator && (
             <button onClick={onEnemyGenerator} className="icon-button" aria-label="enemy generator">
-              <img src={enemyGeneratorIcon} alt="" />
+              <img className="custom-icon" src={enemyGeneratorIcon} alt="" />
             </button>
           )}
           {onTables && (
