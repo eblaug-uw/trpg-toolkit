@@ -2,10 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, Route, Outlet } from "react-router-dom";
-import { CampaignsProvider } from "@/context/CampaignsContext";
-import { EncountersProvider } from "@/context/EncountersContext";
-import { VttSessionProvider } from "@/context/VttSessionContext";
-import VTTPlay from "@/pages/VTTPlay";
+
+vi.mock("@/services/supabaseClient", async () => {
+  const { createSupabaseMock } = await import("../helpers/supabaseMock");
+  return { supabase: createSupabaseMock({ encounters: [] }) };
+});
 
 vi.mock("@/components/MapCanvas", () => ({
   default: vi.fn(() => <div data-testid="map-canvas-stub" />),
@@ -16,6 +17,12 @@ vi.mock("@/services/vttStorage", () => ({
 vi.mock("@/components/TopBar", () => ({
   default: () => <header data-testid="topbar-stub" />,
 }));
+
+import { CampaignsProvider } from "@/context/CampaignsContext";
+import { EncountersProvider } from "@/context/EncountersContext";
+import { VttSessionProvider } from "@/context/VttSessionContext";
+import VTTPlay from "@/pages/VTTPlay";
+import { supabase } from "@/services/supabaseClient";
 
 function Layout() {
   return (
@@ -49,7 +56,7 @@ async function openPillBottom(user) {
 
 describe("<VTTPlay />", () => {
   beforeEach(() => {
-    localStorage.clear();
+    supabase.__reset({ encounters: [] });
   });
 
   it("renders the canvas stub, initiative tracker, and ← Edit button", () => {

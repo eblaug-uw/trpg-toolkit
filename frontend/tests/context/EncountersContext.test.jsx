@@ -1,50 +1,75 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
-import { CampaignsProvider, useCampaigns } from "@/context/CampaignsContext";
-import { EncountersProvider, useEncounters } from "@/context/EncountersContext";
-import seedEncounters from "@/data/encounters.json";
-import seedCampaigns from "@/data/campaigns.json";
+import { renderHook, act, waitFor } from "@testing-library/react";
 
-const wrapper = ({ children }) => (
-  <CampaignsProvider>
-    <EncountersProvider>{children}</EncountersProvider>
-  </CampaignsProvider>
-);
+vi.mock("@/services/supabaseClient", async () => {
+  const { createSupabaseMock, FAKE_USER_ID } = await import("../helpers/supabaseMock");
+  return {
+    supabase: createSupabaseMock({
+      encounters: [
+        {
+          id: "enc-seed",
+          user_id: FAKE_USER_ID,
+          campaign_id: "camp-1",
+          title: "Seeded Encounter",
+          vtt_state: null,
+          created_at: "2024-01-01T00:00:00Z",
+        },
+      ],
+    }),
+  };
+});
+
+import { EncountersProvider, useEncounters } from "@/context/EncountersContext";
+import { supabase } from "@/services/supabaseClient";
+import { FAKE_USER_ID } from "../helpers/supabaseMock";
+
+const wrapper = ({ children }) => <EncountersProvider>{children}</EncountersProvider>;
+
+const seedRow = {
+  id: "enc-seed",
+  user_id: FAKE_USER_ID,
+  campaign_id: "camp-1",
+  title: "Seeded Encounter",
+  vtt_state: null,
+  created_at: "2024-01-01T00:00:00Z",
+};
 
 describe("EncountersContext", () => {
   beforeEach(() => {
-    localStorage.clear();
-    let n = 0;
-    vi.spyOn(crypto, "randomUUID").mockImplementation(() => `enc-${++n}`);
+    supabase.__reset({ encounters: [{ ...seedRow }] });
   });
 
-  it("exposes the seeded encounters", () => {
+  it("loads encounters from Supabase on mount", async () => {
     const { result } = renderHook(() => useEncounters(), { wrapper });
-    expect(result.current.encounters).toEqual(seedEncounters);
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.encounters).toHaveLength(1);
+    expect(result.current.encounters[0].campaign_id).toBe("camp-1");
   });
 
-  it("addEncounter appends a new encounter and links it to the campaign", () => {
-    const { result } = renderHook(() => ({ enc: useEncounters(), camp: useCampaigns() }), {
-      wrapper,
-    });
-    const targetId = seedCampaigns[0].id;
-    const prevEncountersOnCampaign = seedCampaigns[0].encounterIds;
+  it("addEncounter inserts a row with snake_case columns", async () => {
+    const { result } = renderHook(() => useEncounters(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     let returned;
-    act(() => {
-      returned = result.current.enc.addEncounter(targetId, "Bandit Camp");
+    await act(async () => {
+      returned = await result.current.addEncounter("camp-2", "Bandit Camp");
     });
 
-    expect(returned).toEqual({
-      id: "enc-1",
-      title: "Bandit Camp",
-      campaignId: targetId,
-      vttState: null,
-    });
-    expect(result.current.enc.encounters).toHaveLength(seedEncounters.length + 1);
-    expect(result.current.enc.encounters.at(-1)).toEqual(returned);
+    expect(returned.title).toBe("Bandit Camp");
+    expect(returned.campaign_id).toBe("camp-2");
+    expect(returned.vtt_state).toBeNull();
+    expect(returned.user_id).toBe(FAKE_USER_ID);
+    expect(result.current.encounters).toHaveLength(2);
+  });
 
-    const updatedCampaign = result.current.camp.campaigns.find((c) => c.id === targetId);
-    expect(updatedCampaign.encounterIds).toEqual([...prevEncountersOnCampaign, "enc-1"]);
+  it("deleteEncounter removes the row", async () => {
+    const { result } = renderHook(() => useEncounters(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.deleteEncounter("enc-seed");
+    });
+
+    expect(result.current.encounters).toHaveLength(0);
   });
 });

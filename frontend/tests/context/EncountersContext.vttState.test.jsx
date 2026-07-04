@@ -1,90 +1,88 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
-import { CampaignsProvider } from "@/context/CampaignsContext";
-import { EncountersProvider, useEncounters } from "@/context/EncountersContext";
-import seedEncounters from "@/data/encounters.json";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook, act, waitFor } from "@testing-library/react";
 
-const wrapper = ({ children }) => (
-  <CampaignsProvider>
-    <EncountersProvider>{children}</EncountersProvider>
-  </CampaignsProvider>
-);
-
-const sampleVttState = () => ({
-  schemaVersion: 1,
-  grid: { showGrid: true, pixelsPerFoot: 12, gridFineTune: 0, gridOffsetX: 0, gridOffsetY: 0 },
-  activeLayerId: "L1",
-  layers: [
-    {
-      id: "L1",
-      name: "Layer 1",
-      visible: true,
-      map: { backgroundRef: { bucket: "maps", name: "tavern.jpg" } },
-      participants: [],
-      combat: { active: false, round: 1, queue: [] },
-    },
-  ],
-  viewport: null,
+vi.mock("@/services/supabaseClient", async () => {
+  const { createSupabaseMock, FAKE_USER_ID } = await import("../helpers/supabaseMock");
+  return {
+    supabase: createSupabaseMock({
+      encounters: [
+        {
+          id: "enc-1",
+          user_id: FAKE_USER_ID,
+          campaign_id: "camp-1",
+          title: "Test Encounter",
+          vtt_state: null,
+          created_at: "2024-01-01T00:00:00Z",
+        },
+      ],
+    }),
+  };
 });
 
-const findEncounter = (encounters, id) => encounters.find((e) => e.id === id);
+import { EncountersProvider, useEncounters } from "@/context/EncountersContext";
+import { supabase } from "@/services/supabaseClient";
+import { FAKE_USER_ID } from "../helpers/supabaseMock";
 
-describe("EncountersContext — saveVttState", () => {
+const wrapper = ({ children }) => <EncountersProvider>{children}</EncountersProvider>;
+
+describe("EncountersContext.saveVttState", () => {
   beforeEach(() => {
-    localStorage.clear();
-  });
-
-  it("seed encounters start with vttState: null", () => {
-    const { result } = renderHook(() => useEncounters(), { wrapper });
-    const enc = findEncounter(result.current.encounters, seedEncounters[0].id);
-    expect(enc.vttState).toBeNull();
-  });
-
-  it("addEncounter returns an encounter with campaignId and vttState: null", () => {
-    const { result } = renderHook(() => useEncounters(), { wrapper });
-    let created;
-    act(() => {
-      created = result.current.addEncounter("c1-fake", "Lava Run");
+    supabase.__reset({
+      encounters: [
+        {
+          id: "enc-1",
+          user_id: FAKE_USER_ID,
+          campaign_id: "camp-1",
+          title: "Test Encounter",
+          vtt_state: null,
+          created_at: "2024-01-01T00:00:00Z",
+        },
+      ],
     });
-    expect(created.campaignId).toBe("c1-fake");
-    expect(created.vttState).toBeNull();
   });
 
-  it("saveVttState writes vttState onto the matching encounter", () => {
+  it("writes vtt_state to the matching encounter", async () => {
     const { result } = renderHook(() => useEncounters(), { wrapper });
-    const first = seedEncounters[0];
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
-    act(() => {
-      result.current.saveVttState(first.id, sampleVttState());
+    const state = { tokens: [{ id: "t1", x: 100, y: 200 }] };
+    await act(async () => {
+      await result.current.saveVttState("enc-1", state);
     });
 
-    const enc = findEncounter(result.current.encounters, first.id);
-    expect(enc.vttState).not.toBeNull();
-    expect(enc.vttState.layers[0].map.backgroundRef.name).toBe("tavern.jpg");
+    expect(result.current.encounters[0].vtt_state).toEqual(state);
   });
 
-  it("saveVttState persists to localStorage", () => {
-    const { result } = renderHook(() => useEncounters(), { wrapper });
-    const first = seedEncounters[0];
-
-    act(() => {
-      result.current.saveVttState(first.id, sampleVttState());
+  it("does not modify sibling encounters", async () => {
+    supabase.__reset({
+      encounters: [
+        {
+          id: "enc-1",
+          user_id: FAKE_USER_ID,
+          campaign_id: "camp-1",
+          title: "A",
+          vtt_state: null,
+          created_at: "2024-01-01T00:00:00Z",
+        },
+        {
+          id: "enc-2",
+          user_id: FAKE_USER_ID,
+          campaign_id: "camp-1",
+          title: "B",
+          vtt_state: { keep: true },
+          created_at: "2024-01-02T00:00:00Z",
+        },
+      ],
     });
 
-    const remounted = renderHook(() => useEncounters(), { wrapper });
-    const enc = findEncounter(remounted.result.current.encounters, first.id);
-    expect(enc.vttState).not.toBeNull();
-    expect(enc.vttState.layers[0].map.backgroundRef.name).toBe("tavern.jpg");
-  });
-
-  it("saveVttState is a no-op for an unknown encounter id", () => {
     const { result } = renderHook(() => useEncounters(), { wrapper });
-    const before = result.current.encounters;
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
-    act(() => {
-      result.current.saveVttState("does-not-exist", sampleVttState());
+    await act(async () => {
+      await result.current.saveVttState("enc-1", { changed: true });
     });
 
-    expect(result.current.encounters).toEqual(before);
+    const enc2 = result.current.encounters.find((e) => e.id === "enc-2");
+    expect(enc2.vtt_state).toEqual({ keep: true });
   });
 });

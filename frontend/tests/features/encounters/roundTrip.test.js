@@ -39,6 +39,18 @@ const sample = () => ({
       data: { hit_points: 22, dexterity: 16 },
     },
   ],
+  stagingParticipants: [
+    {
+      id: "p3",
+      name: "Staged Bandit",
+      size: 1,
+      type: "monster",
+      hit_points: 11,
+      data: { hit_points: 11, dexterity: 12 },
+    },
+  ],
+  currentLayer: 2,
+  mobVisibilityByLayer: { 1: true, 2: false, 3: true },
   combat: {
     active: true,
     round: 2,
@@ -62,6 +74,7 @@ describe("serialize/deserialize round trip", () => {
       backgroundRef: null,
       viewport: null,
       participants: [],
+      stagingParticipants: [],
       combat: { active: false, round: 1, queue: [] },
     };
     expect(deserializeVttState(serializeVttState(start))).toEqual(start);

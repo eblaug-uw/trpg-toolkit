@@ -21,12 +21,16 @@ import EnemyGenerator from "../features/enemy-generator";
 import SaveEncounterModal from "../components/SaveEncounterModal";
 import ParticipantSheet from "../components/ParticipantSheet";
 import StagingArea from "../features/vtt/StagingArea";
+import VttTutorial from "../features/vtt/VttTutorial";
 
 function VTTEdit() {
   /* --States-- */
   const mapCanvasRef = useRef(null);
   const [openModal, setOpenModal] = useState(null);
   const [drawingEnabled, setDrawingEnabled] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(() => {
+    return localStorage.getItem("vttTutorialSeen") !== "true";
+  });
   const navigate = useNavigate();
 
   const {
@@ -144,6 +148,15 @@ function VTTEdit() {
   function handlePlayClick() {
     if (encounterId) saveCurrent(encounterId);
     navigate(`/vtt/play${encounterId ? `?encounterId=${encounterId}` : ""}`);
+  }
+  function handleBackToEncounters() {
+    const campaignId = encounters.find((e) => e.id === encounterId)?.campaign_id;
+    navigate(campaignId ? `/campaigns/${campaignId}/encounters` : "/campaigns");
+  }
+
+  function handleCloseTutorial() {
+    localStorage.setItem("vttTutorialSeen", "true");
+    setShowTutorial(false);
   }
 
   /* --Render-- */
@@ -332,6 +345,27 @@ function VTTEdit() {
           Play →
         </button>
 
+        <button
+          type="button"
+          aria-label="Back to encounters"
+          onClick={handleBackToEncounters}
+          style={{
+            position: "absolute",
+            top: 16,
+            left: 16,
+            padding: "8px 16px",
+            borderRadius: 999,
+            border: "none",
+            background: "#4a6fa5",
+            color: "white",
+            cursor: "pointer",
+            fontWeight: 600,
+            zIndex: 30,
+          }}
+        >
+          ← Encounters
+        </button>
+
         <Modal
           isOpen={openModal !== null && openModal !== "saveEncounter"}
           onClose={() => setOpenModal(null)}
@@ -350,6 +384,8 @@ function VTTEdit() {
           onExportFile={handleExportFile}
           onClose={() => setOpenModal(null)}
         />
+
+        {showTutorial && <VttTutorial onClose={handleCloseTutorial} />}
       </div>
     </div>
   );

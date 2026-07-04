@@ -12,7 +12,7 @@ function StagingArea() {
       style={{
         position: "absolute",
         left: 16,
-        top: 16,
+        top: 64,
         width: "260px",
         maxHeight: "70vh",
         overflowY: "auto",

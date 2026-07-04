@@ -1,4 +1,14 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { vi } from "vitest";
+
+vi.mock("@/services/supabaseClient", async () => {
+  const { createSupabaseMock } = await import("../helpers/supabaseMock");
+  return { supabase: createSupabaseMock({ encounters: [] }) };
+});
+
+import { supabase } from "@/services/supabaseClient";
+import { FAKE_USER_ID } from "../helpers/supabaseMock";
+
+import { describe, it, expect, beforeEach } from "vitest";
 import { fireEvent, renderHook, act, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { CampaignsProvider } from "@/context/CampaignsContext";
@@ -46,7 +56,6 @@ function makeParticipant(overrides = {}) {
 
 describe("VttSessionContext", () => {
   beforeEach(() => {
-    localStorage.clear();
     let n = 0;
     vi.spyOn(crypto, "randomUUID").mockImplementation(() => `enc-${++n}`);
   });
@@ -68,7 +77,7 @@ describe("VttSessionContext", () => {
     expect(result.current.initiativeQueue).toEqual([]);
   });
 
-  it("hydrates from a saved encounter when ?encounterId matches", () => {
+  it("hydrates from a saved encounter when ?encounterId matches", async () => {
     const saved = serializeVttState({
       showGrid: false,
       pixelsPerFoot: 12,
@@ -90,26 +99,33 @@ describe("VttSessionContext", () => {
       combat: { active: false, round: 1, queue: [] },
       viewport: null,
     });
-    localStorage.setItem(
-      "trpg:encounters",
-      JSON.stringify([{ id: "enc-existing", title: "Saved", campaignId: null, vttState: saved }]),
-    );
-
-    const { result } = renderHook(() => useVttSession(), {
+    supabase.__reset({
+      encounters: [
+        {
+          id: "enc-existing",
+          user_id: FAKE_USER_ID,
+          campaign_id: null,
+          title: "Saved",
+          vtt_state: saved,
+          created_at: "2024-01-01T00:00:00Z",
+        },
+      ],
+    });
+    const { result } = renderHook(() => ({ session: useVttSession(), enc: useEncounters() }), {
       wrapper: makeWrapper(["/vtt/edit?encounterId=enc-existing"]),
     });
 
-    expect(result.current.grid.showGrid).toBe(false);
-    expect(result.current.grid.pixelsPerFoot).toBe(12);
-    expect(result.current.mapRotation).toBe(45);
-    expect(result.current.backgroundRef).toEqual({ bucket: "maps", name: "saved.png" });
-    expect(result.current.drawings).toHaveLength(1);
-    expect(result.current.drawings[0].points).toEqual([1, 2, 3, 4]);
-    expect(result.current.participants).toHaveLength(1);
-    expect(result.current.participants[0].cell).toEqual({ x: 1, y: 2 });
+    await waitFor(() => expect(result.current.session.grid.showGrid).toBe(false));
+    expect(result.current.session.grid.pixelsPerFoot).toBe(12);
+    expect(result.current.session.mapRotation).toBe(45);
+    expect(result.current.session.backgroundRef).toEqual({ bucket: "maps", name: "saved.png" });
+    expect(result.current.session.drawings).toHaveLength(1);
+    expect(result.current.session.drawings[0].points).toEqual([1, 2, 3, 4]);
+    expect(result.current.session.participants).toHaveLength(1);
+    expect(result.current.session.participants[0].cell).toEqual({ x: 1, y: 2 });
   });
 
-  it("hydrates an active combat — rebuilds the tracker and seeds initiativeQueue", () => {
+  it("hydrates an active combat — rebuilds the tracker and seeds initiativeQueue", async () => {
     const p1 = makeParticipant({ id: "p1", name: "Alpha", dexterity: 14 });
     const p2 = makeParticipant({ id: "p2", name: "Beta", dexterity: 10 });
     const saved = serializeVttState({
@@ -130,21 +146,29 @@ describe("VttSessionContext", () => {
       },
       viewport: null,
     });
-    localStorage.setItem(
-      "trpg:encounters",
-      JSON.stringify([{ id: "enc-c", title: "Combat", campaignId: null, vttState: saved }]),
-    );
+    supabase.__reset({
+      encounters: [
+        {
+          id: "enc-c",
+          user_id: FAKE_USER_ID,
+          campaign_id: null,
+          title: "Saved",
+          vtt_state: saved,
+          created_at: "2024-01-01T00:00:00Z",
+        },
+      ],
+    });
 
-    const { result } = renderHook(() => useVttSession(), {
+    const { result } = renderHook(() => ({ session: useVttSession(), enc: useEncounters() }), {
       wrapper: makeWrapper(["/vtt/play?encounterId=enc-c"]),
     });
 
-    expect(result.current.combatActive).toBe(true);
-    expect(result.current.initiativeQueue.map((e) => e.id)).toEqual(["p1", "p2"]);
-    expect(result.current.initiativeQueue[0].initiativeTotal).toBe(22);
+    await waitFor(() => expect(result.current.session.combatActive).toBe(true));
+    expect(result.current.session.initiativeQueue.map((e) => e.id)).toEqual(["p1", "p2"]);
+    expect(result.current.session.initiativeQueue[0].initiativeTotal).toBe(22);
   });
 
-  it("does not re-hydrate after the encounters list mutates (save guard)", () => {
+  it("does not re-hydrate after the encounters list mutates (save guard)", async () => {
     const initial = serializeVttState({
       showGrid: true,
       pixelsPerFoot: 10,
@@ -156,21 +180,34 @@ describe("VttSessionContext", () => {
       combat: { active: false, round: 1, queue: [] },
       viewport: null,
     });
-    localStorage.setItem(
-      "trpg:encounters",
-      JSON.stringify([{ id: "enc-1", title: "T", campaignId: null, vttState: initial }]),
-    );
+    supabase.__reset({
+      encounters: [
+        {
+          id: "enc-1",
+          user_id: FAKE_USER_ID,
+          campaign_id: null,
+          title: "T",
+          vtt_state: initial,
+          created_at: "2024-01-01T00:00:00Z",
+        },
+      ],
+    });
 
     const { result } = renderHook(() => ({ session: useVttSession(), enc: useEncounters() }), {
       wrapper: makeWrapper(["/vtt/edit?encounterId=enc-1"]),
     });
+
+    // wait for hydration to seed p1
+    await waitFor(() => expect(result.current.session.participants).toHaveLength(1));
 
     act(() => {
       result.current.session.addParticipant(makeParticipant({ id: "p2", name: "Added" }));
     });
     expect(result.current.session.participants).toHaveLength(2);
 
-    act(() => result.current.session.saveCurrent("enc-1"));
+    await act(async () => {
+      result.current.session.saveCurrent("enc-1");
+    });
     expect(result.current.session.participants).toHaveLength(2);
   });
 
@@ -455,23 +492,38 @@ describe("VttSessionContext", () => {
     expect(snap.layers[0].combat).toEqual({ active: false, round: 1, queue: [] });
   });
 
-  it("saveCurrent writes the current serialized shape into EncountersContext", () => {
-    localStorage.setItem(
-      "trpg:encounters",
-      JSON.stringify([{ id: "enc-target", title: "T", campaignId: null, vttState: null }]),
-    );
+  it("saveCurrent writes the current serialized shape into EncountersContext", async () => {
+    supabase.__reset({
+      encounters: [
+        {
+          id: "enc-target",
+          user_id: FAKE_USER_ID,
+          campaign_id: null,
+          title: "T",
+          vtt_state: null,
+          created_at: "2024-01-01T00:00:00Z",
+        },
+      ],
+    });
     const { result } = renderHook(() => ({ session: useVttSession(), enc: useEncounters() }), {
       wrapper: makeWrapper(),
     });
 
+    await waitFor(() => expect(result.current.enc.encounters).toHaveLength(1));
+
     act(() => {
       result.current.session.setPixelsPerFoot(15);
     });
-    act(() => {
+    await act(async () => {
       result.current.session.saveCurrent("enc-target");
     });
 
-    const saved = result.current.enc.encounters.find((e) => e.id === "enc-target").vttState;
+    await waitFor(() => {
+      const enc = result.current.enc.encounters.find((e) => e.id === "enc-target");
+      expect(enc?.vtt_state).not.toBeNull();
+    });
+
+    const saved = result.current.enc.encounters.find((e) => e.id === "enc-target").vtt_state;
     expect(saved.grid.pixelsPerFoot).toBe(15);
   });
 });
